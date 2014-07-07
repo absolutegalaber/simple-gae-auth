@@ -28,10 +28,6 @@ public class NetworkBuilder {
     public NetworkBuilder() {
     }
 
-    public NetworkBuilder(String name) {
-        this.name = name;
-    }
-
     public NetworkBuilder name(String name) {
         this.name = name;
         return this;
@@ -73,10 +69,10 @@ public class NetworkBuilder {
     }
 
     public DefaultOAuth2Network buildOauth2Network(OAuth2ClientConfig clientConfig) {
-        Preconditions.checkNotNull(name);
-        Preconditions.checkNotNull(authUrl);
-        Preconditions.checkNotNull(accessTokenUrl);
-        Preconditions.checkNotNull(clientConfig);
+        Preconditions.checkNotNull(name, "Name required");
+        Preconditions.checkNotNull(authUrl, "AuthorizationUrl required");
+        Preconditions.checkNotNull(accessTokenUrl, "AccessTokenUrl required");
+        Preconditions.checkNotNull(clientConfig, "ClientConfig required");
         DefaultOAuth2Network toReturn = new DefaultOAuth2Network(name, clientConfig, authUrl, accessTokenUrl, profileUrl);
         toReturn.headerDefaults(defaultHeaders);
         toReturn.queryParamsDefaults(defaultQueryParams);
@@ -84,12 +80,12 @@ public class NetworkBuilder {
         return toReturn;
     }
 
-    public DefaultOAuth1Network buildOauth2Network(OAuth1ClientConfig clientConfig) {
-        Preconditions.checkNotNull(name);
-        Preconditions.checkNotNull(authUrl);
-        Preconditions.checkNotNull(accessTokenUrl);
-        Preconditions.checkNotNull(requestTokenUrl);
-        Preconditions.checkNotNull(clientConfig);
+    public DefaultOAuth1Network buildOauth1Network(OAuth1ClientConfig clientConfig) {
+        Preconditions.checkNotNull(name, "Name required");
+        Preconditions.checkNotNull(authUrl, "AuthorizationUrl required");
+        Preconditions.checkNotNull(accessTokenUrl, "AccessTokenUrl required");
+        Preconditions.checkNotNull(requestTokenUrl, "RequestTokenUrl required");
+        Preconditions.checkNotNull(clientConfig, "ClientConfig required");
         DefaultOAuth1Network toReturn = new DefaultOAuth1Network(name, clientConfig, requestTokenUrl, authUrl, accessTokenUrl, profileUrl);
         toReturn.headerDefaults(defaultHeaders);
         toReturn.queryParamsDefaults(defaultQueryParams);

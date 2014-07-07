@@ -13,12 +13,8 @@ public class ConfigurableQueryParameterAccessMethod implements Credential.Access
     static final String DEFAULT_PARAM_NAME = "access_token";
     private Optional<String> configuredParamName;
 
-    public ConfigurableQueryParameterAccessMethod() {
-        configuredParamName = Optional.absent();
-    }
-
     public ConfigurableQueryParameterAccessMethod(String configuredParamName) {
-        this.configuredParamName = Optional.of(configuredParamName);
+        this.configuredParamName = Optional.fromNullable(configuredParamName);
     }
 
     @Override

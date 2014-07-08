@@ -34,6 +34,8 @@ public abstract class AbstractAuthorizationRedirect extends HttpServlet {
         }
     }
 
+
+
     public abstract void configureNetworks(NetworkProvider provider);
 
     public abstract void onError(OAuthException authException, HttpServletRequest req, HttpServletResponse resp);

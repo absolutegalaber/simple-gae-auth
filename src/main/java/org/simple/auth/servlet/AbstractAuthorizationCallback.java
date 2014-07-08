@@ -31,7 +31,7 @@ public abstract class AbstractAuthorizationCallback extends HttpServlet {
 //            BasicUserProfile basicUserProfile = network.basicUserProfile(accessToken);
             onSuccess(accessToken, null, req, resp);
         } catch (OAuthException e) {
-           log.warn("OAuth exception during authorization",e);
+           onError(e,req,resp);
         }
     }
 

@@ -1,0 +1,50 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.6.1'
+    }
+}
+
+apply plugin: 'jacoco'
+apply plugin: 'coveralls'
+apply plugin: 'maven'
+
+description = 'Simplest GAE OAuth'
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/coverage-reports"
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+configurations { providedCompile }
+
+sourceSets.main.compileClasspath += configurations.providedCompile
+sourceSets.test.compileClasspath += configurations.providedCompile
+sourceSets.test.runtimeClasspath += configurations.providedCompile
+
+dependencies {
+    compile(
+            [
+                    'com.google.guava:guava:17.0',
+                    'com.google.oauth-client:google-oauth-client:1.18.0-rc',
+                    'com.google.http-client:google-http-client-jackson2:1.18.0-rc',
+                    'com.fasterxml.jackson.core:jackson-databind:2.4.1.1'
+            ]
+    )
+
+    providedCompile "javax.servlet:servlet-api:2.5"
+}

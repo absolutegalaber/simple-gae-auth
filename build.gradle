@@ -1,57 +1,22 @@
-apply plugin: 'groovy'
-apply plugin: 'jacoco'
-apply plugin: 'coveralls'
-apply plugin: 'maven'
+subprojects {
+    apply plugin: 'groovy'
 
-description = 'Simplest GAE OAuth'
+    group = 'org.simple.auth'
+    version = '0.1-SNAPSHOT'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-version = '0.1'
-group='org.simple.auth'
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+    dependencies {
+        compile 'org.slf4j:slf4j-api:1.7.5'
+        compile 'org.slf4j:slf4j-jdk14:1.7.5'
+        compile 'org.projectlombok:lombok:1.14.4'
+        testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    }
 
-buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
+//        jcenter()
     }
 
-    dependencies {
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.6.1'
-    }
-}
-
-jacoco {
-    toolVersion = "0.7.1.201405082137"
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        csv.enabled false
-        html.destination "${buildDir}/coverage-reports"
-    }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-configurations { providedCompile }
-
-sourceSets.main.compileClasspath += configurations.providedCompile
-sourceSets.test.compileClasspath += configurations.providedCompile
-sourceSets.test.runtimeClasspath += configurations.providedCompile
-
-dependencies {
-    compile 'com.google.guava:guava:17.0'
-    compile 'com.google.oauth-client:google-oauth-client:1.18.0-rc'
-    compile 'com.google.http-client:google-http-client-jackson2:1.18.0-rc'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.1.1'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.5'
-    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.5'
-    testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-2.0'
-
-    compile group: 'org.projectlombok', name: 'lombok', version: '1.14.0'
-    providedCompile "javax.servlet:servlet-api:2.5"
 }

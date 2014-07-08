@@ -7,11 +7,11 @@ import spock.lang.Specification
  */
 class AccessTokenTest extends Specification {
 
-    AccessToken token
+    AccessToken accessToken
 
     def "AccessToken requires network"() {
         when:
-        token = new AccessToken(null, "testtoken")
+        accessToken = new AccessToken(null, "testtoken")
 
         then:
         final NullPointerException exception = thrown()
@@ -20,7 +20,7 @@ class AccessTokenTest extends Specification {
 
     def "AccessToken requires token"() {
         when:
-        token = new AccessToken("network", null)
+        accessToken = new AccessToken("network", null)
 
         then:
         final NullPointerException exception = thrown()
@@ -29,9 +29,13 @@ class AccessTokenTest extends Specification {
 
     def "AccessToken can be created with network and token"() {
         when:
-        token = new AccessToken("network", "token")
+        String networkname = "network"
+        String token = "token"
+        accessToken = new AccessToken(networkname, token)
 
         then:
         noExceptionThrown()
+        accessToken.getAccessToken() == token
+        accessToken.getNetwork() == networkname
     }
 }

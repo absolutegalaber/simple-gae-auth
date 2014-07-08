@@ -1,5 +1,6 @@
 package org.simple.auth.servlet;
 
+import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.AccessToken;
 import org.simple.auth.model.BasicUserProfile;
 import org.simple.auth.model.Network;
@@ -16,6 +17,7 @@ import java.io.IOException;
 /**
  * Created by Josip.Mihelko @ Gmail
  */
+@Slf4j
 public abstract class AbstractAuthorizationCallback extends HttpServlet {
     private final NetworkProvider networkProvider = NetworkProvider.getInstance();
     private final UserProfileService userProfileService = new UserProfileService();
@@ -29,7 +31,7 @@ public abstract class AbstractAuthorizationCallback extends HttpServlet {
 //            BasicUserProfile basicUserProfile = network.basicUserProfile(accessToken);
             onSuccess(accessToken, null, req, resp);
         } catch (OAuthException e) {
-            e.printStackTrace();
+           log.warn("OAuth exception during authorization",e);
         }
     }
 

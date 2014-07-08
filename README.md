@@ -5,6 +5,9 @@ Event tough it this project targets Google App engine it should actually work ou
 ###Build
 gradle build
 
+###CI
+[Travis CI](https://travis-ci.org/esistegalaber/simple-gae-auth)
+
 
 
 

@@ -1,5 +1,6 @@
 apply plugin: 'groovy'
 apply plugin: 'jacoco'
+apply plugin: 'coveralls'
 
 description = 'Simplest GAE OAuth'
 
@@ -7,9 +8,19 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 version = '0.1'
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.3.0'
+    }
+}
+
 jacocoTestReport {
     reports {
-        xml.enabled false
+        xml.enabled true
         csv.enabled false
         html.destination "${buildDir}/coverage-reports"
     }

@@ -1,4 +1,5 @@
 ![Build Status](https://travis-ci.org/esistegalaber/simple-gae-auth.svg?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/esistegalaber/simple-gae-auth.svg)](https://coveralls.io/r/esistegalaber/simple-gae-auth)
 
 # Simple GAE Auth
 Provides OAuth1 and OAuth2 Support. 

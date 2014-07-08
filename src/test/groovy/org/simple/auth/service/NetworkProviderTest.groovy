@@ -17,6 +17,8 @@ class NetworkProviderTest extends Specification {
     NetworkProvider underTest
     String networkName = "testnetwork"
     Network dummyNetwork
+    final String SESSION_KEY = "com.simple.oauth.model.Network"
+    final String REQUEST_KEY = "network"
 
     void setup() {
         underTest = NetworkProvider.getInstance();
@@ -69,7 +71,7 @@ class NetworkProviderTest extends Specification {
     def "Add network and FromRequestParam"() {
       setup:
       HttpServletRequest mockRequest = Mock(HttpServletRequest)
-      mockRequest.getParameter("network") >> networkName
+      mockRequest.getParameter(REQUEST_KEY) >> networkName
 
       expect:
       underTest.fromRequestParam(mockRequest) != null
@@ -78,7 +80,7 @@ class NetworkProviderTest extends Specification {
     def "FromRequestParam with NULL param"() {
         setup:
         HttpServletRequest mockRequest = Mock(HttpServletRequest)
-        mockRequest.getParameter("network") >> null
+        mockRequest.getParameter(REQUEST_KEY) >> null
 
         when:
         underTest.fromRequestParam(mockRequest)
@@ -98,7 +100,7 @@ class NetworkProviderTest extends Specification {
        underTest.toSession(mockRequest,dummyNetwork)
 
        then:
-       1* mockSession.setAttribute("com.simple.oauth.model.Network",networkName)
+       1* mockSession.setAttribute(SESSION_KEY,networkName)
     }
 
     def "Add network and FromSession"() {
@@ -106,7 +108,7 @@ class NetworkProviderTest extends Specification {
         HttpServletRequest mockRequest = Mock(HttpServletRequest)
         HttpSession mockSession = Mock(HttpSession)
         mockRequest.getSession() >> mockSession
-        mockSession.getAttribute("com.simple.oauth.model.Network") >> networkName
+        mockSession.getAttribute(SESSION_KEY) >> networkName
 
         when:
         Network network = underTest.fromSession(mockRequest)
@@ -119,7 +121,7 @@ class NetworkProviderTest extends Specification {
         HttpServletRequest mockRequest = Mock(HttpServletRequest)
         HttpSession mockSession = Mock(HttpSession)
         mockRequest.getSession() >> mockSession
-        mockSession.getAttribute("com.simple.oauth.model.Network") >> null
+        mockSession.getAttribute(SESSION_KEY) >> null
 
         when:
         underTest.fromSession(mockRequest)

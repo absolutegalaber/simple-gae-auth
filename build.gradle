@@ -14,8 +14,12 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.3.0'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.6.1'
     }
+}
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
 }
 
 jacocoTestReport {

@@ -26,4 +26,12 @@ class AccessTokenTest extends Specification {
         final NullPointerException exception = thrown()
         exception != null
     }
+
+    def "AccessToken can be created with network and token"() {
+        when:
+        token = new AccessToken("network", "token")
+
+        then:
+        noExceptionThrown()
+    }
 }

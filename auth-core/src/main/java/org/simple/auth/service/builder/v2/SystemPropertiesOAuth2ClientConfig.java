@@ -1,19 +1,20 @@
-package org.simple.auth.model.v2;
+package org.simple.auth.service.builder.v2;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
+import org.simple.auth.model.v2.OAuth2ClientConfig;
 
 import java.util.Collection;
 
 /**
  * Created by Josip.Mihelko @ Gmail
  */
-public class SystemPropertiesClientConfig implements OAuth2ClientConfig {
+public class SystemPropertiesOAuth2ClientConfig implements OAuth2ClientConfig {
 
     private final String networkName;
     private final Optional<String> systemPropertiesPrefix;
 
-    public SystemPropertiesClientConfig(String networkName, String systemPropertiesPrefix) {
+    public SystemPropertiesOAuth2ClientConfig(String networkName, String systemPropertiesPrefix) {
         this.networkName = networkName;
         this.systemPropertiesPrefix = Optional.fromNullable(systemPropertiesPrefix);
     }

@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
     compile project(':auth-core')
+    compile 'org.slf4j:slf4j-simple:1.7.7'
     providedCompile 'javax.servlet:servlet-api:2.5'
 }
 
@@ -34,4 +35,10 @@ jettyRun.doFirst {
     System.setProperty("simpleauthexample.google.secret", project.'simpleauthexample.google.secret')
     System.setProperty("simpleauthexample.google.callbackUrl", project.'simpleauthexample.google.callbackUrl')
     System.setProperty("simpleauthexample.google.state", project.'simpleauthexample.google.state')
+
+    System.setProperty("simpleauthexample.facebook.scope", project.'simpleauthexample.facebook.scope')
+    System.setProperty("simpleauthexample.facebook.clientId", project.'simpleauthexample.facebook.clientId')
+    System.setProperty("simpleauthexample.facebook.secret", project.'simpleauthexample.facebook.secret')
+    System.setProperty("simpleauthexample.facebook.callbackUrl", project.'simpleauthexample.facebook.callbackUrl')
+    System.setProperty("simpleauthexample.facebook.state", project.'simpleauthexample.facebook.state')
 }

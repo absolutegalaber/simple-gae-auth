@@ -1,4 +1,4 @@
-package org.simple.auth.service;
+package org.simple.auth.service.builder;
 
 import com.google.common.base.Preconditions;
 import org.simple.auth.model.networks.DefaultOAuth1Network;

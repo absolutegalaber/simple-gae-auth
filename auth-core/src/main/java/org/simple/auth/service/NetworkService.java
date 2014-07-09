@@ -1,7 +1,9 @@
 package org.simple.auth.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.Network;
 import org.simple.auth.model.OAuthException;
+import org.simple.auth.service.builder.NetworkConfigurationService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -10,25 +12,27 @@ import java.util.Map;
 /**
  * Created by Josip.Mihelko @ Gmail
  */
-public class NetworkProvider {
-    private static final NetworkProvider INSTANCE = new NetworkProvider();
-    private final Map<String, Network> networks = new HashMap<>();
+@Slf4j
+public class NetworkService {
+    private static final Map<String, Network> networks = new HashMap<>();
 
-    private NetworkProvider() {
+    public void configureNetworks(Iterable<Network> configuredNetworks) {
+        for (Network configuredNetwork : configuredNetworks) {
+            if (!networks.containsKey(configuredNetwork.getName())) {
+                networks.put(configuredNetwork.getName(), configuredNetwork);
+            }
+        }
+        log.info("Configured Networks: {}", networks);
     }
 
-    public static NetworkProvider getInstance() {
-        return INSTANCE;
-    }
-
-    public void addNetwork(Network network) {
-        networks.put(network.getName(), network);
+    public void configureNetworks(NetworkConfigurationService configurationService) {
+        configureNetworks(configurationService.configureNetworks());
     }
 
     public Network fromName(String name) throws OAuthException {
         Network network = networks.get(name);
         if (network == null) {
-            throw new OAuthException(network + " is not configured");
+            throw new OAuthException(name + " is not configured");
         }
 
         return network;

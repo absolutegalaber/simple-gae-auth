@@ -7,8 +7,7 @@ subprojects {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
     dependencies {
-        compile 'org.slf4j:slf4j-api:1.7.5'
-        compile 'org.slf4j:slf4j-jdk14:1.7.5'
+        compile 'org.slf4j:slf4j-api:1.7.7'
         compile 'org.projectlombok:lombok:1.14.4'
         testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     }

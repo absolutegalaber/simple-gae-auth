@@ -1,4 +1,6 @@
-package org.simple.auth.model.v1;
+package org.simple.auth.service.builder.v1;
+
+import org.simple.auth.model.v1.OAuth1ClientConfig;
 
 /**
  * Created by Josip.Mihelko @ Gmail

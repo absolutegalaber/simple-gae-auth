@@ -12,19 +12,17 @@ import javax.servlet.http.HttpSession
 /**
  * @author Peter Schneider-Manzell
  */
-class NetworkProviderTest extends Specification {
+class NetworkServiceTest extends Specification {
 
-    NetworkProvider underTest
+    NetworkService underTest
     String networkName = "testnetwork"
     Network dummyNetwork
     final String SESSION_KEY = "com.simple.oauth.model.Network"
     final String REQUEST_KEY = "network"
 
     void setup() {
-        underTest = NetworkProvider.getInstance();
+        underTest = new NetworkService()
         dummyNetwork = new Network(networkName,null){
-
-
             @Override
             String authorizationRedirect(HttpServletRequest request) throws OAuthException {
                 return null
@@ -55,16 +53,12 @@ class NetworkProviderTest extends Specification {
                 return null
             }
         }
+        underTest.configureNetworks([dummyNetwork]);
     }
 
     def "Add network and get from name"() {
-       given:
-       underTest.addNetwork(dummyNetwork)
-
        expect:
        underTest.fromName(networkName) != null
-
-
     }
 
 

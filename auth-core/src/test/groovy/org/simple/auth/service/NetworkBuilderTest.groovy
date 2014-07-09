@@ -4,6 +4,7 @@ import org.simple.auth.model.networks.DefaultOAuth1Network
 import org.simple.auth.model.networks.DefaultOAuth2Network
 import org.simple.auth.model.v1.OAuth1ClientConfig
 import org.simple.auth.model.v2.OAuth2ClientConfig
+import org.simple.auth.service.builder.NetworkBuilder
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll

@@ -1,4 +1,6 @@
-package org.simple.auth.model.v2;
+package org.simple.auth.service.builder.v2;
+
+import org.simple.auth.model.v2.OAuth2ClientConfig;
 
 import java.util.Arrays;
 import java.util.Collection;

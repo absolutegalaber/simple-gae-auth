@@ -1,0 +1,44 @@
+description = 'Simple GAE Auth Showcase for GAE itself'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.6'
+    }
+
+}
+
+
+apply plugin: 'war'
+apply plugin: 'appengine'
+
+appengine {
+    httpPort = 8080
+    downloadSdk = true
+    jvmFlags = ['-Xms1536m', '-Xmx1536M', '-server']
+    daemon = false
+    appcfg {
+        email = 'josip.mihelko@gmail.com'
+    }
+}
+
+
+
+
+dependencies {
+    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.6'
+    compile(
+            [
+                    project(':auth-core'),
+                    'org.slf4j:slf4j-jdk14:1.7.7',
+                    'com.google.appengine:appengine-api-1.0-sdk:1.9.6',
+                    'com.google.appengine:appengine-endpoints:1.9.6',
+                    'com.googlecode.objectify:objectify:5.0.3',
+                    'jstl:jstl:1.2'
+            ]
+    )
+    providedCompile 'javax.servlet:servlet-api:2.5'
+}

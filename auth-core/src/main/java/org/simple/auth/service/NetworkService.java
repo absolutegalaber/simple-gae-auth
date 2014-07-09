@@ -15,7 +15,11 @@ import java.util.Map;
  */
 @Slf4j
 public class NetworkService {
-    private static final Map<String, Network> networks = new HashMap<>();
+    protected static final Map<String, Network> networks = new HashMap<>();
+
+    public boolean hasNetworksConfigured() {
+        return !networks.isEmpty();
+    }
 
     public void configureNetworks(Iterable<Network> configuredNetworks) {
         for (Network configuredNetwork : configuredNetworks) {

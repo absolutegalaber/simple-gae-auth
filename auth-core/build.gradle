@@ -7,11 +7,12 @@ buildscript {
     }
 }
 
+description = 'Simplest GAE OAuth'
+
 apply plugin: 'jacoco'
 apply plugin: 'coveralls'
 apply plugin: 'maven'
 
-description = 'Simplest GAE OAuth'
 
 jacoco {
     toolVersion = "0.7.1.201405082137"

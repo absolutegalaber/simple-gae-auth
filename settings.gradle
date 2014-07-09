@@ -1,6 +1,8 @@
 rootProject.name = 'simple-gae-auth'
 include ':auth-core'
 include ':example'
+include ':gae-showcase'
 
 project(':auth-core').projectDir = "$rootDir/auth-core" as File
 project(':example').projectDir = "$rootDir/example" as File
+project(':gae-showcase').projectDir = "$rootDir/gae-showcase" as File

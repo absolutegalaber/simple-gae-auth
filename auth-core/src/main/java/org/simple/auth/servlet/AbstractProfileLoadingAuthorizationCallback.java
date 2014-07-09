@@ -17,11 +17,6 @@ public abstract class AbstractProfileLoadingAuthorizationCallback extends Abstra
     private final UserProfileService userProfileService = new UserProfileService();
 
     @Override
-    public void onError(OAuthException authException, HttpServletRequest req, HttpServletResponse resp) {
-        log.error("Damn: ", authException);
-    }
-
-    @Override
     public final void onAuthorizationSuccess(AccessToken accessToken, HttpServletRequest req, HttpServletResponse resp) {
         try {
             BasicUserProfile userProfile = userProfileService.userProfile(accessToken);

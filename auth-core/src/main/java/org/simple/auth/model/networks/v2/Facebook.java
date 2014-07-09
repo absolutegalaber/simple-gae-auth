@@ -1,12 +1,12 @@
 package org.simple.auth.model.networks.v2;
 
-import org.simple.auth.model.networks.DefaultOAuth2Network;
+import org.simple.auth.model.networks.ProfileAwareOAuth2Network;
 import org.simple.auth.model.v2.OAuth2ClientConfig;
 
 /**
  * Created by Josip.Mihelko @ Gmail
  */
-public class Facebook extends DefaultOAuth2Network {
+public class Facebook extends ProfileAwareOAuth2Network<FacebookProfile> {
 
     public Facebook(OAuth2ClientConfig config) {
         super(
@@ -14,7 +14,8 @@ public class Facebook extends DefaultOAuth2Network {
                 config,
                 "https://graph.facebook.com/oauth/authorize",
                 "https://graph.facebook.com/oauth/access_token",
-                "https://graph.facebook.com/v2.0/me"
+                "https://graph.facebook.com/v2.0/me",
+                FacebookProfile.class
         );
         isAccessTokenResponseJson = false;
     }

@@ -7,6 +7,8 @@ public interface BasicUserProfile {
 
     public String getNetworkName();
 
+    public void setNetworkName(String networmName);
+
     public String getNetworkId();
 
     public String getEmail();

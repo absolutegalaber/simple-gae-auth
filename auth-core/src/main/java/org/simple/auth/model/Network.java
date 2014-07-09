@@ -21,7 +21,6 @@ public abstract class Network<T extends AccessToken, C extends ClientConfig> {
     @Getter
     protected final C clientConfig;
 
-
     protected Network(String name, C clientConfig) {
         this.name = name;
         this.clientConfig = clientConfig;
@@ -54,4 +53,8 @@ public abstract class Network<T extends AccessToken, C extends ClientConfig> {
     public abstract String getProfileUrl();
 
     protected abstract HttpResponse executeGet(String url, T token, boolean withJsonParser) throws OAuthException;
+
+    public boolean isProfileAware() {
+        return ProfileAware.class.isAssignableFrom(getClass());
+    }
 }

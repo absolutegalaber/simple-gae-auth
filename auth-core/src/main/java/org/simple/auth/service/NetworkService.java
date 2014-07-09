@@ -1,6 +1,7 @@
 package org.simple.auth.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.simple.auth.model.AccessToken;
 import org.simple.auth.model.Network;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.service.builder.NetworkConfigurationService;
@@ -34,8 +35,11 @@ public class NetworkService {
         if (network == null) {
             throw new OAuthException(name + " is not configured");
         }
-
         return network;
+    }
+
+    public Network fromAccessToken(AccessToken accessToken) throws OAuthException {
+        return fromName(accessToken.getNetwork());
     }
 
     public Network fromRequestParam(HttpServletRequest request) throws OAuthException {

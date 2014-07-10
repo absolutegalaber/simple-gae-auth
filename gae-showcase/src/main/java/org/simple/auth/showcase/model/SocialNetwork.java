@@ -34,4 +34,8 @@ public class SocialNetwork {
     @Getter
     @Setter
     String state;
+
+    @Getter
+    @Setter
+    String callback;
 }

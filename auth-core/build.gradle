@@ -8,6 +8,7 @@ buildscript {
 }
 
 description = 'Simplest GAE OAuth'
+version = '0.1-SNAPSHOT'
 
 apply plugin: 'jacoco'
 apply plugin: 'coveralls'

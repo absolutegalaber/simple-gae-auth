@@ -24,6 +24,7 @@ public class LocalTestDataInsert implements ServletContextListener {
             if (resourceAsStream != null) {
                 Properties properties = new Properties();
                 properties.load(resourceAsStream);
+
                 SocialNetwork google = new SocialNetwork();
                 google.setName("google");
                 google.setClientId(properties.getProperty("google.clientId"));
@@ -35,7 +36,14 @@ public class LocalTestDataInsert implements ServletContextListener {
                 facebook.setClientId(properties.getProperty("facebook.clientId"));
                 facebook.setClientSecret(properties.getProperty("facebook.clientSecret"));
                 facebook.setScope(properties.getProperty("facebook.scope"));
-                OfyService.ofy().save().entities(google, facebook).now();
+
+                SocialNetwork twitter = new SocialNetwork();
+                twitter.setName("twitter");
+                twitter.setClientId(properties.getProperty("twitter.clientId"));
+                twitter.setClientSecret(properties.getProperty("twitter.clientSecret"));
+                twitter.setCallback("http://127.0.0.1:8080/callback");
+
+                OfyService.ofy().save().entities(google, facebook, twitter).now();
                 ObjectifyFilter.complete();
                 log.info("Saved SocialNetwork entities");
             } else {

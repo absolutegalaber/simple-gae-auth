@@ -3,6 +3,7 @@ package org.simple.auth.showcase.service.factory;
 import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.Network;
+import org.simple.auth.model.networks.v1.Twitter;
 import org.simple.auth.model.networks.v2.Facebook;
 import org.simple.auth.model.networks.v2.Google;
 import org.simple.auth.model.v1.OAuth1ClientConfig;
@@ -33,12 +34,13 @@ public class SocialNetworkFactory implements NetworkConfigurationService {
     private static void configure() {
         SocialNetwork google = OfyService.ofy().load().type(SocialNetwork.class).id("google").now();
         SocialNetwork facebook = OfyService.ofy().load().type(SocialNetwork.class).id("facebook").now();
-//        SocialNetwork twitter = OfyService.ofy().load().type(SocialNetwork.class).id("twitter").now();
+        SocialNetwork twitter = OfyService.ofy().load().type(SocialNetwork.class).id("twitter").now();
 //        SocialNetwork foursquare = OfyService.ofy().load().type(SocialNetwork.class).id("foursquare").now();
 //        SocialNetwork github = OfyService.ofy().load().type(SocialNetwork.class).id("github").now();
 //        List<Network> networks = new ArrayList<>();
         networks.add(new Google(new MyClientConfig(google)));
         networks.add(new Facebook(new MyClientConfig(facebook)));
+        networks.add(new Twitter(new MyClientConfig(twitter)));
 //        networks.add(new FourSquare(new MyClientConfig(foursquare)));
 //        networks.add(new Twitter(new MyClientConfig(twitter)));
 //        networks.add(new Github(new MyClientConfig(github)));
@@ -72,6 +74,9 @@ public class SocialNetworkFactory implements NetworkConfigurationService {
 
         @Override
         public String callbackUrl() {
+            if (socialNetwork.getCallback() != null) {
+                return socialNetwork.getCallback();
+            }
             return "http://localhost:8080/callback";
         }
 

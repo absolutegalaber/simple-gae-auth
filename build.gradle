@@ -2,7 +2,6 @@ subprojects {
     apply plugin: 'groovy'
 
     group = 'org.simple.auth'
-    version = '0.1-SNAPSHOT'
 
     sourceCompatibility = 1.7
     targetCompatibility = 1.7

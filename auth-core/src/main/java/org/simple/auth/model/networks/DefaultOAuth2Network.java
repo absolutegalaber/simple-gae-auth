@@ -27,22 +27,19 @@ import java.util.Scanner;
 public class DefaultOAuth2Network extends Network<OAuth2AccessToken, OAuth2ClientConfig> {
     protected final String authUrl;
     protected final String accessTokenUrl;
-    private final Optional<String> profileUrl;
+
     protected final Map<String, String> defaultQueryParams = new HashMap<>();
     protected final Map<String, String> defaultHeaders = new HashMap<>();
     protected Boolean isAccessTokenResponseJson = true;
 
-    public DefaultOAuth2Network(String name, OAuth2ClientConfig config, String authUrl, String accessTokenUrl, String profileUrl) {
+    public DefaultOAuth2Network(String name, OAuth2ClientConfig config, String authUrl, String accessTokenUrl) {
         super(name, config);
         this.authUrl = authUrl;
         this.accessTokenUrl = accessTokenUrl;
-        this.profileUrl = Optional.of(profileUrl);
+
     }
 
-    @Override
-    public String getProfileUrl() {
-        return profileUrl.get();
-    }
+
 
     @Override
     public String authorizationRedirect(HttpServletRequest request) throws OAuthException {

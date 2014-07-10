@@ -9,13 +9,18 @@ import org.simple.auth.model.v2.OAuth2ClientConfig;
  * Created by Josip.Mihelko @ Gmail
  */
 public class FourSquare extends DefaultOAuth2Network {
+
+    public static final String NAME = "foursquare";
+    private static final String AUTH_URL = "https://foursquare.com/oauth2/authorize";
+    private static final String ACCESS_TOKEN_URL = "https://foursquare.com/oauth2/access_token";
+    private static final String PROFILE_URL = "https://api.foursquare.com/v2/users/self";
+
     public FourSquare(OAuth2ClientConfig config) {
         super(
-                "foursquare",
+                NAME,
                 config,
-                "https://foursquare.com/oauth2/authorize",
-                "https://foursquare.com/oauth2/access_token",
-                "https://api.foursquare.com/v2/users/self"
+                AUTH_URL,
+                ACCESS_TOKEN_URL
         );
         defaultQueryParams.put("v", "20140701");
     }

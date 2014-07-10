@@ -1,8 +1,11 @@
 package org.simple.auth.service.builder;
 
 import com.google.common.base.Preconditions;
+import org.simple.auth.model.BasicUserProfile;
 import org.simple.auth.model.networks.DefaultOAuth1Network;
 import org.simple.auth.model.networks.DefaultOAuth2Network;
+import org.simple.auth.model.networks.ProfileAwareOAuth1Network;
+import org.simple.auth.model.networks.ProfileAwareOAuth2Network;
 import org.simple.auth.model.networks.v1.Twitter;
 import org.simple.auth.model.networks.v2.*;
 import org.simple.auth.model.v1.OAuth1ClientConfig;
@@ -20,6 +23,7 @@ public class NetworkBuilder {
     private String requestTokenUrl;
     private String accessTokenUrl;
     private String profileUrl;
+    private Class<? extends BasicUserProfile> profileClass;
     private Map<String, String> defaultQueryParams = new HashMap<>();
     private Map<String, String> defaultHeaders = new HashMap<>();
     private Boolean isAccessTokenResponseJson = true;
@@ -53,6 +57,11 @@ public class NetworkBuilder {
         return this;
     }
 
+    public NetworkBuilder profileClass(Class<? extends BasicUserProfile> profileClass) {
+        this.profileClass = profileClass;
+        return this;
+    }
+
     public NetworkBuilder addDefaultHeader(String name, String value) {
         defaultHeaders.put(name, value);
         return this;
@@ -73,7 +82,21 @@ public class NetworkBuilder {
         Preconditions.checkNotNull(authUrl, "AuthorizationUrl required");
         Preconditions.checkNotNull(accessTokenUrl, "AccessTokenUrl required");
         Preconditions.checkNotNull(clientConfig, "ClientConfig required");
-        DefaultOAuth2Network toReturn = new DefaultOAuth2Network(name, clientConfig, authUrl, accessTokenUrl, profileUrl);
+        DefaultOAuth2Network toReturn = new DefaultOAuth2Network(name, clientConfig, authUrl, accessTokenUrl);
+        toReturn.headerDefaults(defaultHeaders);
+        toReturn.queryParamsDefaults(defaultQueryParams);
+        toReturn.setIsAccessTokenResponseJson(isAccessTokenResponseJson);
+        return toReturn;
+    }
+
+    public ProfileAwareOAuth2Network buildProfileAwareOauth2Network(OAuth2ClientConfig clientConfig) {
+        Preconditions.checkNotNull(name, "Name required");
+        Preconditions.checkNotNull(authUrl, "AuthorizationUrl required");
+        Preconditions.checkNotNull(accessTokenUrl, "AccessTokenUrl required");
+        Preconditions.checkNotNull(clientConfig, "ClientConfig required");
+        Preconditions.checkNotNull(profileUrl, "Profile URL required");
+        Preconditions.checkNotNull(profileClass, "Profile class required");
+        ProfileAwareOAuth2Network toReturn = new ProfileAwareOAuth2Network(name, clientConfig, authUrl, accessTokenUrl, profileUrl, profileClass);
         toReturn.headerDefaults(defaultHeaders);
         toReturn.queryParamsDefaults(defaultQueryParams);
         toReturn.setIsAccessTokenResponseJson(isAccessTokenResponseJson);
@@ -86,17 +109,31 @@ public class NetworkBuilder {
         Preconditions.checkNotNull(accessTokenUrl, "AccessTokenUrl required");
         Preconditions.checkNotNull(requestTokenUrl, "RequestTokenUrl required");
         Preconditions.checkNotNull(clientConfig, "ClientConfig required");
-        DefaultOAuth1Network toReturn = new DefaultOAuth1Network(name, clientConfig, requestTokenUrl, authUrl, accessTokenUrl, profileUrl);
+        DefaultOAuth1Network toReturn = new DefaultOAuth1Network(name, clientConfig, requestTokenUrl, authUrl, accessTokenUrl);
         toReturn.headerDefaults(defaultHeaders);
         toReturn.queryParamsDefaults(defaultQueryParams);
         return toReturn;
     }
 
-    public DefaultOAuth2Network google(OAuth2ClientConfig clientConfig) {
+    public DefaultOAuth1Network buildProfileAwareOauth1Network(OAuth1ClientConfig clientConfig) {
+        Preconditions.checkNotNull(name, "Name required");
+        Preconditions.checkNotNull(authUrl, "AuthorizationUrl required");
+        Preconditions.checkNotNull(accessTokenUrl, "AccessTokenUrl required");
+        Preconditions.checkNotNull(requestTokenUrl, "RequestTokenUrl required");
+        Preconditions.checkNotNull(clientConfig, "ClientConfig required");
+        Preconditions.checkNotNull(profileUrl, "Profile URL required");
+        Preconditions.checkNotNull(profileClass, "Profile class required");
+        ProfileAwareOAuth1Network toReturn = new ProfileAwareOAuth1Network(name, clientConfig, requestTokenUrl, authUrl, accessTokenUrl, profileUrl, profileClass);
+        toReturn.headerDefaults(defaultHeaders);
+        toReturn.queryParamsDefaults(defaultQueryParams);
+        return toReturn;
+    }
+
+    public ProfileAwareOAuth2Network<GoogleProfile> google(OAuth2ClientConfig clientConfig) {
         return new Google(clientConfig);
     }
 
-    public DefaultOAuth2Network facebook(OAuth2ClientConfig clientConfig) {
+    public ProfileAwareOAuth2Network<FacebookProfile> facebook(OAuth2ClientConfig clientConfig) {
         return new Facebook(clientConfig);
     }
 
@@ -108,7 +145,7 @@ public class NetworkBuilder {
         return new FourSquare(clientConfig);
     }
 
-    public DefaultOAuth2Network github(OAuth2ClientConfig clientConfig) {
+    public ProfileAwareOAuth2Network<GithubProfile> github(OAuth2ClientConfig clientConfig) {
         return new Github(clientConfig);
     }
 

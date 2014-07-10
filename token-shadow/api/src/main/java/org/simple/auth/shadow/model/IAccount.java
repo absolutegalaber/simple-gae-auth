@@ -1,4 +1,4 @@
-package org.simple.auth.shadow;
+package org.simple.auth.shadow.model;
 
 import java.io.Serializable;
 

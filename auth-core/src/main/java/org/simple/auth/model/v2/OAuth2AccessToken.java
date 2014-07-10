@@ -14,22 +14,28 @@ import java.util.Date;
  */
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class OAuth2AccessToken extends AccessToken {
-    @Getter
-    protected final Optional<String> refreshToken;
-    @Getter
-    protected final Optional<Date> expiresAt;
+public class OAuth2AccessToken extends AccessToken implements IOAuth2NetworkToken{
+    protected final Optional<String> refreshTokenInternal;
+    protected final Optional<Date> expiresAtInternal;
 
     public OAuth2AccessToken(String network, String accessToken, String refreshToken, Long expiresInSeconds) {
         super(network, accessToken);
-        this.refreshToken = Optional.fromNullable(refreshToken);
+        this.refreshTokenInternal = Optional.fromNullable(refreshToken);
         if (expiresInSeconds != null) {
             Calendar expiryTime = Calendar.getInstance();
             expiryTime.add(Calendar.SECOND, expiresInSeconds.intValue());
-            this.expiresAt = Optional.of(expiryTime.getTime());
+            this.expiresAtInternal = Optional.of(expiryTime.getTime());
         } else {
-            this.expiresAt = Optional.absent();
+            this.expiresAtInternal = Optional.absent();
 
         }
+    }
+
+    public final String getRefreshToken(){
+        return refreshTokenInternal.get();
+    }
+
+    public final Date getExpiresAt(){
+        return expiresAtInternal.get();
     }
 }

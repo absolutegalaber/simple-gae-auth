@@ -28,13 +28,19 @@ public abstract class AbstractAuthorizationRedirect extends HttpServlet {
             Network network = networkService.fromRequestParam(req);
             networkService.toSession(req, network);
             String authorizationRedirect = network.authorizationRedirect(req);
+            beforeRedirect(req,resp,network);
             resp.sendRedirect(authorizationRedirect);
-        } catch (OAuthException e) {
+        } catch (Exception e) {
             onError(e, req, resp);
         }
     }
 
+
+    public void beforeRedirect(HttpServletRequest req, HttpServletResponse resp, Network network) throws OAuthException {
+    }
+
+
     public abstract void configureNetworks(NetworkService networkService);
 
-    public abstract void onError(OAuthException authException, HttpServletRequest req, HttpServletResponse resp);
+    public abstract void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp);
 }

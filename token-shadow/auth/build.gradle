@@ -1,0 +1,18 @@
+description = 'Auth for persistent oauth shadowing'
+
+
+configurations { providedCompile }
+
+sourceSets.main.compileClasspath += configurations.providedCompile
+sourceSets.test.compileClasspath += configurations.providedCompile
+sourceSets.test.runtimeClasspath += configurations.providedCompile
+
+dependencies {
+    compile(
+        [
+                project(':token-shadow:api'),
+                'commons-codec:commons-codec:1.9'
+        ]
+    )
+    providedCompile 'javax.servlet:servlet-api:2.5'
+}

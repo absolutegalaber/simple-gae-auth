@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Created by Josip.Mihelko @ Gmail
  */
-public abstract class Network<T extends AccessToken, C extends ClientConfig> {
+public abstract class Network<T extends INetworkToken, C extends ClientConfig> {
     protected final JacksonFactory jacksonFactory = new JacksonFactory();
     protected JsonObjectParser jsonObjectParser = new JsonObjectParser(jacksonFactory);
 

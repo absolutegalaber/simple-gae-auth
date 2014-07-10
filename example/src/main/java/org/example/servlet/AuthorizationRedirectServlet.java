@@ -21,7 +21,7 @@ public class AuthorizationRedirectServlet extends AbstractAuthorizationRedirect 
     }
 
     @Override
-    public void onError(OAuthException authException, HttpServletRequest req, HttpServletResponse resp) {
+    public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
         log.error("Error during authorziation redirect!", authException);
     }
 }

@@ -11,7 +11,7 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class OAuth1AccessToken extends AccessToken {
+public class OAuth1AccessToken extends AccessToken implements IOAuth1NetworkToken {
     @Getter
     protected final String tokenSecret;
 

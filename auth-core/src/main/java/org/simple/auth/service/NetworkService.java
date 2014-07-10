@@ -2,6 +2,7 @@ package org.simple.auth.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.AccessToken;
+import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.Network;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.service.builder.NetworkConfigurationService;
@@ -42,7 +43,7 @@ public class NetworkService {
         return network;
     }
 
-    public Network fromAccessToken(AccessToken accessToken) throws OAuthException {
+    public Network fromAccessToken(INetworkToken accessToken) throws OAuthException {
         return fromName(accessToken.getNetwork());
     }
 

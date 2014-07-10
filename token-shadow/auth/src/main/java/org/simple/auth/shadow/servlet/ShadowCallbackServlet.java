@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * @author Peter Schneider-Manzell
  */
-public abstract class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCallback {
+public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCallback {
 
     ClientService clientService = new ClientService();
     AuthService authService = new AuthService();

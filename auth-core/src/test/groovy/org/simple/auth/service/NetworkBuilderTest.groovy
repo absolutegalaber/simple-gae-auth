@@ -88,7 +88,6 @@ class NetworkBuilderTest extends Specification {
         then:
         network.name == 'myNewNetwork'
         network.clientConfig == oAuth2ClientConfig
-        network.profileUrl == 'profileUrl'
     }
 
     def "manual creation of oauth2 network with missing data"() {
@@ -125,7 +124,6 @@ class NetworkBuilderTest extends Specification {
         then:
         network.name == 'myNewNetwork'
         network.clientConfig == oAuth1ClientConfig
-        network.profileUrl == 'profileUrl'
     }
 
     def "manual creation of oauth1 network with missing data"() {

@@ -50,7 +50,7 @@ public abstract class Network<T extends AccessToken, C extends ClientConfig> {
 
     public abstract HttpResponse post(String url, T token) throws OAuthException;
 
-    public abstract String getProfileUrl();
+
 
     protected abstract HttpResponse executeGet(String url, T token, boolean withJsonParser) throws OAuthException;
 

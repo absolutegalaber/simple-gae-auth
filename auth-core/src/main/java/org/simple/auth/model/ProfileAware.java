@@ -5,4 +5,6 @@ package org.simple.auth.model;
  */
 public interface ProfileAware<P extends BasicUserProfile, T extends AccessToken> {
     public P loadUserProfile(T token) throws OAuthException;
+
+    public String getProfileUrl();
 }

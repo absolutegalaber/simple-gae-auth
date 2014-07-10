@@ -7,14 +7,21 @@ import org.simple.auth.model.v1.OAuth1ClientConfig;
  * Created by Josip.Mihelko @ Gmail
  */
 public class Twitter extends ProfileAwareOAuth1Network<TwitterProfile> {
+
+    public static final String NAME = "twitter";
+    private static final String REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token";
+    private static final String ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token";
+    private static final String AUTH_URL = "https://api.twitter.com/oauth/authorize";
+    private static final String PROFILE_URL = "https://api.twitter.com/1.1/account/verify_credentials.json";
+
     public Twitter(OAuth1ClientConfig clientConfig) {
         super(
-                "twitter",
+                NAME,
                 clientConfig,
-                "https://api.twitter.com/oauth/request_token",
-                "https://api.twitter.com/oauth/authorize",
-                "https://api.twitter.com/oauth/access_token",
-                "https://api.twitter.com/1.1/account/verify_credentials.json",
+                REQUEST_TOKEN_URL,
+                AUTH_URL,
+                ACCESS_TOKEN_URL,
+                PROFILE_URL,
                 TwitterProfile.class
         );
     }

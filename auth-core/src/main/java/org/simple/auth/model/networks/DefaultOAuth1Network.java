@@ -26,23 +26,20 @@ public class DefaultOAuth1Network extends Network<OAuth1AccessToken, OAuth1Clien
     private final String requestTokenUrl;
     private final String authUrl;
     private final String accessTokenUrl;
-    private final Optional<String> profileUrl;
+
     protected final Map<String, String> defaultQueryParams = new HashMap<>();
     protected final Map<String, String> defaultHeaders = new HashMap<>();
 
 
-    public DefaultOAuth1Network(String name, OAuth1ClientConfig clientConfig, String requestTokenUrl, String authUrl, String accessTokenUrl, String profileUrl) {
+    public DefaultOAuth1Network(String name, OAuth1ClientConfig clientConfig, String requestTokenUrl, String authUrl, String accessTokenUrl) {
         super(name, clientConfig);
         this.requestTokenUrl = requestTokenUrl;
         this.authUrl = authUrl;
         this.accessTokenUrl = accessTokenUrl;
-        this.profileUrl = Optional.fromNullable(profileUrl);
+
     }
 
-    @Override
-    public String getProfileUrl() {
-        return profileUrl.get();
-    }
+
 
     @Override
     public String authorizationRedirect(HttpServletRequest request) throws OAuthException {

@@ -9,13 +9,16 @@ import org.simple.auth.model.v2.OAuth2ClientConfig;
  * Created by Josip.Mihelko @ Gmail
  */
 public class LinkedIn extends DefaultOAuth2Network {
+    public static final String NAME = "linkedin";
+    private static final String AUTH_URL = "https://www.linkedin.com/uas/oauth2/authorization";
+    private static final String ACCESS_TOKEN_URL = "https://www.linkedin.com/uas/oauth2/accessToken";
+    private static final String PROFILE_URL = "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,picture-url,email-address)";
 
     public LinkedIn(OAuth2ClientConfig config) {
         super(
-                "linkedin", config,
-                "https://www.linkedin.com/uas/oauth2/authorization",
-                "https://www.linkedin.com/uas/oauth2/accessToken",
-                "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,picture-url,email-address)"
+                NAME, config,
+                AUTH_URL,
+                ACCESS_TOKEN_URL
         );
         defaultHeaders.put("x-li-format", "json");
     }

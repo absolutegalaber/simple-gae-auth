@@ -13,7 +13,7 @@ public class InMemoryRepositoryService implements IRepositoryService {
     final InMemoryAccountRepository accountRepository;
     final InMemoryShadowTokenRepository shadowTokenRepository;
     final InMemoryClientRepository clientRepository;
-    final List<IPersistenNetworkTokenRepository> persistenNetworkTokenRepositories = new ArrayList<>();
+    final IPersistenNetworkTokenRepository persistenNetworkTokenRepositories;
 
 
     public InMemoryRepositoryService() {
@@ -21,7 +21,7 @@ public class InMemoryRepositoryService implements IRepositoryService {
         shadowTokenRepository = new InMemoryShadowTokenRepository();
         clientRepository = new InMemoryClientRepository();
         clientRepository.registerClients();
-        persistenNetworkTokenRepositories.add(new InMemoryPersistentNetworkTokenRepository());
+        persistenNetworkTokenRepositories = new InMemoryPersistentNetworkTokenRepository();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class InMemoryRepositoryService implements IRepositoryService {
     }
 
     @Override
-    public List<IPersistenNetworkTokenRepository> getPersistenNetworkTokenRepositories() {
+    public IPersistenNetworkTokenRepository getPersistenNetworkTokenRepository() {
         return persistenNetworkTokenRepositories;
     }
 }

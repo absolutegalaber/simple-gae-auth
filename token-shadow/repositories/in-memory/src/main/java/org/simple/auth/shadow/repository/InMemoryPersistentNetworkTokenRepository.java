@@ -27,10 +27,6 @@ public class InMemoryPersistentNetworkTokenRepository implements IPersistenNetwo
         return persistentToken;
     }
 
-    @Override
-    public boolean supports(Class networkTokenType) {
-        return IPersistentNetworkToken.class.isAssignableFrom(networkTokenType);
-    }
 
     private String generateKey(String network, Serializable networkUserId) {
         StringBuilder sb = new StringBuilder("{");

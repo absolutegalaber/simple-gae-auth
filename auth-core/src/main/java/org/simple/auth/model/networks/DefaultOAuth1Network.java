@@ -7,10 +7,7 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import lombok.extern.slf4j.Slf4j;
-import org.simple.auth.model.AccessToken;
-import org.simple.auth.model.ClientConfig;
-import org.simple.auth.model.Network;
-import org.simple.auth.model.OAuthException;
+import org.simple.auth.model.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -64,7 +61,7 @@ public class DefaultOAuth1Network extends Network {
     }
 
     @Override
-    public AccessToken accessToken(HttpServletRequest callbackRequest) throws OAuthException {
+    public INetworkToken accessToken(HttpServletRequest callbackRequest) throws OAuthException {
         try {
             String requestToken = (String) callbackRequest.getSession().getAttribute(name + "_req_token");
             String requestTokenSecret = (String) callbackRequest.getSession().getAttribute(name + "_req_token_secret");
@@ -88,16 +85,16 @@ public class DefaultOAuth1Network extends Network {
     }
 
     @Override
-    public AccessToken refreshToken(AccessToken token) throws OAuthException {
+    public INetworkToken refreshToken(INetworkToken token) throws OAuthException {
         throw new OAuthException("Refreshing not part of OAuth 1.0");
     }
 
     @Override
-    protected HttpResponse executeGet(String url, AccessToken token, boolean withJsonParser) throws OAuthException {
+    protected HttpResponse executeGet(String url, INetworkToken token, boolean withJsonParser) throws OAuthException {
         try {
             OAuthHmacSigner signer = new OAuthHmacSigner();
             signer.clientSharedSecret = clientConfig.secret();
-            signer.tokenSharedSecret = token.getTokenSecret().get();
+            signer.tokenSharedSecret = token.getTokenSecret();
 
             OAuthParameters parameters = new OAuthParameters();
             parameters.consumerKey = clientConfig.clientId();
@@ -118,7 +115,7 @@ public class DefaultOAuth1Network extends Network {
 
 
     @Override
-    public HttpResponse post(String url, AccessToken token) throws OAuthException {
+    public HttpResponse post(String url, INetworkToken token) throws OAuthException {
         return null;
     }
 

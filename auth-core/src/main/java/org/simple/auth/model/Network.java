@@ -28,19 +28,19 @@ public abstract class Network {
 
     public abstract String authorizationRedirect(HttpServletRequest request) throws OAuthException;
 
-    public abstract AccessToken accessToken(HttpServletRequest callbackRequest) throws OAuthException;
+    public abstract INetworkToken accessToken(HttpServletRequest callbackRequest) throws OAuthException;
 
-    public abstract AccessToken refreshToken(AccessToken token) throws OAuthException;
+    public abstract INetworkToken refreshToken(INetworkToken token) throws OAuthException;
 
-    public final HttpResponse getRaw(String url, AccessToken token) throws OAuthException {
+    public final HttpResponse getRaw(String url, INetworkToken token) throws OAuthException {
         return executeGet(url, token, false);
     }
 
-    public final GenericJson getAsGenericJson(String url, AccessToken token) throws OAuthException {
+    public final GenericJson getAsGenericJson(String url, INetworkToken token) throws OAuthException {
         return getAs(url, token, GenericJson.class);
     }
 
-    public final <R> R getAs(String url, AccessToken token, Class<R> dataClass) throws OAuthException {
+    public final <R> R getAs(String url, INetworkToken token, Class<R> dataClass) throws OAuthException {
         try {
             return executeGet(url, token, true).parseAs(dataClass);
         } catch (IOException e) {
@@ -48,10 +48,10 @@ public abstract class Network {
         }
     }
 
-    public abstract HttpResponse post(String url, AccessToken token) throws OAuthException;
+    public abstract HttpResponse post(String url, INetworkToken token) throws OAuthException;
 
 
-    protected abstract HttpResponse executeGet(String url, AccessToken token, boolean withJsonParser) throws OAuthException;
+    protected abstract HttpResponse executeGet(String url, INetworkToken token, boolean withJsonParser) throws OAuthException;
 
     public boolean isProfileAware() {
         return ProfileAware.class.isAssignableFrom(getClass());

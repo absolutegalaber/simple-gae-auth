@@ -14,18 +14,15 @@ import java.util.Date;
  */
 @ToString
 @EqualsAndHashCode
-public class AccessToken implements INetworkToken{
+public class AccessToken implements INetworkToken {
     @Getter
     protected final String network;
     @Getter
     protected final AccessTokenVersion version;
     @Getter
     protected final String accessToken;
-    @Getter
     protected Optional<String> tokenSecret = Optional.absent();
-    @Getter
     protected Optional<String> refreshToken = Optional.absent();
-    @Getter
     protected Optional<Date> expiresAt = Optional.absent();
 
     private AccessToken(String network, String accessToken, String tokenSecret) {
@@ -60,5 +57,21 @@ public class AccessToken implements INetworkToken{
         Preconditions.checkNotNull(network);
         Preconditions.checkNotNull(accessToken);
         return new AccessToken(network, accessToken, refreshToken, expiresInSeconds);
+    }
+
+
+    @Override
+    public String getTokenSecret() {
+        return tokenSecret.get();
+    }
+
+    @Override
+    public String getRefreshToken() {
+        return refreshToken.orNull();
+    }
+
+    @Override
+    public Date getExpiresAt() {
+        return expiresAt.orNull();
     }
 }

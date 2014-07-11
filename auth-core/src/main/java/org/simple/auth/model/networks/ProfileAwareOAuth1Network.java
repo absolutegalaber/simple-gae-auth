@@ -22,7 +22,7 @@ public class ProfileAwareOAuth1Network<P extends BasicUserProfile> extends Defau
     }
 
     @Override
-    public P loadUserProfile(AccessToken token) throws OAuthException {
+    public P loadUserProfile(INetworkToken token) throws OAuthException {
         return getAs(getProfileUrl(), token, profileClass);
     }
 }

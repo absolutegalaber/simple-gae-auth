@@ -43,8 +43,8 @@ class AccessTokenTest extends Specification {
         AccessToken token = AccessToken.oAuth2Token('name', 'accesstoken', null, null)
         then:
         token.version == AccessTokenVersion.OAUTH_2
-        !token.getRefreshToken().isPresent()
-        !token.getExpiresAt().isPresent()
+        !token.getRefreshToken()
+        !token.getExpiresAt()
     }
 
     def "OAuth2Token with optionals not null"() {
@@ -52,8 +52,8 @@ class AccessTokenTest extends Specification {
         AccessToken token = AccessToken.oAuth2Token('name', 'accesstoken', 'refreshToken', 3600)
         then:
         token.version == AccessTokenVersion.OAUTH_2
-        token.getRefreshToken().isPresent()
-        token.getExpiresAt().isPresent()
-        token.getExpiresAt().get().after(new Date())
+        token.getRefreshToken()
+        token.getExpiresAt()
+        token.getExpiresAt().after(new Date())
     }
 }

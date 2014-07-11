@@ -8,10 +8,7 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
-import org.simple.auth.model.AccessToken;
-import org.simple.auth.model.ClientConfig;
-import org.simple.auth.model.Network;
-import org.simple.auth.model.OAuthException;
+import org.simple.auth.model.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -49,7 +46,7 @@ public class DefaultOAuth2Network extends Network {
     }
 
     @Override
-    public AccessToken accessToken(HttpServletRequest callbackRequest) throws OAuthException {
+    public INetworkToken accessToken(HttpServletRequest callbackRequest) throws OAuthException {
         try {
             String authCode = extractAuthCode(callbackRequest);
             AuthorizationCodeTokenRequest tokenRequest = new AuthorizationCodeTokenRequest(new NetHttpTransport(), jacksonFactory, new GenericUrl(accessTokenUrl), authCode)
@@ -67,7 +64,7 @@ public class DefaultOAuth2Network extends Network {
     }
 
     @Override
-    public AccessToken refreshToken(AccessToken token) throws OAuthException {
+    public INetworkToken refreshToken(INetworkToken token) throws OAuthException {
         try {
             RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(new NetHttpTransport(), jacksonFactory, new GenericUrl(accessTokenUrl), token.getRefreshToken())
                     .setGrantType("refresh_token");
@@ -80,7 +77,7 @@ public class DefaultOAuth2Network extends Network {
 
 
     @Override
-    protected HttpResponse executeGet(String url, AccessToken token, boolean withJsonParser) throws OAuthException {
+    protected HttpResponse executeGet(String url, INetworkToken token, boolean withJsonParser) throws OAuthException {
         try {
             Credential credential = new Credential(myAccessMethod()).setAccessToken(token.getAccessToken());
             HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory(credential);
@@ -109,7 +106,7 @@ public class DefaultOAuth2Network extends Network {
     }
 
     @Override
-    public HttpResponse post(String url, AccessToken token) throws OAuthException {
+    public HttpResponse post(String url, INetworkToken token) throws OAuthException {
         return null;
     }
 
@@ -132,7 +129,7 @@ public class DefaultOAuth2Network extends Network {
         );
     }
 
-    protected AccessToken executeTokenRequest(TokenRequest tokenRequest) throws IOException {
+    protected INetworkToken executeTokenRequest(TokenRequest tokenRequest) throws IOException {
         if (isAccessTokenResponseJson) {
             TokenResponse tokenResponse = tokenRequest.execute();
             return AccessToken.oAuth2Token(name, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken(), tokenResponse.getExpiresInSeconds());

@@ -20,7 +20,7 @@ import java.util.Scanner;
  * Created by Josip.Mihelko @ Gmail
  */
 @Slf4j
-public class DefaultOAuth2Network extends Network {
+public class OAuth2Network extends Network {
     protected final String authUrl;
     protected final String accessTokenUrl;
 
@@ -28,7 +28,7 @@ public class DefaultOAuth2Network extends Network {
     protected final Map<String, String> defaultHeaders = new HashMap<>();
     protected Boolean isAccessTokenResponseJson = true;
 
-    public DefaultOAuth2Network(String name, ClientConfig config, String authUrl, String accessTokenUrl) {
+    public OAuth2Network(String name, ClientConfig config, String authUrl, String accessTokenUrl) {
         super(name, config);
         this.authUrl = authUrl;
         this.accessTokenUrl = accessTokenUrl;

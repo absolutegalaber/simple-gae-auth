@@ -3,8 +3,8 @@ package org.simple.auth.service.builder;
 import com.google.common.base.Preconditions;
 import org.simple.auth.model.BasicUserProfile;
 import org.simple.auth.model.ClientConfig;
-import org.simple.auth.model.networks.DefaultOAuth1Network;
-import org.simple.auth.model.networks.DefaultOAuth2Network;
+import org.simple.auth.model.networks.OAuth1Network;
+import org.simple.auth.model.networks.OAuth2Network;
 import org.simple.auth.model.networks.ProfileAwareOAuth1Network;
 import org.simple.auth.model.networks.ProfileAwareOAuth2Network;
 import org.simple.auth.model.networks.v1.Twitter;
@@ -76,12 +76,12 @@ public class NetworkBuilder {
         return this;
     }
 
-    public DefaultOAuth2Network buildOauth2Network(ClientConfig clientConfig) {
+    public OAuth2Network buildOauth2Network(ClientConfig clientConfig) {
         Preconditions.checkNotNull(name, "Name required");
         Preconditions.checkNotNull(authUrl, "AuthorizationUrl required");
         Preconditions.checkNotNull(accessTokenUrl, "AccessTokenUrl required");
         Preconditions.checkNotNull(clientConfig, "ClientConfig required");
-        DefaultOAuth2Network toReturn = new DefaultOAuth2Network(name, clientConfig, authUrl, accessTokenUrl);
+        OAuth2Network toReturn = new OAuth2Network(name, clientConfig, authUrl, accessTokenUrl);
         toReturn.headerDefaults(defaultHeaders);
         toReturn.queryParamsDefaults(defaultQueryParams);
         toReturn.setIsAccessTokenResponseJson(isAccessTokenResponseJson);
@@ -102,19 +102,19 @@ public class NetworkBuilder {
         return toReturn;
     }
 
-    public DefaultOAuth1Network buildOauth1Network(ClientConfig clientConfig) {
+    public OAuth1Network buildOauth1Network(ClientConfig clientConfig) {
         Preconditions.checkNotNull(name, "Name required");
         Preconditions.checkNotNull(authUrl, "AuthorizationUrl required");
         Preconditions.checkNotNull(accessTokenUrl, "AccessTokenUrl required");
         Preconditions.checkNotNull(requestTokenUrl, "RequestTokenUrl required");
         Preconditions.checkNotNull(clientConfig, "ClientConfig required");
-        DefaultOAuth1Network toReturn = new DefaultOAuth1Network(name, clientConfig, requestTokenUrl, authUrl, accessTokenUrl);
+        OAuth1Network toReturn = new OAuth1Network(name, clientConfig, requestTokenUrl, authUrl, accessTokenUrl);
         toReturn.headerDefaults(defaultHeaders);
         toReturn.queryParamsDefaults(defaultQueryParams);
         return toReturn;
     }
 
-    public DefaultOAuth1Network buildProfileAwareOauth1Network(ClientConfig clientConfig) {
+    public OAuth1Network buildProfileAwareOauth1Network(ClientConfig clientConfig) {
         Preconditions.checkNotNull(name, "Name required");
         Preconditions.checkNotNull(authUrl, "AuthorizationUrl required");
         Preconditions.checkNotNull(accessTokenUrl, "AccessTokenUrl required");
@@ -136,11 +136,11 @@ public class NetworkBuilder {
         return new Facebook(clientConfig);
     }
 
-    public DefaultOAuth2Network linkedIn(ClientConfig clientConfig) {
+    public OAuth2Network linkedIn(ClientConfig clientConfig) {
         return new LinkedIn(clientConfig);
     }
 
-    public DefaultOAuth2Network fourSquare(ClientConfig clientConfig) {
+    public OAuth2Network fourSquare(ClientConfig clientConfig) {
         return new FourSquare(clientConfig);
     }
 
@@ -148,7 +148,7 @@ public class NetworkBuilder {
         return new Github(clientConfig);
     }
 
-    public DefaultOAuth1Network twitter(ClientConfig clientConfig) {
+    public OAuth1Network twitter(ClientConfig clientConfig) {
         return new Twitter(clientConfig);
     }
 }

@@ -6,7 +6,7 @@ import org.simple.auth.model.*;
 /**
  * Created by Josip.Mihelko @ Gmail
  */
-public class ProfileAwareOAuth1Network<P extends BasicUserProfile> extends DefaultOAuth1Network implements ProfileAware<P> {
+public class ProfileAwareOAuth1Network<P extends BasicUserProfile> extends OAuth1Network implements ProfileAware<P> {
     private Class<P> profileClass;
     private final Optional<String> profileUrl;
 

@@ -1,8 +1,8 @@
 package org.simple.auth.service
 
 import org.simple.auth.model.ClientConfig
-import org.simple.auth.model.networks.DefaultOAuth1Network
-import org.simple.auth.model.networks.DefaultOAuth2Network
+import org.simple.auth.model.networks.OAuth1Network
+import org.simple.auth.model.networks.OAuth2Network
 import org.simple.auth.service.builder.NetworkBuilder
 import spock.lang.Shared
 import spock.lang.Specification
@@ -29,7 +29,7 @@ class NetworkBuilderTest extends Specification {
 
     def "manual creation of oauth2 network with all data"() {
         when:
-        DefaultOAuth2Network network = builder.name("myNewNetwork")
+        OAuth2Network network = builder.name("myNewNetwork")
                 .authorizeUrl("authorizeUrl")
                 .accessTokenUrl("accessTokenUrl")
                 .profileUrl("profileUrl")
@@ -64,7 +64,7 @@ class NetworkBuilderTest extends Specification {
 
     def "manual creation of oauth1 network with all data"() {
         when:
-        DefaultOAuth1Network network = builder.name("myNewNetwork")
+        OAuth1Network network = builder.name("myNewNetwork")
                 .requestTokenUrl("requestTokenUrl")
                 .authorizeUrl("authorizeUrl")
                 .accessTokenUrl("accessTokenUrl")

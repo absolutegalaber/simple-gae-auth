@@ -1,6 +1,7 @@
 package org.simple.auth.model;
 
 import com.google.common.base.Optional;
+import lombok.Setter;
 
 import java.util.Collection;
 
@@ -8,15 +9,19 @@ import java.util.Collection;
  * Created by Josip.Mihelko @ Gmail
  */
 public class ClientConfig {
-
+    @Setter
     private String clientId;
+    @Setter
     private String secret;
+    @Setter
     private String callbackUrl;
+    @Setter
     private Optional<String> state;
+    @Setter
     private Optional<Collection<String>> scope;
 
     public String clientId() {
-        return clientId();
+        return clientId;
     }
 
     public String secret() {

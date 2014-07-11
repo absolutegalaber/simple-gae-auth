@@ -18,7 +18,7 @@ import java.util.Map;
  * Created by Josip.Mihelko @ Gmail
  */
 @Slf4j
-public class DefaultOAuth1Network extends Network {
+public class OAuth1Network extends Network {
     private final String requestTokenUrl;
     private final String authUrl;
     private final String accessTokenUrl;
@@ -27,7 +27,7 @@ public class DefaultOAuth1Network extends Network {
     protected final Map<String, String> defaultHeaders = new HashMap<>();
 
 
-    public DefaultOAuth1Network(String name, ClientConfig clientConfig, String requestTokenUrl, String authUrl, String accessTokenUrl) {
+    public OAuth1Network(String name, ClientConfig clientConfig, String requestTokenUrl, String authUrl, String accessTokenUrl) {
         super(name, clientConfig);
         this.requestTokenUrl = requestTokenUrl;
         this.authUrl = authUrl;

@@ -2,13 +2,13 @@ package org.simple.auth.model.networks.v2;
 
 import com.google.api.client.auth.oauth2.Credential;
 import org.simple.auth.model.ClientConfig;
-import org.simple.auth.model.networks.DefaultOAuth2Network;
+import org.simple.auth.model.networks.OAuth2Network;
 import org.simple.auth.model.v2.ConfigurableQueryParameterAccessMethod;
 
 /**
  * Created by Josip.Mihelko @ Gmail
  */
-public class FourSquare extends DefaultOAuth2Network {
+public class FourSquare extends OAuth2Network {
 
     public static final String NAME = "foursquare";
     private static final String AUTH_URL = "https://foursquare.com/oauth2/authorize";

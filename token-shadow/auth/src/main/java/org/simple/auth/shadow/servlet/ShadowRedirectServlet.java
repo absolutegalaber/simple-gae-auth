@@ -2,10 +2,10 @@ package org.simple.auth.shadow.servlet;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.Network;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.servlet.AbstractAuthorizationRedirect;
-import org.simple.auth.shadow.model.IClient;
 import org.simple.auth.shadow.service.ClientService;
 
 import javax.servlet.http.HttpServletRequest;

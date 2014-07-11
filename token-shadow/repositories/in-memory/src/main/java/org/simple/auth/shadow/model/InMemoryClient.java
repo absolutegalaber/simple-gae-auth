@@ -1,22 +1,15 @@
 package org.simple.auth.shadow.model;
 
-import lombok.Getter;
+import org.simple.auth.model.ClientConfig;
 
 /**
  * @author Peter Schneider-Manzell
  */
-public class InMemoryClient implements IClient {
+public class InMemoryClient extends ClientConfig {
 
-    @Getter
-    String clientId;
-    @Getter
-    String clientSecret;
-    @Getter
-    String callbackUrl;
-
-    public InMemoryClient(String clientId, String clientSecret, String callbackUrl) {
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.callbackUrl = callbackUrl;
+    public InMemoryClient(String clientId, String secret, String callbackURL) {
+        super.setClientId(clientId);
+        super.setSecret(secret);
+        super.setCallbackUrl(callbackURL);
     }
 }

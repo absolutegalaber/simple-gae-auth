@@ -1,7 +1,7 @@
 package org.simple.auth.shadow.repository;
 
+import org.simple.auth.model.IClient;
 import org.simple.auth.shadow.model.IAccount;
-import org.simple.auth.shadow.model.IClient;
 import org.simple.auth.shadow.model.IShadowToken;
 
 import java.io.Serializable;

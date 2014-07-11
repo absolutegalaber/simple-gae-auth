@@ -2,8 +2,8 @@ package org.simple.auth.shadow.service;
 
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.OAuthException;
-import org.simple.auth.shadow.model.IClient;
 import org.simple.auth.shadow.repository.IClientRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ public class ClientService {
         String clientId = req.getParameter(CLIENT_ID_KEY);
         String redirectUri = redirectUriFromRequest(req);
         IClient client = fromClientId(clientId);
-        if (!redirectUri.startsWith(client.getCallbackUrl())) {
+        if (!redirectUri.startsWith(client.callbackUrl())) {
             throw new OAuthException("Redirect does not match client's redirect!");
         }
         return client;
@@ -48,7 +48,7 @@ public class ClientService {
 
     public void toSession(HttpServletRequest req, IClient client) {
         log.info("Storing client ID in session under key {}", CLIENT_ID_KEY);
-        req.getSession().setAttribute(CLIENT_ID_KEY, client.getClientId());
+        req.getSession().setAttribute(CLIENT_ID_KEY, client.clientId());
     }
 
     public IClient fromSession(HttpServletRequest req) throws OAuthException {
@@ -70,7 +70,7 @@ public class ClientService {
 
     private String getSessionRedirectKey(IClient client) {
         StringBuilder sb = new StringBuilder("client_");
-        sb.append(client.getClientId());
+        sb.append(client.clientId());
         sb.append("_");
         sb.append(REDIRECT_URI_KEY);
         return sb.toString();

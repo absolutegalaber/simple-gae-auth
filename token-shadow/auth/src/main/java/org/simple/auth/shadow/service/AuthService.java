@@ -1,9 +1,9 @@
 package org.simple.auth.shadow.service;
 
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.shadow.model.IAccount;
-import org.simple.auth.shadow.model.IClient;
 import org.simple.auth.shadow.model.IPersistentNetworkToken;
 import org.simple.auth.shadow.model.IShadowToken;
 import org.simple.auth.shadow.repository.IPersistenNetworkTokenRepository;
@@ -34,7 +34,7 @@ public class AuthService {
     }
 
     public IShadowToken loadOrCreateShadowToken(IAccount account, IClient client) {
-        IShadowToken token = repositoryService.getShadowTokenRepository().loadByAccountAndClient(account.getId(), client.getClientId());
+        IShadowToken token = repositoryService.getShadowTokenRepository().loadByAccountAndClient(account.getId(), client.clientId());
         if (token != null) {
             return token;
         }

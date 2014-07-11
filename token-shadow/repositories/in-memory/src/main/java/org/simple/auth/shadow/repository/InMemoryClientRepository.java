@@ -19,11 +19,11 @@ public class InMemoryClientRepository implements IClientRepository<InMemoryClien
 
     @Override
     public void save(InMemoryClient client) {
-        clients.put(client.getClientId(), client);
+        clients.put(client.clientId(), client);
     }
 
     public void registerClients() {
         InMemoryClient localClient = new InMemoryClient("local_test", "local_test_pwd", "http://localhost/example/callback");
-        clients.put(localClient.getClientId(), localClient);
+        clients.put(localClient.clientId(), localClient);
     }
 }

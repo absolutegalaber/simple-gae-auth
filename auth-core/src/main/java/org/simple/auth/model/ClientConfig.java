@@ -8,7 +8,7 @@ import java.util.Collection;
 /**
  * Created by Josip.Mihelko @ Gmail
  */
-public class ClientConfig {
+public class ClientConfig implements IClient {
     @Setter
     private String clientId;
     @Setter

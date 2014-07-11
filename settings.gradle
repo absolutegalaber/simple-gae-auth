@@ -1,8 +1,13 @@
 rootProject.name = 'simple-gae-auth'
-include ':auth-core'
-include ':example'
-include ':gae-showcase'
 
-project(':auth-core').projectDir = "$rootDir/auth-core" as File
-project(':example').projectDir = "$rootDir/example" as File
-project(':gae-showcase').projectDir = "$rootDir/gae-showcase" as File
+include 'auth-core', 'token-shadow:api','token-shadow:auth','token-shadow:repositories:in-memory','token-shadow:showcases:showcase-in-memory','example', "gae-showcase"
+
+//include ':auth-core'
+//include ':token-shadow'
+//include ':example'
+//include ':gae-showcase'
+//
+//project(':auth-core').projectDir = "$rootDir/auth-core" as File
+//project(':token-shadow').projectDir = "$rootDir/token-shadow" as File
+//project(':example').projectDir = "$rootDir/example" as File
+//project(':gae-showcase').projectDir = "$rootDir/gae-showcase" as File

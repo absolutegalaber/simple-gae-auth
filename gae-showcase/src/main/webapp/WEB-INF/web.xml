@@ -5,6 +5,10 @@
         <listener-class>org.simple.auth.showcase.servlet.LocalTestDataInsert</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>org.simple.auth.showcase.listener.NetworkServiceInitializer</listener-class>
+    </listener>
+
     <filter>
         <filter-name>ObjectifyFilter</filter-name>
         <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>

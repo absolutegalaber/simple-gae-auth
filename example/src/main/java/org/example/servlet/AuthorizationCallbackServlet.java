@@ -3,6 +3,7 @@ package org.example.servlet;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.AccessToken;
 import org.simple.auth.model.BasicUserProfile;
+import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.servlet.AbstractProfileLoadingAuthorizationCallback;
 
@@ -17,12 +18,12 @@ import java.io.PrintWriter;
 @Slf4j
 public class AuthorizationCallbackServlet extends AbstractProfileLoadingAuthorizationCallback {
     @Override
-    public void onError(OAuthException authException, HttpServletRequest req, HttpServletResponse resp) {
+    public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
         log.error("Error during authorization callback!", authException);
     }
 
     @Override
-    public void onProfileLoaded(AccessToken accessToken, BasicUserProfile userProfile, HttpServletRequest req, HttpServletResponse resp) {
+    public void onProfileLoaded(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest req, HttpServletResponse resp) {
         log.info("AccessToken: {}", accessToken);
         log.info("UserProfile: {}", userProfile);
         printProfile(userProfile, resp);

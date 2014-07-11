@@ -3,6 +3,7 @@ package org.simple.auth.showcase.servlet;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.AccessToken;
 import org.simple.auth.model.BasicUserProfile;
+import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.servlet.AbstractProfileLoadingAuthorizationCallback;
 
@@ -19,7 +20,7 @@ import java.io.IOException;
 public class CallbackServlet extends AbstractProfileLoadingAuthorizationCallback {
 
     @Override
-    public void onError(OAuthException authException, HttpServletRequest req, HttpServletResponse resp) {
+    public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/error.jsp");
         req.setAttribute("authException", authException);
         try {
@@ -31,7 +32,7 @@ public class CallbackServlet extends AbstractProfileLoadingAuthorizationCallback
     }
 
     @Override
-    public void onProfileLoaded(AccessToken accessToken, BasicUserProfile userProfile, HttpServletRequest req, HttpServletResponse resp) {
+    public void onProfileLoaded(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest req, HttpServletResponse resp) {
         log.info("################################### onProfileLoaded() ###################################");
         log.info("AccessToken:       {}", accessToken);
         log.info("UserProfile:       {}", userProfile);

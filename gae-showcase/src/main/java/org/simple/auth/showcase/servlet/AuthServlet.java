@@ -19,12 +19,7 @@ import java.io.IOException;
 public class AuthServlet extends AbstractAuthorizationRedirect {
 
     @Override
-    public void configureNetworks(NetworkService networkService) {
-        networkService.configureNetworks(new SocialNetworkFactory().configureNetworks());
-    }
-
-    @Override
-    public void onError(OAuthException authException, HttpServletRequest req, HttpServletResponse resp) {
+    public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
         log.info("######################## onError() ########################");
         log.info("Message: {}", authException.getMessage());
         log.info("######################## onError() ########################");

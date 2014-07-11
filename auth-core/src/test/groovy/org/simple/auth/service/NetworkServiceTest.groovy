@@ -2,6 +2,7 @@ package org.simple.auth.service
 
 import com.google.api.client.http.HttpResponse
 import org.simple.auth.model.AccessToken
+import org.simple.auth.model.INetworkToken
 import org.simple.auth.model.Network
 import org.simple.auth.model.OAuthException
 import spock.lang.Specification
@@ -34,12 +35,12 @@ class NetworkServiceTest extends Specification {
             }
 
             @Override
-            AccessToken refreshToken(AccessToken token) throws OAuthException {
+            AccessToken refreshToken(INetworkToken token) throws OAuthException {
                 return null
             }
 
             @Override
-            HttpResponse post(String url, AccessToken token) throws OAuthException {
+            HttpResponse post(String url, INetworkToken token) throws OAuthException {
                 return null
             }
 
@@ -49,7 +50,7 @@ class NetworkServiceTest extends Specification {
             }
 
             @Override
-            protected HttpResponse executeGet(String url, AccessToken token, boolean withJsonParser) throws OAuthException {
+            protected HttpResponse executeGet(String url, INetworkToken token, boolean withJsonParser) throws OAuthException {
                 return null
             }
         }

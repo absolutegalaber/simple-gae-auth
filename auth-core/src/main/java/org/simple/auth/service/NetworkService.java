@@ -37,7 +37,10 @@ public class NetworkService {
     }
 
     public Network fromName(String name) throws OAuthException {
-        Preconditions.checkNotNull(name, "network name is required to load network!");
+        if(name == null){
+           throw new OAuthException("Cannot load network for name NULL!");
+        }
+
         Network network = networks.get(name);
         if (network == null) {
             throw new OAuthException(name + " is not configured");
@@ -62,7 +65,6 @@ public class NetworkService {
 
     public Network fromSession(HttpServletRequest request) throws OAuthException {
         String networkName = (String) request.getSession().getAttribute("com.simple.oauth.model.Network");
-        Preconditions.checkNotNull(networkName, "No network name found in session under key com.simple.oauth.model.Network!");
         log.info("Detected network name {} in session under key {}", networkName, "com.simple.oauth.model.Network");
         return fromName(networkName);
     }

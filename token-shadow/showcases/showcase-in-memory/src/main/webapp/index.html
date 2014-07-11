@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Example for simple auth</title>
+    <script language="JavaScript">
+        function makeSecureCall(){
+          var token = getParameterByName('access_token');
+            $.ajax(
+                    'http://localhost:8080/api/protected',
+                    {
+                        type: 'GET',
+                        dataType: 'json',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("Authorization", "Bearer "+token)
+                        },
+                        success: function(data){
+                            $("#result").text(JSON.stringify(data));
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            $("#result").text(JSON.stringify(jqXHR.responseJSON));
+                        }
+                    }
+            );
+        }
+
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(location.search);
+            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+    </script>
+</head>
+<body>
+Simple Auth Test with bearer token
+<br/>
+<ul>
+    <li><a href="authorize?network=google&redirect_uri=http://localhost:8080/index.html&client_id=local_test">Login with Google</a></li>
+    <li><a href="index.html">Logout</a></li>
+    <li><a href="#" onclick="makeSecureCall()">Make secure call</a></li>
+</ul>
+<h3>Result of secure call</h3>
+<code id="result">
+    No call triggered yet
+</code>
+<script src="/js/jquery-1.11.1.min.js"></script>
+</body>
+</html>

@@ -12,6 +12,8 @@ public interface IShadowToken extends INetworkToken {
 
     Serializable getAccountId();
 
+    String getClientId();
+
     void setAccountId(Serializable id);
 
     void setAccessToken(String accessToken);

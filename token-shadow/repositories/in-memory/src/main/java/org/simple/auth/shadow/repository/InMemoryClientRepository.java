@@ -29,7 +29,7 @@ public class InMemoryClientRepository implements IClientRepository<InMemoryClien
 
     private void createLocalTestClient() {
         ClientBuilder clientBuilder = new ClientBuilder();
-        clientBuilder.clientId("local_test").secret("local_test_pwd").callbackUrl("http://localhost/example/callback");
+        clientBuilder.clientId("local_test").secret("local_test_pwd").callbackUrl("http://localhost:8080/");
         InMemoryClient localClient = clientBuilder.build(new InMemoryClient());
         save(localClient);
     }

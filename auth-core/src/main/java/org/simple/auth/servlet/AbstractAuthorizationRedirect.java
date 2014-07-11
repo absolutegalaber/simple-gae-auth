@@ -16,11 +16,7 @@ import java.io.IOException;
 public abstract class AbstractAuthorizationRedirect extends HttpServlet {
     private NetworkService networkService = new NetworkService();
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        configureNetworks(networkService);
-    }
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -40,7 +36,6 @@ public abstract class AbstractAuthorizationRedirect extends HttpServlet {
     }
 
 
-    public abstract void configureNetworks(NetworkService networkService);
 
     public abstract void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp);
 }

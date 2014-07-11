@@ -22,7 +22,7 @@ public class NetworkService {
         return !networks.isEmpty();
     }
 
-    public void configureNetworks(Iterable<Network> configuredNetworks) {
+    public static void configureNetworks(Iterable<Network> configuredNetworks) {
         for (Network configuredNetwork : configuredNetworks) {
             if (!networks.containsKey(configuredNetwork.getName())) {
                 networks.put(configuredNetwork.getName(), configuredNetwork);

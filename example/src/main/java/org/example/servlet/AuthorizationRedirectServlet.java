@@ -14,11 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class AuthorizationRedirectServlet extends AbstractAuthorizationRedirect {
 
-    @Override
-    public void configureNetworks(NetworkService networkService) {
-        log.info("configureNetworks(networkService={})", networkService);
-        networkService.configureNetworks(ExampleConfigurationService.getInstance());
-    }
 
     @Override
     public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {

@@ -1,0 +1,10 @@
+description = 'API for persistent oauth shadowing'
+
+
+dependencies {
+    compile(
+            [
+                    project(':auth-core'),
+            ]
+    )
+}

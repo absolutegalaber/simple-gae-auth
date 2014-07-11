@@ -10,7 +10,7 @@ import org.simple.auth.model.*;
 public class UserProfileService {
     private NetworkService networkService = new NetworkService();
 
-    public BasicUserProfile userProfile(AccessToken accessToken) throws OAuthException {
+    public BasicUserProfile userProfile(INetworkToken accessToken) throws OAuthException {
         Network network = networkService.fromAccessToken(accessToken);
         if (!network.isProfileAware()) {
             throw new OAuthException(network.getName() + " is not configured to load profiles");

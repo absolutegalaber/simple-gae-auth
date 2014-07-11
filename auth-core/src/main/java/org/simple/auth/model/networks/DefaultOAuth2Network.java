@@ -69,7 +69,7 @@ public class DefaultOAuth2Network extends Network {
     @Override
     public AccessToken refreshToken(AccessToken token) throws OAuthException {
         try {
-            RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(new NetHttpTransport(), jacksonFactory, new GenericUrl(accessTokenUrl), token.getRefreshToken().get())
+            RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(new NetHttpTransport(), jacksonFactory, new GenericUrl(accessTokenUrl), token.getRefreshToken())
                     .setGrantType("refresh_token");
             addTokenRequestAuthorization(refreshTokenRequest);
             return executeTokenRequest(refreshTokenRequest);

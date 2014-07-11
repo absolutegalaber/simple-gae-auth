@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @ToString
 @EqualsAndHashCode
-public class AccessToken {
+public class AccessToken implements INetworkToken{
     @Getter
     protected final String network;
     @Getter

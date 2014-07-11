@@ -1,7 +1,9 @@
 package org.simple.auth.service;
 
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.AccessToken;
+import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.Network;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.service.builder.NetworkConfigurationService;
@@ -21,7 +23,7 @@ public class NetworkService {
         return !networks.isEmpty();
     }
 
-    public void configureNetworks(Iterable<Network> configuredNetworks) {
+    public static void configureNetworks(Iterable<Network> configuredNetworks) {
         for (Network configuredNetwork : configuredNetworks) {
             if (!networks.containsKey(configuredNetwork.getName())) {
                 networks.put(configuredNetwork.getName(), configuredNetwork);
@@ -35,6 +37,10 @@ public class NetworkService {
     }
 
     public Network fromName(String name) throws OAuthException {
+        if(name == null){
+           throw new OAuthException("Cannot load network for name NULL!");
+        }
+
         Network network = networks.get(name);
         if (network == null) {
             throw new OAuthException(name + " is not configured");
@@ -42,21 +48,24 @@ public class NetworkService {
         return network;
     }
 
-    public Network fromAccessToken(AccessToken accessToken) throws OAuthException {
+    public Network fromAccessToken(INetworkToken accessToken) throws OAuthException {
         return fromName(accessToken.getNetwork());
     }
 
     public Network fromRequestParam(HttpServletRequest request) throws OAuthException {
         String networkName = request.getParameter("network");
+        log.info("Detected network name {} in request under parameter name ", networkName, "network");
         return fromName(networkName);
     }
 
     public void toSession(HttpServletRequest request, Network network) {
+        log.info("Storing network name {} in session under key {}", network.getName(), "com.simple.oauth.model.Network");
         request.getSession().setAttribute("com.simple.oauth.model.Network", network.getName());
     }
 
     public Network fromSession(HttpServletRequest request) throws OAuthException {
         String networkName = (String) request.getSession().getAttribute("com.simple.oauth.model.Network");
+        log.info("Detected network name {} in session under key {}", networkName, "com.simple.oauth.model.Network");
         return fromName(networkName);
     }
 

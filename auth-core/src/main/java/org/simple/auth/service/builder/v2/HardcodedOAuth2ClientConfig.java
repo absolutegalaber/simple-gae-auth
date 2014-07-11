@@ -1,6 +1,6 @@
 package org.simple.auth.service.builder.v2;
 
-import org.simple.auth.model.v2.OAuth2ClientConfig;
+import org.simple.auth.model.ClientConfig;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,7 +8,7 @@ import java.util.Collection;
 /**
  * Created by Josip.Mihelko @ Gmail
  */
-public class HardcodedOAuth2ClientConfig implements OAuth2ClientConfig {
+public class HardcodedOAuth2ClientConfig extends ClientConfig {
     private final String clientId;
     private final String secret;
     private final String callbackUrl;

@@ -2,12 +2,12 @@ package org.simple.auth.showcase.service.factory;
 
 import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
+import org.simple.auth.model.ClientConfig;
 import org.simple.auth.model.Network;
+import org.simple.auth.model.networks.openid.GoogleOIC;
 import org.simple.auth.model.networks.v1.Twitter;
 import org.simple.auth.model.networks.v2.Facebook;
 import org.simple.auth.model.networks.v2.Google;
-import org.simple.auth.model.v1.OAuth1ClientConfig;
-import org.simple.auth.model.v2.OAuth2ClientConfig;
 import org.simple.auth.service.builder.NetworkConfigurationService;
 import org.simple.auth.showcase.model.SocialNetwork;
 import org.simple.auth.showcase.service.OfyService;
@@ -41,12 +41,13 @@ public class SocialNetworkFactory implements NetworkConfigurationService {
         networks.add(new Google(new MyClientConfig(google)));
         networks.add(new Facebook(new MyClientConfig(facebook)));
         networks.add(new Twitter(new MyClientConfig(twitter)));
+        networks.add(new GoogleOIC(new MyClientConfig(google)));
 //        networks.add(new FourSquare(new MyClientConfig(foursquare)));
 //        networks.add(new Twitter(new MyClientConfig(twitter)));
 //        networks.add(new Github(new MyClientConfig(github)));
     }
 
-    private static class MyClientConfig implements OAuth2ClientConfig, OAuth1ClientConfig {
+    private static class MyClientConfig extends ClientConfig {
         private SocialNetwork socialNetwork;
 
         private MyClientConfig(SocialNetwork socialNetwork) {

@@ -23,8 +23,11 @@ public abstract class AbstractAuthorizationCallback extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            log.info("Trying to detect network stored in session...");
             Network network = networkService.fromSession(req);
+            log.info("Trying to extract access token...");
             INetworkToken accessToken = network.accessToken(req);
+            log.info("Detected access token...");
             onAuthorizationSuccess(accessToken, req, resp);
         } catch (OAuthException e) {
             onError(e, req, resp);

@@ -1,5 +1,6 @@
 package org.simple.auth.shadow.servlet;
 
+import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.BasicUserProfile;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.OAuthException;
@@ -19,6 +20,7 @@ import java.util.Map;
 /**
  * @author Peter Schneider-Manzell
  */
+@Slf4j
 public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCallback {
 
     ClientService clientService = new ClientService();
@@ -27,14 +29,18 @@ public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCa
 
     @Override
     public void onProfileLoaded(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest req, HttpServletResponse resp) throws OAuthException, IOException {
+        log.info("Trying to detect client...");
         IClient client = clientService.fromSession(req);
+        log.info("Found client, creating shadow token");
         IShadowToken token = authService.getShadowToken(client, accessToken, userProfile.getNetworkId());
         redirect(client, token, req, resp);
 
     }
 
     protected void redirect(IClient client, IShadowToken token, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        log.info("Generating redirect URI...");
         String redirectURI = generateRedirectURI(client, token, req);
+        log.info("Redirecting to {}",redirectURI);
         resp.sendRedirect(redirectURI);
     }
 
@@ -49,6 +55,7 @@ public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCa
         for (Map.Entry<String, String> parameter : parametersToAppend.entrySet()) {
             finalRedirectURI.append(concatChar);
             finalRedirectURI.append(parameter.getKey());
+            finalRedirectURI.append("=");
             finalRedirectURI.append(parameter.getValue());
             concatChar = "&";
         }
@@ -70,6 +77,6 @@ public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCa
 
     @Override
     public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
-
+       log.error("An error occured",authException);
     }
 }

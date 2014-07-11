@@ -21,7 +21,9 @@ public abstract class AbstractProfileLoadingAuthorizationCallback extends Abstra
     @Override
     public final void onAuthorizationSuccess(INetworkToken accessToken, HttpServletRequest req, HttpServletResponse resp) {
         try {
+            log.info("Trying to load user profile....");
             BasicUserProfile userProfile = userProfileService.userProfile(accessToken);
+            log.info("Finished loading user profile....");
             onProfileLoaded(accessToken, userProfile, req, resp);
         } catch (Exception e) {
              onError(e,  req,  resp);

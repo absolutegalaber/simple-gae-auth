@@ -8,13 +8,12 @@ import java.io.Serializable;
 /**
  * @author Peter Schneider-Manzell
  */
-public interface IPersistenNetworkTokenRepository<T extends IPersistentNetworkToken> {
+public interface IPersistenNetworkTokenRepository<T extends IPersistentNetworkToken,N extends INetworkToken> {
 
     T load(String network, Serializable networkUserId);
 
-    void save(T networkToken);
 
-    T create(Serializable accountId, Serializable networkUserid, INetworkToken networkToken);
+    T create(Serializable accountId, Serializable networkUserid, N networkToken);
 
     boolean supports(Class<? extends INetworkToken> networkTokenType);
 }

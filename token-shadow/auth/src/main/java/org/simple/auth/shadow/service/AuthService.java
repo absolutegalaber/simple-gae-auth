@@ -57,7 +57,7 @@ public class AuthService {
                 return iPersistenNetworkTokenRepository;
             }
         }
-        throw new OAuthException(String.format("No PersistenNetworkTokenRepository for type [%s] defined!"));
+        throw new OAuthException(String.format("No PersistenNetworkTokenRepository for type [%s] defined!",networkTokenType.getSimpleName()));
     }
 
     public boolean isShadowTokenValid(String shadowAccessToken) {

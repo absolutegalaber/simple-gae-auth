@@ -1,6 +1,7 @@
 package org.simple.auth.shadow.service;
 
 import com.google.common.base.Preconditions;
+import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.shadow.model.IClient;
 import org.simple.auth.shadow.repository.IClientRepository;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Peter Schneider-Manzell
  */
+@Slf4j
 public class ClientService {
     private static final String CLIENT_ID_KEY = "client_id";
     private static final String REDIRECT_URI_KEY = "redirect_uri";
@@ -17,6 +19,7 @@ public class ClientService {
 
 
     public IClient fromRequest(HttpServletRequest req) throws OAuthException {
+        log.info("Trying to detect client_id from request parameter {}", CLIENT_ID_KEY);
         String clientId = req.getParameter(CLIENT_ID_KEY);
         String redirectUri = redirectUriFromRequest(req);
         IClient client = fromClientId(clientId);
@@ -27,8 +30,10 @@ public class ClientService {
     }
 
     public String redirectUriFromRequest(HttpServletRequest req) {
+        log.info("Trying to detect redirectUri from request parameter {}", REDIRECT_URI_KEY);
         String redirectUri = req.getParameter(REDIRECT_URI_KEY);
         Preconditions.checkNotNull(redirectUri, REDIRECT_URI_KEY + " is required!");
+        log.info("Detected redirectUri {} from request parameter {}", redirectUri, REDIRECT_URI_KEY);
         return redirectUri;
     }
 
@@ -42,11 +47,14 @@ public class ClientService {
     }
 
     public void toSession(HttpServletRequest req, IClient client) {
+        log.info("Storing client ID in session under key {}", CLIENT_ID_KEY);
         req.getSession().setAttribute(CLIENT_ID_KEY, client.getClientId());
     }
 
     public IClient fromSession(HttpServletRequest req) throws OAuthException {
+        log.info("Trying to load client ID from session under key {}", CLIENT_ID_KEY);
         String clientId = (String) req.getSession().getAttribute(CLIENT_ID_KEY);
+        log.info("Detected client ID {} from session under key {}", clientId, CLIENT_ID_KEY);
         return fromClientId(clientId);
     }
 
@@ -55,7 +63,9 @@ public class ClientService {
     }
 
     public void redirectUriToSession(HttpServletRequest req, IClient client, String redirectUri) {
-        req.getSession().setAttribute(getSessionRedirectKey(client), redirectUri);
+        String key = getSessionRedirectKey(client);
+        log.info("Storing client redirectURI {} in session under key {}", redirectUri, key);
+        req.getSession().setAttribute(key, redirectUri);
     }
 
     private String getSessionRedirectKey(IClient client) {
@@ -67,8 +77,11 @@ public class ClientService {
     }
 
     public String redirectUriFromSession(IClient client, HttpServletRequest req) {
-        String redirectUri = (String) req.getSession().getAttribute(getSessionRedirectKey(client));
-        Preconditions.checkNotNull(redirectUri, REDIRECT_URI_KEY + " is required but not found in session!");
+        String key = getSessionRedirectKey(client);
+        log.info("Trying to load client redirectURI from session under key {}", key);
+        String redirectUri = (String) req.getSession().getAttribute(key);
+        Preconditions.checkNotNull(redirectUri, key + " is required but not found in session!");
+        log.info("Detected redirectURI {} for key {} in session", redirectUri, key);
         return redirectUri;
     }
 }

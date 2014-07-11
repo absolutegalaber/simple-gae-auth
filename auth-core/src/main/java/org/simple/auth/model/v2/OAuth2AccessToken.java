@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class OAuth2AccessToken extends AccessToken implements IOAuth2NetworkToken{
+public class OAuth2AccessToken extends AccessToken implements IOAuth2NetworkToken {
     protected final Optional<String> refreshTokenInternal;
     protected final Optional<Date> expiresAtInternal;
 
@@ -31,11 +31,22 @@ public class OAuth2AccessToken extends AccessToken implements IOAuth2NetworkToke
         }
     }
 
-    public final String getRefreshToken(){
-        return refreshTokenInternal.get();
+    public final String getRefreshToken() {
+        if (refreshTokenInternal.isPresent()) {
+            return refreshTokenInternal.get();
+        } else {
+            return null;
+        }
+
     }
 
-    public final Date getExpiresAt(){
-        return expiresAtInternal.get();
+    public final Date getExpiresAt() {
+        if(expiresAtInternal.isPresent()){
+            return expiresAtInternal.get();
+        }
+        else {
+            return null;
+        }
+
     }
 }

@@ -1,0 +1,44 @@
+description = 'Simplest OAuth - Shadow Token example'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'net.saliman:gradle-properties-plugin:1.4.1'
+    }
+}
+
+apply plugin: 'war'
+apply plugin: 'jetty'
+apply plugin: 'properties'
+
+// Pull the plugin from Maven Central
+repositories {
+    mavenLocal()
+}
+
+
+dependencies {
+    compile(
+            [
+                    project(':token-shadow:repositories:in-memory'),
+            ]
+    )
+    compile 'org.slf4j:slf4j-simple:1.7.7'
+    providedCompile 'javax.servlet:servlet-api:2.5'
+}
+
+jettyRun.contextPath = '/'
+jettyRun.doFirst {
+    logger.quiet "Setting variables..."
+    System.setProperty("simpleauthexample.google.scope", project.'simpleauthexample.google.scope')
+    System.setProperty("simpleauthexample.google.clientId", project.'simpleauthexample.google.clientId')
+    System.setProperty("simpleauthexample.google.secret", project.'simpleauthexample.google.secret')
+    System.setProperty("simpleauthexample.google.callbackUrl", project.'simpleauthexample.google.callbackUrl')
+    System.setProperty("simpleauthexample.google.state", project.'simpleauthexample.google.state')
+
+
+}

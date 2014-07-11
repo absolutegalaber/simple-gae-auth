@@ -1,0 +1,17 @@
+description = 'In Memory implementation for simple auth repositories'
+
+
+configurations { providedCompile }
+
+sourceSets.main.compileClasspath += configurations.providedCompile
+sourceSets.test.compileClasspath += configurations.providedCompile
+sourceSets.test.runtimeClasspath += configurations.providedCompile
+
+dependencies {
+    compile(
+        [
+                project(':token-shadow:auth'),
+        ]
+    )
+    providedCompile 'javax.servlet:servlet-api:2.5'
+}

@@ -34,10 +34,11 @@ public class ShadowRedirectServlet extends AbstractAuthorizationRedirect {
     @Override
     public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
         try {
+            resp.setStatus(HttpStatus.SC_BAD_REQUEST);
             resp.getWriter().write("{'error':'invalid_request','error_description':'" + authException.getMessage() + "'}");
             resp.getWriter().flush();
             resp.getWriter().close();
-            resp.sendError(HttpStatus.SC_BAD_REQUEST);
+
         } catch (IOException e) {
             log.error("Could not write error message to stream!", e);
         }

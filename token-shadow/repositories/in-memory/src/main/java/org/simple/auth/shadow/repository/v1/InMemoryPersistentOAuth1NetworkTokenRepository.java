@@ -40,6 +40,6 @@ public class InMemoryPersistentOAuth1NetworkTokenRepository implements IPersiste
 
     @Override
     public boolean supports(Class<? extends INetworkToken> networkTokenType) {
-        return networkTokenType.isAssignableFrom(IOAuth1NetworkToken.class);
+        return  IOAuth1NetworkToken.class.isAssignableFrom(networkTokenType);
     }
 }

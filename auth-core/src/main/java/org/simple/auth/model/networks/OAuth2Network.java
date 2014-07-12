@@ -6,13 +6,9 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
-import org.simple.auth.model.Network;
-import org.simple.auth.model.OAuthException;
-import org.simple.auth.model.v2.OAuth2AccessToken;
-import org.simple.auth.model.v2.OAuth2ClientConfig;
+import org.simple.auth.model.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -24,7 +20,7 @@ import java.util.Scanner;
  * Created by Josip.Mihelko @ Gmail
  */
 @Slf4j
-public class DefaultOAuth2Network extends Network<OAuth2AccessToken, OAuth2ClientConfig> {
+public class OAuth2Network extends Network {
     protected final String authUrl;
     protected final String accessTokenUrl;
 
@@ -32,13 +28,12 @@ public class DefaultOAuth2Network extends Network<OAuth2AccessToken, OAuth2Clien
     protected final Map<String, String> defaultHeaders = new HashMap<>();
     protected Boolean isAccessTokenResponseJson = true;
 
-    public DefaultOAuth2Network(String name, OAuth2ClientConfig config, String authUrl, String accessTokenUrl) {
+    public OAuth2Network(String name, ClientConfig config, String authUrl, String accessTokenUrl) {
         super(name, config);
         this.authUrl = authUrl;
         this.accessTokenUrl = accessTokenUrl;
 
     }
-
 
 
     @Override
@@ -51,7 +46,7 @@ public class DefaultOAuth2Network extends Network<OAuth2AccessToken, OAuth2Clien
     }
 
     @Override
-    public OAuth2AccessToken accessToken(HttpServletRequest callbackRequest) throws OAuthException {
+    public INetworkToken accessToken(HttpServletRequest callbackRequest) throws OAuthException {
         try {
             String authCode = extractAuthCode(callbackRequest);
             AuthorizationCodeTokenRequest tokenRequest = new AuthorizationCodeTokenRequest(new NetHttpTransport(), jacksonFactory, new GenericUrl(accessTokenUrl), authCode)
@@ -64,8 +59,12 @@ public class DefaultOAuth2Network extends Network<OAuth2AccessToken, OAuth2Clien
         }
     }
 
+
+    protected void networkSpecific(AuthorizationCodeTokenRequest authorizationCodeTokenRequest) {
+    }
+
     @Override
-    public OAuth2AccessToken refreshToken(OAuth2AccessToken token) throws OAuthException {
+    public INetworkToken refreshToken(INetworkToken token) throws OAuthException {
         try {
             RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(new NetHttpTransport(), jacksonFactory, new GenericUrl(accessTokenUrl), token.getRefreshToken())
                     .setGrantType("refresh_token");
@@ -78,7 +77,7 @@ public class DefaultOAuth2Network extends Network<OAuth2AccessToken, OAuth2Clien
 
 
     @Override
-    protected HttpResponse executeGet(String url, OAuth2AccessToken token, boolean withJsonParser) throws OAuthException {
+    protected HttpResponse executeGet(String url, INetworkToken token, boolean withJsonParser) throws OAuthException {
         try {
             Credential credential = new Credential(myAccessMethod()).setAccessToken(token.getAccessToken());
             HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory(credential);
@@ -107,7 +106,7 @@ public class DefaultOAuth2Network extends Network<OAuth2AccessToken, OAuth2Clien
     }
 
     @Override
-    public HttpResponse post(String url, OAuth2AccessToken token) throws OAuthException {
+    public HttpResponse post(String url, INetworkToken token) throws OAuthException {
         return null;
     }
 
@@ -130,10 +129,10 @@ public class DefaultOAuth2Network extends Network<OAuth2AccessToken, OAuth2Clien
         );
     }
 
-    protected OAuth2AccessToken executeTokenRequest(TokenRequest tokenRequest) throws IOException {
+    protected INetworkToken executeTokenRequest(TokenRequest tokenRequest) throws IOException {
         if (isAccessTokenResponseJson) {
             TokenResponse tokenResponse = tokenRequest.execute();
-            return new OAuth2AccessToken(name, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken(), tokenResponse.getExpiresInSeconds());
+            return AccessToken.oAuth2Token(name, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken(), tokenResponse.getExpiresInSeconds());
         } else {
             HttpResponse httpResponse = tokenRequest.executeUnparsed();
             String responseText = new Scanner(httpResponse.getContent()).useDelimiter("\\A").next();
@@ -147,7 +146,7 @@ public class DefaultOAuth2Network extends Network<OAuth2AccessToken, OAuth2Clien
                     tokenResponse.setExpiresInSeconds(Long.valueOf(singleResponseItem.substring(singleResponseItem.indexOf("=") + 1)));
                 }
             }
-            return new OAuth2AccessToken(name, tokenResponse.getAccessToken(), null, tokenResponse.getExpiresInSeconds());
+            return AccessToken.oAuth2Token(name, tokenResponse.getAccessToken(), null, tokenResponse.getExpiresInSeconds());
         }
     }
 

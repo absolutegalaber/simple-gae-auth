@@ -1,8 +1,6 @@
 package org.simple.auth.shadow.service;
 
 import org.simple.auth.shadow.repository.*;
-import org.simple.auth.shadow.repository.v1.InMemoryPersistentOAuth1NetworkTokenRepository;
-import org.simple.auth.shadow.repository.v2.InMemoryPersistentOAuth2NetworkTokenRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +13,7 @@ public class InMemoryRepositoryService implements IRepositoryService {
     final InMemoryAccountRepository accountRepository;
     final InMemoryShadowTokenRepository shadowTokenRepository;
     final InMemoryClientRepository clientRepository;
-    final List<IPersistenNetworkTokenRepository> persistenNetworkTokenRepositories = new ArrayList<>();
+    final IPersistenNetworkTokenRepository persistenNetworkTokenRepositories;
 
 
     public InMemoryRepositoryService() {
@@ -23,8 +21,7 @@ public class InMemoryRepositoryService implements IRepositoryService {
         shadowTokenRepository = new InMemoryShadowTokenRepository();
         clientRepository = new InMemoryClientRepository();
         clientRepository.registerClients();
-        persistenNetworkTokenRepositories.add(new InMemoryPersistentOAuth1NetworkTokenRepository());
-        persistenNetworkTokenRepositories.add(new InMemoryPersistentOAuth2NetworkTokenRepository());
+        persistenNetworkTokenRepositories = new InMemoryPersistentNetworkTokenRepository();
     }
 
     @Override
@@ -43,7 +40,7 @@ public class InMemoryRepositoryService implements IRepositoryService {
     }
 
     @Override
-    public List<IPersistenNetworkTokenRepository> getPersistenNetworkTokenRepositories() {
+    public IPersistenNetworkTokenRepository getPersistenNetworkTokenRepository() {
         return persistenNetworkTokenRepositories;
     }
 }

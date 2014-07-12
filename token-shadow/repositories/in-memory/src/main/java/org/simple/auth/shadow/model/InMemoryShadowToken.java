@@ -25,6 +25,10 @@ public class InMemoryShadowToken implements IShadowToken {
 
     @Getter
     @Setter
+    String tokenSecret;
+
+    @Getter
+    @Setter
     Date expiresAt;
 
     @Getter

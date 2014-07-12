@@ -1,9 +1,11 @@
 package org.simple.auth.shadow.service;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.OAuthException;
-import org.simple.auth.shadow.model.IClient;
+import org.simple.auth.shadow.OAuthRequestParameter;
 import org.simple.auth.shadow.repository.IClientRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,22 +21,27 @@ public class ClientService {
 
 
     public IClient fromRequest(HttpServletRequest req) throws OAuthException {
-        log.info("Trying to detect client_id from request parameter {}", CLIENT_ID_KEY);
-        String clientId = req.getParameter(CLIENT_ID_KEY);
+        log.info("Trying to detect client_id from request parameter {}", OAuthRequestParameter.CLIENT_ID.getParamName());
+        Optional<String> clientId = OAuthRequestParameter.CLIENT_ID.getValue(req);
+        Preconditions.checkNotNull(clientId, OAuthRequestParameter.CLIENT_ID.getParamName() + " is required!");
         String redirectUri = redirectUriFromRequest(req);
-        IClient client = fromClientId(clientId);
-        if (!redirectUri.startsWith(client.getCallbackUrl())) {
-            throw new OAuthException("Redirect does not match client's redirect!");
-        }
+        IClient client = fromClientId(clientId.get());
+        checkRedirectURI(client, redirectUri);
         return client;
     }
 
+    private void checkRedirectURI(IClient client, String presentedRedirectUri) throws OAuthException {
+        if (!presentedRedirectUri.startsWith(client.callbackUrl())) {
+            throw new OAuthException("Redirect does not match client's redirect!");
+        }
+    }
+
     public String redirectUriFromRequest(HttpServletRequest req) {
-        log.info("Trying to detect redirectUri from request parameter {}", REDIRECT_URI_KEY);
-        String redirectUri = req.getParameter(REDIRECT_URI_KEY);
+        log.info("Trying to detect redirectUri from request parameter {}", OAuthRequestParameter.REDIRECT_URI.getParamName());
+        Optional<String> redirectUri = OAuthRequestParameter.REDIRECT_URI.getValue(req);
         Preconditions.checkNotNull(redirectUri, REDIRECT_URI_KEY + " is required!");
-        log.info("Detected redirectUri {} from request parameter {}", redirectUri, REDIRECT_URI_KEY);
-        return redirectUri;
+        log.info("Detected redirectUri {} from request parameter {}", redirectUri.get(), OAuthRequestParameter.REDIRECT_URI.getParamName());
+        return redirectUri.get();
     }
 
     private IClient fromClientId(String clientId) throws OAuthException {
@@ -48,7 +55,7 @@ public class ClientService {
 
     public void toSession(HttpServletRequest req, IClient client) {
         log.info("Storing client ID in session under key {}", CLIENT_ID_KEY);
-        req.getSession().setAttribute(CLIENT_ID_KEY, client.getClientId());
+        req.getSession().setAttribute(CLIENT_ID_KEY, client.clientId());
     }
 
     public IClient fromSession(HttpServletRequest req) throws OAuthException {
@@ -70,7 +77,7 @@ public class ClientService {
 
     private String getSessionRedirectKey(IClient client) {
         StringBuilder sb = new StringBuilder("client_");
-        sb.append(client.getClientId());
+        sb.append(client.clientId());
         sb.append("_");
         sb.append(REDIRECT_URI_KEY);
         return sb.toString();

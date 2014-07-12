@@ -11,6 +11,7 @@
 
 
 <a href="/auth?network=google">Google Login</a>
+<a href="/auth?network=google_oic">Google OpenID Connect Login</a>
 <a href="/auth?network=facebook">Facebook Login</a>
 <a href="/auth?network=twitter">Twitter Login</a>
 

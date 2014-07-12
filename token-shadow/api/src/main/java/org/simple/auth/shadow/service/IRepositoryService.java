@@ -18,7 +18,7 @@ public interface IRepositoryService {
 
     IClientRepository getClientRepository();
 
-    List<IPersistenNetworkTokenRepository> getPersistenNetworkTokenRepositories();
+    IPersistenNetworkTokenRepository getPersistenNetworkTokenRepository();
 
 
 }

@@ -21,6 +21,21 @@
         <servlet-class>org.simple.auth.shadow.servlet.ShadowRedirectServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>protectedResourceServlet</servlet-name>
+        <servlet-class>org.example.servlet.ProtectedResourceServlet</servlet-class>
+    </servlet>
+
+    <filter>
+        <filter-name>shadowTokenFilter</filter-name>
+        <filter-class>org.simple.auth.shadow.filter.ShadowTokenFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>shadowTokenFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
+    </filter-mapping>
+
 
     <servlet-mapping>
         <servlet-name>authorizationCallbackServlet</servlet-name>
@@ -30,6 +45,10 @@
     <servlet-mapping>
         <servlet-name>authorizationRedirectServlet</servlet-name>
         <url-pattern>/authorize</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>protectedResourceServlet</servlet-name>
+        <url-pattern>/api/protected</url-pattern>
     </servlet-mapping>
 
 

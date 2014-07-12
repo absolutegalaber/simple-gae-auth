@@ -15,5 +15,4 @@ public interface IPersistenNetworkTokenRepository<T extends IPersistentNetworkTo
 
     T create(Serializable accountId, Serializable networkUserid, N networkToken);
 
-    boolean supports(Class<? extends INetworkToken> networkTokenType);
 }

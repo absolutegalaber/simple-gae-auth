@@ -1,6 +1,6 @@
 package org.simple.auth.shadow.model;
 
-import org.simple.auth.model.v2.IOAuth2NetworkToken;
+import org.simple.auth.model.INetworkToken;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -8,9 +8,11 @@ import java.util.Date;
 /**
  * @author Peter Schneider-Manzell
  */
-public interface IShadowToken extends IOAuth2NetworkToken {
+public interface IShadowToken extends INetworkToken {
 
     Serializable getAccountId();
+
+    String getClientId();
 
     void setAccountId(Serializable id);
 

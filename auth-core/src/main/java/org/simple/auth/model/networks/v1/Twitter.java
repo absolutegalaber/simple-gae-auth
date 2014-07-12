@@ -1,7 +1,7 @@
 package org.simple.auth.model.networks.v1;
 
+import org.simple.auth.model.ClientConfig;
 import org.simple.auth.model.networks.ProfileAwareOAuth1Network;
-import org.simple.auth.model.v1.OAuth1ClientConfig;
 
 /**
  * Created by Josip.Mihelko @ Gmail
@@ -14,7 +14,7 @@ public class Twitter extends ProfileAwareOAuth1Network<TwitterProfile> {
     private static final String AUTH_URL = "https://api.twitter.com/oauth/authorize";
     private static final String PROFILE_URL = "https://api.twitter.com/1.1/account/verify_credentials.json";
 
-    public Twitter(OAuth1ClientConfig clientConfig) {
+    public Twitter(ClientConfig clientConfig) {
         super(
                 NAME,
                 clientConfig,

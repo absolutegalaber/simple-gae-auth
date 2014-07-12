@@ -1,6 +1,7 @@
 package org.simple.auth.shadow.repository;
 
-import org.simple.auth.shadow.model.IClient;
+
+import org.simple.auth.model.IClient;
 
 /**
  * @author Peter Schneider-Manzell

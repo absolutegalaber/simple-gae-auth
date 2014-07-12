@@ -1,12 +1,12 @@
 package org.simple.auth.shadow.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.shadow.model.IAccount;
-import org.simple.auth.shadow.model.IClient;
 import org.simple.auth.shadow.model.IPersistentNetworkToken;
 import org.simple.auth.shadow.model.IShadowToken;
-import org.simple.auth.shadow.repository.IPersistenNetworkTokenRepository;
 
 import java.util.Date;
 
@@ -14,13 +14,14 @@ import java.util.Date;
 /**
  * @author Peter Schneider-Manzell
  */
+@Slf4j
 public class AuthService {
 
     private static IRepositoryService repositoryService;
 
 
     public IShadowToken getShadowToken(IClient client, INetworkToken networkToken, String networkUserId) throws OAuthException {
-        IPersistentNetworkToken persistentNetworkToken = getMatchingPersistenNetworkTokenRepository(networkToken.getClass()).load(networkToken.getNetwork(), networkUserId);
+        IPersistentNetworkToken persistentNetworkToken = repositoryService.getPersistenNetworkTokenRepository().load(networkToken.getNetwork(), networkUserId);
         IAccount account;
         if (persistentNetworkToken == null) {
             account = repositoryService.getAccountRepository().createTransient();
@@ -33,8 +34,12 @@ public class AuthService {
         return loadOrCreateShadowToken(account, client);
     }
 
+    public IShadowToken getShadowToken(String shadowAccessToken){
+        return repositoryService.getShadowTokenRepository().loadByAccessToken(shadowAccessToken);
+    }
+
     public IShadowToken loadOrCreateShadowToken(IAccount account, IClient client) {
-        IShadowToken token = repositoryService.getShadowTokenRepository().loadByAccountAndClient(account.getId(), client.getClientId());
+        IShadowToken token = repositoryService.getShadowTokenRepository().loadByAccountAndClient(account.getId(), client.clientId());
         if (token != null) {
             return token;
         }
@@ -47,24 +52,17 @@ public class AuthService {
 
 
     public IPersistentNetworkToken createPersistentNetworkToken(IAccount account, INetworkToken networkToken, String networkUserId) throws OAuthException {
-        IPersistenNetworkTokenRepository persistenNetworkTokenRepository = getMatchingPersistenNetworkTokenRepository(networkToken.getClass());
-        return persistenNetworkTokenRepository.create(account.getId(), networkUserId, networkToken);
+        return repositoryService.getPersistenNetworkTokenRepository().create(account.getId(), networkUserId, networkToken);
     }
 
-    private IPersistenNetworkTokenRepository getMatchingPersistenNetworkTokenRepository(Class<? extends INetworkToken> networkTokenType) throws OAuthException {
-        for (IPersistenNetworkTokenRepository iPersistenNetworkTokenRepository : repositoryService.getPersistenNetworkTokenRepositories()) {
-            if (iPersistenNetworkTokenRepository.supports(networkTokenType)) {
-                return iPersistenNetworkTokenRepository;
-            }
-        }
-        throw new OAuthException(String.format("No PersistenNetworkTokenRepository for type [%s] defined!",networkTokenType.getSimpleName()));
-    }
 
-    public boolean isShadowTokenValid(String shadowAccessToken) {
-        IShadowToken iShadowToken = repositoryService.getShadowTokenRepository().loadByAccessToken(shadowAccessToken);
+
+    public boolean isShadowTokenValid(IShadowToken iShadowToken) {
         if (iShadowToken == null) {
+            log.info("ShadowToken is invalid, because no shadow token presented");
             return false;
-        } else if (iShadowToken.getExpiresAt().after(new Date())) {
+        } else if (iShadowToken.getExpiresAt().before(new Date())) {
+            log.info("ShadowToken is invalid, because it is outdated (expiry {})",iShadowToken.getExpiresAt());
             return false;
         }
         return true;

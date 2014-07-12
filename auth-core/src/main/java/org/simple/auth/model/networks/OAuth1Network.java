@@ -6,12 +6,8 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.simple.auth.model.Network;
-import org.simple.auth.model.OAuthException;
-import org.simple.auth.model.v1.OAuth1AccessToken;
-import org.simple.auth.model.v1.OAuth1ClientConfig;
+import org.simple.auth.model.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -22,7 +18,7 @@ import java.util.Map;
  * Created by Josip.Mihelko @ Gmail
  */
 @Slf4j
-public class DefaultOAuth1Network extends Network<OAuth1AccessToken, OAuth1ClientConfig> {
+public class OAuth1Network extends Network {
     private final String requestTokenUrl;
     private final String authUrl;
     private final String accessTokenUrl;
@@ -31,14 +27,13 @@ public class DefaultOAuth1Network extends Network<OAuth1AccessToken, OAuth1Clien
     protected final Map<String, String> defaultHeaders = new HashMap<>();
 
 
-    public DefaultOAuth1Network(String name, OAuth1ClientConfig clientConfig, String requestTokenUrl, String authUrl, String accessTokenUrl) {
+    public OAuth1Network(String name, ClientConfig clientConfig, String requestTokenUrl, String authUrl, String accessTokenUrl) {
         super(name, clientConfig);
         this.requestTokenUrl = requestTokenUrl;
         this.authUrl = authUrl;
         this.accessTokenUrl = accessTokenUrl;
 
     }
-
 
 
     @Override
@@ -66,7 +61,7 @@ public class DefaultOAuth1Network extends Network<OAuth1AccessToken, OAuth1Clien
     }
 
     @Override
-    public OAuth1AccessToken accessToken(HttpServletRequest callbackRequest) throws OAuthException {
+    public INetworkToken accessToken(HttpServletRequest callbackRequest) throws OAuthException {
         try {
             String requestToken = (String) callbackRequest.getSession().getAttribute(name + "_req_token");
             String requestTokenSecret = (String) callbackRequest.getSession().getAttribute(name + "_req_token_secret");
@@ -83,19 +78,19 @@ public class DefaultOAuth1Network extends Network<OAuth1AccessToken, OAuth1Clien
             getAccessToken.verifier = oauthVerifier;
             getAccessToken.consumerKey = clientConfig.clientId();
             OAuthCredentialsResponse accessTokenResponse = getAccessToken.execute();
-            return new OAuth1AccessToken(name, accessTokenResponse.token, accessTokenResponse.tokenSecret);
+            return AccessToken.oAuth1Token(name, accessTokenResponse.token, accessTokenResponse.tokenSecret);
         } catch (IOException e) {
             throw new OAuthException(e.getMessage());
         }
     }
 
     @Override
-    public OAuth1AccessToken refreshToken(OAuth1AccessToken token) throws OAuthException {
+    public INetworkToken refreshToken(INetworkToken token) throws OAuthException {
         throw new OAuthException("Refreshing not part of OAuth 1.0");
     }
 
     @Override
-    protected HttpResponse executeGet(String url, OAuth1AccessToken token, boolean withJsonParser) throws OAuthException {
+    protected HttpResponse executeGet(String url, INetworkToken token, boolean withJsonParser) throws OAuthException {
         try {
             OAuthHmacSigner signer = new OAuthHmacSigner();
             signer.clientSharedSecret = clientConfig.secret();
@@ -120,7 +115,7 @@ public class DefaultOAuth1Network extends Network<OAuth1AccessToken, OAuth1Clien
 
 
     @Override
-    public HttpResponse post(String url, OAuth1AccessToken token) throws OAuthException {
+    public HttpResponse post(String url, INetworkToken token) throws OAuthException {
         return null;
     }
 

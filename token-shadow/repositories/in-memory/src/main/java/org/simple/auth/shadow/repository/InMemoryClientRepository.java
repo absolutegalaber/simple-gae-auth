@@ -1,5 +1,6 @@
 package org.simple.auth.shadow.repository;
 
+import org.simple.auth.service.builder.ClientBuilder;
 import org.simple.auth.shadow.model.InMemoryClient;
 
 import java.util.Map;
@@ -19,11 +20,17 @@ public class InMemoryClientRepository implements IClientRepository<InMemoryClien
 
     @Override
     public void save(InMemoryClient client) {
-        clients.put(client.getClientId(), client);
+        clients.put(client.clientId(), client);
     }
 
     public void registerClients() {
-        InMemoryClient localClient = new InMemoryClient("local_test", "local_test_pwd", "http://localhost/example/callback");
-        clients.put(localClient.getClientId(), localClient);
+        createLocalTestClient();
+    }
+
+    private void createLocalTestClient() {
+        ClientBuilder clientBuilder = new ClientBuilder();
+        clientBuilder.clientId("local_test").secret("local_test_pwd").callbackUrl("http://localhost:8080/");
+        InMemoryClient localClient = clientBuilder.build(new InMemoryClient());
+        save(localClient);
     }
 }

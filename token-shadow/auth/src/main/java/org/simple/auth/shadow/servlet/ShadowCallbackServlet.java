@@ -2,10 +2,10 @@ package org.simple.auth.shadow.servlet;
 
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.BasicUserProfile;
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.servlet.AbstractProfileLoadingAuthorizationCallback;
-import org.simple.auth.shadow.model.IClient;
 import org.simple.auth.shadow.model.IShadowToken;
 import org.simple.auth.shadow.service.AuthService;
 import org.simple.auth.shadow.service.ClientService;

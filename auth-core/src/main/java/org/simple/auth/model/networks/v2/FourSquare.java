@@ -1,7 +1,7 @@
 package org.simple.auth.model.networks.v2;
 
 import com.google.api.client.auth.oauth2.Credential;
-import org.simple.auth.model.ClientConfig;
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.networks.OAuth2Network;
 import org.simple.auth.model.v2.ConfigurableQueryParameterAccessMethod;
 
@@ -15,7 +15,7 @@ public class FourSquare extends OAuth2Network {
     private static final String ACCESS_TOKEN_URL = "https://foursquare.com/oauth2/access_token";
     private static final String PROFILE_URL = "https://api.foursquare.com/v2/users/self";
 
-    public FourSquare(ClientConfig config) {
+    public FourSquare(IClient config) {
         super(
                 NAME,
                 config,

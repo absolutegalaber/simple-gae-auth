@@ -1,7 +1,7 @@
 package org.simple.auth.model.networks.v2;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
-import org.simple.auth.model.ClientConfig;
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.networks.ProfileAwareOAuth2Network;
 
 /**
@@ -14,7 +14,7 @@ public class Google extends ProfileAwareOAuth2Network<GoogleProfile> {
     private static final String ACCESS_TOKEN_URL = "https://accounts.google.com/o/oauth2/token";
     private static final String PROFILE_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
 
-    public Google(ClientConfig config) {
+    public Google(IClient config) {
         super(
                 NAME,
                 config,

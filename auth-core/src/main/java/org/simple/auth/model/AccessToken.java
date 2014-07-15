@@ -1,10 +1,9 @@
 package org.simple.auth.model;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -12,8 +11,6 @@ import java.util.Date;
 /**
  * Created by Josip.Mihelko @ Gmail
  */
-@ToString
-@EqualsAndHashCode
 public class AccessToken implements INetworkToken {
     @Getter
     protected final String network;
@@ -73,5 +70,33 @@ public class AccessToken implements INetworkToken {
     @Override
     public Date getExpiresAt() {
         return expiresAt.orNull();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccessToken that = (AccessToken) o;
+        return Objects.equal(accessToken, that.accessToken)
+                && Objects.equal(expiresAt, that.expiresAt)
+                && Objects.equal(network, that.network)
+                && Objects.equal(refreshToken, that.refreshToken)
+                && Objects.equal(tokenSecret, that.tokenSecret)
+                && Objects.equal(version, that.version);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(network, accessToken, network, refreshToken, tokenSecret, expiresAt, version);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("network", network)
+                .add("version", version)
+                .add("accessToken", accessToken)
+                .toString();
     }
 }

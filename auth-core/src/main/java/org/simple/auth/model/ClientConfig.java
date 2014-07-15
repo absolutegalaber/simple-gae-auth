@@ -3,6 +3,7 @@ package org.simple.auth.model;
 import com.google.common.base.Optional;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -18,7 +19,7 @@ public class ClientConfig implements IClient {
     @Setter
     private Optional<String> state;
     @Setter
-    private Optional<Collection<String>> scope;
+    private Optional<? extends Collection<String>> scope;
 
     public String clientId() {
         return clientId;
@@ -33,10 +34,13 @@ public class ClientConfig implements IClient {
     }
 
     public String state() {
-        return state.orNull();
+        return state.or("");
     }
 
     public Collection<String> scope() {
-        return scope.orNull();
+        if (scope.isPresent()) {
+            return scope.get();
+        }
+        return new ArrayList<>();
     }
 }

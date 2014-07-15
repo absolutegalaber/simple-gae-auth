@@ -27,7 +27,7 @@ public class OAuth1Network extends Network {
     protected final Map<String, String> defaultHeaders = new HashMap<>();
 
 
-    public OAuth1Network(String name, ClientConfig clientConfig, String requestTokenUrl, String authUrl, String accessTokenUrl) {
+    public OAuth1Network(String name, IClient clientConfig, String requestTokenUrl, String authUrl, String accessTokenUrl) {
         super(name, clientConfig);
         this.requestTokenUrl = requestTokenUrl;
         this.authUrl = authUrl;

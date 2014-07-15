@@ -10,7 +10,7 @@ public class ProfileAwareOAuth2Network<P extends BasicUserProfile> extends OAuth
     private Class<P> profileClass;
     private final Optional<String> profileUrl;
 
-    public ProfileAwareOAuth2Network(String name, ClientConfig config, String authUrl, String accessTokenUrl, String profileUrl, Class<P> profileClass) {
+    public ProfileAwareOAuth2Network(String name, IClient config, String authUrl, String accessTokenUrl, String profileUrl, Class<P> profileClass) {
         super(name, config, authUrl, accessTokenUrl);
         this.profileUrl = Optional.of(profileUrl);
         this.profileClass = profileClass;

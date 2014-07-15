@@ -19,9 +19,9 @@ public abstract class Network {
     @Getter
     protected final String name;
     @Getter
-    protected final ClientConfig clientConfig;
+    protected final IClient clientConfig;
 
-    protected Network(String name, ClientConfig clientConfig) {
+    protected Network(String name, IClient clientConfig) {
         this.name = name;
         this.clientConfig = clientConfig;
     }

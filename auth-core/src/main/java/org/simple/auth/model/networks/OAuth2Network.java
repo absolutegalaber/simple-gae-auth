@@ -28,7 +28,7 @@ public class OAuth2Network extends Network {
     protected final Map<String, String> defaultHeaders = new HashMap<>();
     protected Boolean isAccessTokenResponseJson = true;
 
-    public OAuth2Network(String name, ClientConfig config, String authUrl, String accessTokenUrl) {
+    public OAuth2Network(String name, IClient config, String authUrl, String accessTokenUrl) {
         super(name, config);
         this.authUrl = authUrl;
         this.accessTokenUrl = accessTokenUrl;

@@ -1,6 +1,6 @@
 package org.simple.auth.model.networks.v2;
 
-import org.simple.auth.model.ClientConfig;
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.networks.ProfileAwareOAuth2Network;
 
 /**
@@ -13,7 +13,7 @@ public class Facebook extends ProfileAwareOAuth2Network<FacebookProfile> {
     private static final String ACCESS_TOKEN_URL = "https://graph.facebook.com/oauth/access_token";
     private static final String PROFILE_URL = "https://graph.facebook.com/v2.0/me";
 
-    public Facebook(ClientConfig config) {
+    public Facebook(IClient config) {
         super(
                 NAME,
                 config,

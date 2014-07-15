@@ -1,7 +1,7 @@
 package org.simple.auth.model.networks.v2;
 
 import com.google.api.client.auth.oauth2.Credential;
-import org.simple.auth.model.ClientConfig;
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.networks.OAuth2Network;
 import org.simple.auth.model.v2.ConfigurableQueryParameterAccessMethod;
 
@@ -14,7 +14,7 @@ public class LinkedIn extends OAuth2Network {
     private static final String ACCESS_TOKEN_URL = "https://www.linkedin.com/uas/oauth2/accessToken";
     private static final String PROFILE_URL = "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,picture-url,email-address)";
 
-    public LinkedIn(ClientConfig config) {
+    public LinkedIn(IClient config) {
         super(
                 NAME, config,
                 AUTH_URL,

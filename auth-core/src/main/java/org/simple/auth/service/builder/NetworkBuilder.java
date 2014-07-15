@@ -1,5 +1,6 @@
 package org.simple.auth.service.builder;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.simple.auth.model.BasicUserProfile;
 import org.simple.auth.model.ClientConfig;
@@ -10,6 +11,7 @@ import org.simple.auth.model.networks.ProfileAwareOAuth2Network;
 import org.simple.auth.model.networks.v1.Twitter;
 import org.simple.auth.model.networks.v2.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -129,6 +131,16 @@ public class NetworkBuilder {
     }
 
     public ProfileAwareOAuth2Network<GoogleProfile> google(ClientConfig clientConfig) {
+        return new Google(clientConfig);
+    }
+
+    public ProfileAwareOAuth2Network<GoogleProfile> google(String clientId, String secret, String callback, String state, String... scope) {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setClientId(clientId);
+        clientConfig.setSecret(secret);
+        clientConfig.setCallbackUrl(callback);
+        clientConfig.setState(Optional.fromNullable(state));
+        clientConfig.setScope(Optional.of(Arrays.asList(scope)));
         return new Google(clientConfig);
     }
 

@@ -130,11 +130,11 @@ public class NetworkBuilder {
         return toReturn;
     }
 
-    public ProfileAwareOAuth2Network<GoogleProfile> google(ClientConfig clientConfig) {
+    public Google google(ClientConfig clientConfig) {
         return new Google(clientConfig);
     }
 
-    public ProfileAwareOAuth2Network<GoogleProfile> google(String clientId, String secret, String callback, String state, String... scope) {
+    public Google google(String clientId, String secret, String callback, String state, String... scope) {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setClientId(clientId);
         clientConfig.setSecret(secret);
@@ -144,7 +144,17 @@ public class NetworkBuilder {
         return new Google(clientConfig);
     }
 
-    public ProfileAwareOAuth2Network<FacebookProfile> facebook(ClientConfig clientConfig) {
+    public Facebook facebook(ClientConfig clientConfig) {
+        return new Facebook(clientConfig);
+    }
+
+    public Facebook facebook(String clientId, String secret, String callback, String state, String... scope) {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setClientId(clientId);
+        clientConfig.setSecret(secret);
+        clientConfig.setCallbackUrl(callback);
+        clientConfig.setState(Optional.fromNullable(state));
+        clientConfig.setScope(Optional.of(Arrays.asList(scope)));
         return new Facebook(clientConfig);
     }
 

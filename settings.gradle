@@ -1,6 +1,13 @@
 rootProject.name = 'simple-gae-auth'
 
-include 'auth-core', 'token-shadow:api','token-shadow:auth','token-shadow:repositories:in-memory','token-shadow:showcases:showcase-in-memory','example', "gae-showcase"
+include 'auth-core',
+        'token-shadow:api',
+        'token-shadow:auth',
+        'token-shadow:repositories:in-memory',
+        'token-shadow:repositories:objectify',
+        'token-shadow:showcases:showcase-in-memory',
+        'example',
+        'gae-showcase'
 
 //include ':auth-core'
 //include ':token-shadow'

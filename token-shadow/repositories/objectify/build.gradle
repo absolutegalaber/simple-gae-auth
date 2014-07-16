@@ -1,0 +1,21 @@
+description = 'Objectify implementation for simple auth repositories'
+apply plugin: 'maven'
+version = '0.1-SNAPSHOT'
+
+
+configurations { providedCompile }
+
+sourceSets.main.compileClasspath += configurations.providedCompile
+sourceSets.test.compileClasspath += configurations.providedCompile
+sourceSets.test.runtimeClasspath += configurations.providedCompile
+
+dependencies {
+    compile(
+            [
+                    project(':token-shadow:api'),
+                    'com.googlecode.objectify:objectify:5.0.2',
+                    'com.google.appengine:appengine-api-1.0-sdk:1.9.6'
+            ]
+    )
+    providedCompile 'javax.servlet:servlet-api:2.5'
+}

@@ -13,6 +13,7 @@ import org.simple.auth.shadow.service.ClientService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,15 +33,26 @@ public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCa
         log.info("Trying to detect client...");
         IClient client = clientService.fromSession(req);
         log.info("Found client, creating shadow token");
-        IShadowToken token = authService.getShadowToken(client, accessToken, userProfile.getNetworkId());
+        Serializable accountId = connectWithAccount(accessToken, userProfile);
+        IShadowToken token = authService.getShadowToken(client, accessToken, userProfile.getNetworkId(), accountId);
         redirect(client, token, req, resp);
+    }
 
+    /**
+     * Override this if you require account semantics.
+     *
+     * @param accessToken The network Token obtained from a Network (a.k.a. IdentityProvider).
+     * @param userProfile The BasicUserProfile obtained from a Network (a.k.a. IdentityProvider).
+     * @return A Account Id to be stored with the token and shadow token, if account semantics are required / desired.
+     */
+    protected Serializable connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile) {
+        return null;
     }
 
     protected void redirect(IClient client, IShadowToken token, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("Generating redirect URI...");
         String redirectURI = generateRedirectURI(client, token, req);
-        log.info("Redirecting to {}",redirectURI);
+        log.info("Redirecting to {}", redirectURI);
         resp.sendRedirect(redirectURI);
     }
 
@@ -77,6 +89,6 @@ public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCa
 
     @Override
     public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
-       log.error("An error occured",authException);
+        log.error("An error occured", authException);
     }
 }

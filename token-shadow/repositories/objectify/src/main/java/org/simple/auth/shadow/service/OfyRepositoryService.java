@@ -7,21 +7,14 @@ import org.simple.auth.shadow.repository.*;
  * Created by Josip.Mihelko @ Gmail
  */
 public class OfyRepositoryService implements IRepositoryService {
-    private final OfyAccountRepository ofyAccountRepository;
     private final OfyShadowTokenRepository ofyShadowTokenRepository;
     private final OfyClientRepository ofyClientRepository;
     private final OfyPersistentNetworkTokenRepository ofyPersistentNetworkTokenRepository;
 
     public OfyRepositoryService(ObjectifyFactory objectifyFactory) {
-        ofyAccountRepository = new OfyAccountRepository(objectifyFactory);
         ofyShadowTokenRepository = new OfyShadowTokenRepository(objectifyFactory);
         ofyClientRepository = new OfyClientRepository(objectifyFactory);
         ofyPersistentNetworkTokenRepository = new OfyPersistentNetworkTokenRepository(objectifyFactory);
-    }
-
-    @Override
-    public IAccountRepository getAccountRepository() {
-        return ofyAccountRepository;
     }
 
     @Override

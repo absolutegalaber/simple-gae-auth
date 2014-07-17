@@ -15,11 +15,12 @@ import java.util.Date;
  * @author Peter Schneider-Manzell
  */
 @Slf4j
-public class AuthService {
+public class AuthService implements IAuthService{
 
     private static IRepositoryService repositoryService;
 
 
+    @Override
     public IShadowToken getShadowToken(IClient client, INetworkToken networkToken, String networkUserId) throws OAuthException {
         IPersistentNetworkToken persistentNetworkToken = repositoryService.getPersistenNetworkTokenRepository().load(networkToken.getNetwork(), networkUserId);
         IAccount account;
@@ -34,10 +35,12 @@ public class AuthService {
         return loadOrCreateShadowToken(account, client);
     }
 
+    @Override
     public IShadowToken getShadowToken(String shadowAccessToken){
         return repositoryService.getShadowTokenRepository().loadByAccessToken(shadowAccessToken);
     }
 
+    @Override
     public IShadowToken loadOrCreateShadowToken(IAccount account, IClient client) {
         IShadowToken token = repositoryService.getShadowTokenRepository().loadByAccountAndClient(account.getId(), client.clientId());
         if (token != null) {
@@ -51,12 +54,14 @@ public class AuthService {
     }
 
 
+    @Override
     public IPersistentNetworkToken createPersistentNetworkToken(IAccount account, INetworkToken networkToken, String networkUserId) throws OAuthException {
         return repositoryService.getPersistenNetworkTokenRepository().create(account.getId(), networkUserId, networkToken);
     }
 
 
 
+    @Override
     public boolean isShadowTokenValid(IShadowToken iShadowToken) {
         if (iShadowToken == null) {
             log.info("ShadowToken is invalid, because no shadow token presented");

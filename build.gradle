@@ -16,6 +16,7 @@ ext {
 subprojects {
     apply plugin: 'groovy'
     apply plugin:'java'
+    apply plugin:'coveralls'
 
     group = 'org.simple.auth'
 
@@ -34,6 +35,17 @@ subprojects {
     }
 
 }
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.6.1'
+    }
+}
+
 
 // --- configuration ----------------------------------------------------------
 

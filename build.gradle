@@ -1,5 +1,21 @@
+allprojects {
+    version = rootProject.version
+
+    ext.isSnapshot = version.endsWith("-SNAPSHOT")
+    ext.isSubproject = project.parent != null
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+ext {
+    jacocoVersion = '0.7.1.201405082137'
+}
+
 subprojects {
     apply plugin: 'groovy'
+    apply plugin:'java'
 
     group = 'org.simple.auth'
 
@@ -18,3 +34,110 @@ subprojects {
     }
 
 }
+
+// --- configuration ----------------------------------------------------------
+
+configure(javaModules()) {
+
+    // JaCoCo
+
+    configurations {
+        jacoco
+    }
+
+    dependencies {
+        jacoco "org.jacoco:org.jacoco.agent:${jacocoVersion}:runtime@jar"
+    }
+
+
+    // Test: configure all tests, including integration
+
+    tasks.withType(Test) { testTask ->
+        configure(testTask) {
+            println("Configuring testTask for "+project.name)
+            beforeTest { descriptor ->
+                logger.lifecycle("\t"+project.name+"\t" + descriptor)
+            }
+
+            reports.html.enabled = true
+
+            systemProperties = System.properties
+
+            List<String> excludes = ['*Test*', '*.?', '*Foo*', '*.data.*', '*.tst*']
+            jacocoAgentJar = configurations.jacoco.asPath
+            jvmArgs "-javaagent:${jacocoAgentJar}=destfile=${project.buildDir.path}/jacoco/${testTask.name}.exec," +
+                    "sessionid=HSServ,append=false,excludes=${excludes.join(':')},includes=org.simple.*",
+                    '-Djacoco=true',
+                    '-Xms128m',
+                    '-Xmx512m',
+                    '-XX:MaxPermSize=128m',
+                    '-Duser.timezone=GMT'
+        }
+    }
+
+}
+
+
+apply plugin: 'project-report'
+
+configurations {
+    jacoco {
+        description 'JARs required for aggregate JacocoReport task.'
+    }
+}
+dependencies {
+    jacoco "org.jacoco:org.jacoco.ant:${jacocoVersion}"
+}
+
+
+
+def javaBundleModulesSources = javaModules().sourceSets.main
+
+task jacocoReport() {
+    group = 'Reporting'
+    description = 'Generates JaCoCo coverage reports for unit tests.'
+
+    ant.taskdef(
+            name:'jacocoreport',
+            classname: 'org.jacoco.ant.ReportTask',
+            classpath: configurations.jacoco.asPath
+    )
+
+    def coverageDir = "$buildDir/reports/jacoco/test/"
+    ant.mkdir dir: coverageDir
+
+    inputs.files(javaBundleModulesSources.allSource + javaBundleModulesSources.compileClasspath)
+    outputs.dir file(coverageDir)
+
+    doLast {
+        ant.jacocoreport {
+            executiondata {
+                javaModules().each {submodule ->
+                    fileset(dir: "${submodule.buildDir}/jacoco") {
+                        include name: '*.exec'
+                    }
+                }
+            }
+            structure(name: 'Simple OAuth Coverage Report') {
+                javaModules().each {submodule ->
+                    group(name: submodule.name) {
+                        classfiles {
+                            fileset dir: "${submodule.sourceSets.main.output.classesDir}"
+                        }
+                    }
+                }
+            }
+            html destdir: coverageDir
+            xml destfile: coverageDir + '/jacocoTestReport.xml'
+        }
+    }
+}
+
+
+
+
+def javaModules() {
+    return subprojects.findAll {
+        it.name.contains("auth")
+        }
+    }

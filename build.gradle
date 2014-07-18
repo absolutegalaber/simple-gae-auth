@@ -150,7 +150,12 @@ task jacocoReport() {
 }
 
 ext {
-    coveralls.sourceDirs = javaModules().sourceSets.main.java.srcDirs
+    List<File> targetSrcDirs = new ArrayList<File>()
+
+    for (main in javaBundleModulesSources) {
+        targetSrcDirs += main.java.srcDirs
+    }
+    coveralls.sourceDirs = targetSrcDirs
 }
 
 

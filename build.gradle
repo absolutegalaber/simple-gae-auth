@@ -78,7 +78,7 @@ configure(javaModules()) {
             systemProperties = System.properties
 
             List<String> excludes = ['*Test*', '*.?', '*Foo*', '*.data.*', '*.tst*']
-            jacocoAgentJar = configurations.jacoco.asPath
+            ext.jacocoAgentJar = configurations.jacoco.asPath
             jvmArgs "-javaagent:${jacocoAgentJar}=destfile=${project.buildDir.path}/jacoco/${testTask.name}.exec," +
                     "sessionid=HSServ,append=false,excludes=${excludes.join(':')},includes=org.simple.*",
                     '-Djacoco=true',
@@ -149,6 +149,9 @@ task jacocoReport() {
     }
 }
 
+ext {
+    coveralls.sourceDirs = javaModules().sourceSets.main.java.srcDirs
+}
 
 
 

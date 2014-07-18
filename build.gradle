@@ -13,10 +13,12 @@ ext {
     jacocoVersion = '0.7.1.201405082137'
 }
 
+apply plugin:'coveralls'
+
 subprojects {
     apply plugin: 'groovy'
     apply plugin:'java'
-    apply plugin:'coveralls'
+
 
     group = 'org.simple.auth'
 
@@ -122,6 +124,7 @@ task jacocoReport() {
     outputs.dir file(coverageDir)
 
     doLast {
+        logger.lifecycle("Creating jacoco reports...")
         ant.jacocoreport {
             executiondata {
                 javaModules().each {submodule ->
@@ -142,6 +145,7 @@ task jacocoReport() {
             html destdir: coverageDir
             xml destfile: coverageDir + '/jacocoTestReport.xml'
         }
+        logger.lifecycle("Finished creating jacoco reports")
     }
 }
 

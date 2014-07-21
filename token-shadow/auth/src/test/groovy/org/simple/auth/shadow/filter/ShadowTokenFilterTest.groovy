@@ -1,6 +1,7 @@
 package org.simple.auth.shadow.filter
 
 import com.google.common.base.Optional
+import org.simple.auth.shadow.filter.ShadowTokenFilter
 import org.simple.auth.shadow.model.IShadowToken
 import org.simple.auth.shadow.service.IAuthService
 import spock.lang.Specification

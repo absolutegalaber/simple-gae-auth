@@ -61,22 +61,22 @@ task functionalTest(type:Test){
 dependencies {
     compile(
             [
-                    project(':token-shadow:repositories:in-memory'),
+                    project(':token-shadow:repositories:in-memory'),project(':fake-oauth-provider')
             ]
     )
     compile 'org.slf4j:slf4j-simple:1.7.7'
     providedCompile 'javax.servlet:servlet-api:2.5'
-    functionalTest 'org.apache.httpcomponents:httpclient:4.3.4'
+    functionalTest([ 'org.apache.httpcomponents:httpclient:4.3.4'])
 }
 
 jettyRun.contextPath = '/'
 jettyRun.doFirst {
     logger.quiet "Setting variables..."
-    System.setProperty("simpleauthexample.google.scope", project.'simpleauthexample.google.scope')
-    System.setProperty("simpleauthexample.google.clientId", project.'simpleauthexample.google.clientId')
-    System.setProperty("simpleauthexample.google.secret", project.'simpleauthexample.google.secret')
-    System.setProperty("simpleauthexample.google.callbackUrl", project.'simpleauthexample.google.callbackUrl')
-    System.setProperty("simpleauthexample.google.state", project.'simpleauthexample.google.state')
+    System.setProperty("simpleauthexample.fake.scope", 'email')
+    System.setProperty("simpleauthexample.fake.clientId", 'fake_client_id')
+    System.setProperty("simpleauthexample.fake.secret",'fake_client_secret')
+    System.setProperty("simpleauthexample.fake.callbackUrl", 'http://localhost:8088/oauth2Callback')
+    System.setProperty("simpleauthexample.fake.state", 'fake_state')
 
 
 }

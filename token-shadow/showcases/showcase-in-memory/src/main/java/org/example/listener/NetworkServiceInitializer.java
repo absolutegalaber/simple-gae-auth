@@ -1,7 +1,10 @@
 package org.example.listener;
 
+import org.simple.auth.fakeoauth.FakeOauthClientConfig;
 import org.simple.auth.listener.AbstractNetworkServiceInitializer;
+import org.simple.auth.model.IClient;
 import org.simple.auth.model.Network;
+import org.simple.auth.model.networks.OAuth2Network;
 import org.simple.auth.model.networks.v2.Google;
 import org.simple.auth.service.NetworkService;
 import org.simple.auth.service.builder.v2.SystemPropertiesOAuth2ClientConfig;
@@ -17,7 +20,8 @@ public class NetworkServiceInitializer extends AbstractNetworkServiceInitializer
     public void configureNetworks(NetworkService networkService) {
         String propertyPrefix = "simpleauthexample";
         List<Network> networks = new ArrayList<>();
-        networks.add(new Google(new SystemPropertiesOAuth2ClientConfig("google", propertyPrefix)));
+        IClient config = new SystemPropertiesOAuth2ClientConfig("fake", propertyPrefix);
+        networks.add(new FakeOauthClientConfig(config));
         networkService.configureNetworks(networks);
     }
 }

@@ -34,7 +34,7 @@ public abstract class AbstractShadowCallbackServlet extends AbstractProfileLoadi
         log.info("Trying to detect client...");
         IClient client = clientService.fromSession(req);
         log.info("Found client, creating shadow token");
-        Serializable accountId = connectWithAccount(accessToken, userProfile);
+        Serializable accountId = connectWithAccount(accessToken, userProfile, req);
         Preconditions.checkNotNull(accountId, "An account Id must be provided!");
         IShadowToken token = authService.getShadowToken(client, accessToken, userProfile.getNetworkId(), accountId);
         redirect(client, token, req, resp);
@@ -45,9 +45,10 @@ public abstract class AbstractShadowCallbackServlet extends AbstractProfileLoadi
      *
      * @param accessToken The network Token obtained from a Network (a.k.a. IdentityProvider).
      * @param userProfile The BasicUserProfile obtained from a Network (a.k.a. IdentityProvider).
+     * @param request     The oroginal HttpServlet Callback Request.
      * @return A Account Id to be stored with the token and shadow token, if account semantics are required / desired.
      */
-    protected abstract Serializable connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile);
+    protected abstract Serializable connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest request);
 
     protected void redirect(IClient client, IShadowToken token, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("Generating redirect URI...");

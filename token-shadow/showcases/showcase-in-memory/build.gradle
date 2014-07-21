@@ -20,6 +20,43 @@ repositories {
     mavenLocal()
 }
 
+configurations {
+    functionalTest
+}
+
+
+sourceSets {
+    functionalTest {
+        java.srcDirs= [file("src/functionalTest/java")]
+        resources.srcDirs= [file("src/functionalTest/resources")]
+        compileClasspath= sourceSets.main.output+configurations.testRuntime
+        runtimeClasspath=output + compileClasspath
+    }
+}
+
+jettyRun.httpPort = 8088
+jettyRun.stopPort = 8081
+jettyRun.stopKey = 'stopKey'
+jettyStop.stopPort = 8088
+jettyStop.stopPort = 8081
+jettyStop.stopKey = 'stopKey'
+
+task functionalTest(type:Test){
+
+    description = "Runs the functional tests."
+    group = "verification"
+    testClassesDir = sourceSets.functionalTest.output.classesDir
+    classpath=sourceSets.functionalTest.runtimeClasspath
+    destination=file("${testResultsDir}/functional")
+
+    doFirst {
+        jettyRun.daemon = true
+        jettyRun.execute()
+    }
+    doLast {
+        jettyStop.execute()
+    }
+}
 
 dependencies {
     compile(
@@ -29,6 +66,7 @@ dependencies {
     )
     compile 'org.slf4j:slf4j-simple:1.7.7'
     providedCompile 'javax.servlet:servlet-api:2.5'
+    functionalTest 'org.apache.httpcomponents:httpclient:4.3.4'
 }
 
 jettyRun.contextPath = '/'

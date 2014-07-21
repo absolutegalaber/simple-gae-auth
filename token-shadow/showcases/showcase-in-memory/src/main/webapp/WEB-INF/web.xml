@@ -13,7 +13,7 @@
 
     <servlet>
         <servlet-name>authorizationCallbackServlet</servlet-name>
-        <servlet-class>org.simple.auth.shadow.servlet.ShadowCallbackServlet</servlet-class>
+        <servlet-class>org.example.servlet.ShadowCallbackServlet</servlet-class>
     </servlet>
 
     <servlet>

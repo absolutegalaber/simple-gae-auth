@@ -1,5 +1,6 @@
 package org.simple.auth.shadow.servlet;
 
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.BasicUserProfile;
 import org.simple.auth.model.IClient;
@@ -22,7 +23,7 @@ import java.util.Map;
  * @author Peter Schneider-Manzell
  */
 @Slf4j
-public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCallback {
+public abstract class AbstractShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCallback {
 
     ClientService clientService = new ClientService();
     AuthService authService = new AuthService();
@@ -34,6 +35,7 @@ public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCa
         IClient client = clientService.fromSession(req);
         log.info("Found client, creating shadow token");
         Serializable accountId = connectWithAccount(accessToken, userProfile);
+        Preconditions.checkNotNull(accountId, "An account Id must be provided!");
         IShadowToken token = authService.getShadowToken(client, accessToken, userProfile.getNetworkId(), accountId);
         redirect(client, token, req, resp);
     }
@@ -45,9 +47,7 @@ public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCa
      * @param userProfile The BasicUserProfile obtained from a Network (a.k.a. IdentityProvider).
      * @return A Account Id to be stored with the token and shadow token, if account semantics are required / desired.
      */
-    protected Serializable connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile) {
-        return null;
-    }
+    protected abstract Serializable connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile);
 
     protected void redirect(IClient client, IShadowToken token, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("Generating redirect URI...");

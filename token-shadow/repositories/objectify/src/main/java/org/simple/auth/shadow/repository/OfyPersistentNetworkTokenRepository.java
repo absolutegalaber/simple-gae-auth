@@ -18,22 +18,21 @@ public class OfyPersistentNetworkTokenRepository extends BaseOfyRepository imple
     }
 
     @Override
-    public IPersistentNetworkToken load(String network, Serializable networkUserId) {
+    public IPersistentNetworkToken load(String network, Serializable accountId) {
         return ofy().load().type(OfyPersistentNetworkToken.class)
                 .filter("network", network)
-                .filter("networkUserId", networkUserId)
+                .filter("accountId", accountId)
                 .first()
                 .now();
     }
 
     @Override
-    public IPersistentNetworkToken create(Serializable accountId, Serializable networkUserid, INetworkToken networkToken) {
+    public IPersistentNetworkToken create(Serializable accountId, INetworkToken networkToken) {
         OfyPersistentNetworkToken token = new OfyPersistentNetworkToken();
         token.setAccessToken(networkToken.getAccessToken());
         token.setAccountId((String) accountId);
         token.setExpiresAt(networkToken.getExpiresAt());
         token.setNetwork(networkToken.getNetwork());
-        token.setNetworkUserId((String) networkUserid);
         token.setRefreshToken(networkToken.getRefreshToken());
         token.setTokenSecret(networkToken.getTokenSecret());
         Key<OfyPersistentNetworkToken> saved = ofy().save().entity(token).now();

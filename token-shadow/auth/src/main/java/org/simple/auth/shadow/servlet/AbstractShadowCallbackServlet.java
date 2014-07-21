@@ -7,6 +7,7 @@ import org.simple.auth.model.IClient;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.servlet.AbstractProfileLoadingAuthorizationCallback;
+import org.simple.auth.shadow.model.IPersistentNetworkToken;
 import org.simple.auth.shadow.model.IShadowToken;
 import org.simple.auth.shadow.service.AuthService;
 import org.simple.auth.shadow.service.ClientService;
@@ -36,7 +37,8 @@ public abstract class AbstractShadowCallbackServlet extends AbstractProfileLoadi
         log.info("Found client, creating shadow token");
         Serializable accountId = connectWithAccount(accessToken, userProfile, req);
         Preconditions.checkNotNull(accountId, "An account Id must be provided!");
-        IShadowToken token = authService.getShadowToken(client, accessToken, userProfile.getNetworkId(), accountId);
+        IPersistentNetworkToken persistentNetworkToken = authService.persist(accessToken, connectWithAccount(accessToken, userProfile, req));
+        IShadowToken token = authService.getShadowToken(client, persistentNetworkToken);
         redirect(client, token, req, resp);
     }
 

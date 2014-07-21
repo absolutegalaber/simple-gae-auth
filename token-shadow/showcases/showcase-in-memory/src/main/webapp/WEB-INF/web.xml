@@ -28,7 +28,7 @@
 
     <servlet>
         <servlet-name>fakeAuthorizationServlet</servlet-name>
-        <servlet-class>org.simple.auth.fakeoauth.servlet.FakeOAuthProviderAuthorizationServlet</servlet-class>
+        <servlet-class>org.simple.auth.fakeoauth.servlet.FakeOauthProviderAuthorizationServlet</servlet-class>
         <init-param>
             <param-name>clientId</param-name>
             <param-value>fake_client_id</param-value>

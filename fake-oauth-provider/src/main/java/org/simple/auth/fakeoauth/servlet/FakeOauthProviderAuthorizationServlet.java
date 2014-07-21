@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Peter Schneider-Manzell
  */
 @Slf4j
-public class FakeOAuthProviderAuthorizationServlet extends HttpServlet {
+public class FakeOauthProviderAuthorizationServlet extends HttpServlet {
 
     private static ConcurrentHashMap<String, String> clientSecrets = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, String> clientRedirectURIs = new ConcurrentHashMap<>();

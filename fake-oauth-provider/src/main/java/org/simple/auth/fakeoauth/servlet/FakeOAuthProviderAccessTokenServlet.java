@@ -39,7 +39,7 @@ public class FakeOAuthProviderAccessTokenServlet extends HttpServlet {
         else if(code == null){
             sendError("Parameter code is required!", resp);
         }
-        else if(!FakeOAuthProviderAuthorizationServlet.isValidCode(code)){
+        else if(!FakeOauthProviderAuthorizationServlet.isValidCode(code)){
             sendError("Invalid code!", resp);
         }
         else if (redirectURI == null) {
@@ -50,8 +50,8 @@ public class FakeOAuthProviderAccessTokenServlet extends HttpServlet {
         } else if (clientSecret == null) {
             sendError("parameter client_secret is missing!", resp);
         } else {
-            String expectedSecret = FakeOAuthProviderAuthorizationServlet.getSecret(clientId);
-            String baseRedirectURI = FakeOAuthProviderAuthorizationServlet.getRedirectURI(clientId);
+            String expectedSecret = FakeOauthProviderAuthorizationServlet.getSecret(clientId);
+            String baseRedirectURI = FakeOauthProviderAuthorizationServlet.getRedirectURI(clientId);
             if (expectedSecret == null) {
                 sendError("Unknown client_id ", resp);
             } else if (!expectedSecret.equals(clientSecret)) {

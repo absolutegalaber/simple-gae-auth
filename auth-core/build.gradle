@@ -1,31 +1,10 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.6.1'
-    }
-}
-
 description = 'Simplest GAE OAuth'
 
-apply plugin: 'jacoco'
-apply plugin: 'coveralls'
 apply plugin: 'maven'
 version = '0.1-SNAPSHOT'
 
 
-jacoco {
-    toolVersion = "0.7.1.201405082137"
-}
 
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        csv.enabled false
-        html.destination "${buildDir}/coverage-reports"
-    }
-}
 
 repositories {
     mavenLocal()

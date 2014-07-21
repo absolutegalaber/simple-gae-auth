@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.simple.auth.shadow.model.IShadowToken;
 import org.simple.auth.shadow.service.AuthService;
+import org.simple.auth.shadow.service.IAuthService;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
 
 /**
@@ -18,9 +20,9 @@ import java.io.Serializable;
 @Slf4j
 public class ShadowTokenFilter implements Filter {
 
-    private static final String REQ_ACCOUNT_ID_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_account_id";
-    private static final String REQ_CLIENT_ID_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_client_id";
-    AuthService authService = new AuthService();
+    protected static final String REQ_ACCOUNT_ID_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_account_id";
+    protected static final String REQ_CLIENT_ID_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_client_id";
+    private IAuthService authService = new AuthService();
     private static final String BEARER_PREFIX = "Bearer ";
     private static final int ACCESS_TOKEN_START_INDEX = BEARER_PREFIX.length();
 
@@ -32,7 +34,8 @@ public class ShadowTokenFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        Optional<String> accessToken = extractAccessToken((HttpServletRequest) request);
+        Optional<String> authorizationHeader = extractAuthorizationHeader(((HttpServletRequest) request));
+        Optional<String> accessToken = extractAccessToken(authorizationHeader);
         IShadowToken iShadowToken = null;
         if (accessToken.isPresent()) {
             log.info("Found access token {}", accessToken.get());
@@ -40,26 +43,27 @@ public class ShadowTokenFilter implements Filter {
             log.info("Found shadow token {}", iShadowToken);
         }
         if (authService.isShadowTokenValid(iShadowToken)) {
-            request.setAttribute(REQ_ACCOUNT_ID_KEY, iShadowToken.getAccountId());
-            request.setAttribute(REQ_CLIENT_ID_KEY, iShadowToken.getClientId());
+            setClientId(request, iShadowToken.getClientId());
+            setAccountId(request, iShadowToken.getAccountId());
             chain.doFilter(request, response);
         } else {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(HttpStatus.SC_FORBIDDEN);
-            httpServletResponse.getWriter().write("{\"error\":\"access_denied\"}");
-            httpServletResponse.getWriter().flush();
-            httpServletResponse.getWriter().close();
+            PrintWriter printWriter = httpServletResponse.getWriter();
+            printWriter.write("{\"error\":\"access_denied\"}");
+            printWriter.flush();
+            printWriter.close();
             return;
         }
     }
 
-    private Optional<String> extractAccessToken(HttpServletRequest request) {
-        Optional<String> headerWithBearer = Optional.fromNullable(request.getHeader("Authorization"));
-        return extractAccessToken(headerWithBearer);
-
+    protected Optional<String> extractAuthorizationHeader(HttpServletRequest request){
+       return Optional.fromNullable(request.getHeader("Authorization"));
     }
 
-    private Optional<String> extractAccessToken(Optional<String> headerWithBearer) {
+
+
+    protected Optional<String> extractAccessToken(Optional<String> headerWithBearer) {
         if (headerWithBearer.isPresent() && headerWithBearer.get().startsWith(BEARER_PREFIX)) {
             return Optional.of(headerWithBearer.get().substring(ACCESS_TOKEN_START_INDEX));
         }
@@ -77,5 +81,17 @@ public class ShadowTokenFilter implements Filter {
 
     public static String getClientId(HttpServletRequest req) {
         return (String) req.getAttribute(REQ_CLIENT_ID_KEY);
+    }
+
+    protected void setClientId(ServletRequest req,String clientId){
+        req.setAttribute(REQ_CLIENT_ID_KEY, clientId);
+    }
+
+    protected void setAccountId(ServletRequest req,Serializable accountId){
+        req.setAttribute(REQ_ACCOUNT_ID_KEY, accountId);
+    }
+
+    public void setAuthService(IAuthService authService) {
+        this.authService = authService;
     }
 }

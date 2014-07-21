@@ -1,6 +1,5 @@
 description = 'Auth for persistent oauth shadowing'
 
-
 configurations { providedCompile }
 
 sourceSets.main.compileClasspath += configurations.providedCompile

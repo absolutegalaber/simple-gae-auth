@@ -42,3 +42,68 @@ dependencies {
     )
     providedCompile 'javax.servlet:servlet-api:2.5'
 }
+
+/**
+ * Call-Through for "npm install"
+ */
+task nodeLoad(type: Exec, dependsOn: 'nodeClean') {
+    description 'Call-Through for "npm install"'
+    workingDir project.projectDir
+    commandLine 'npm', 'install'
+    doLast {
+        logger.quiet("Downloaded NPM Modules")
+    }
+}
+
+/**
+ * Clean "node_modules" directory
+ */
+task nodeClean(type: Delete) {
+    description 'Clean "node_modules" directory'
+    delete 'node_modules'
+    doLast {
+        logger.quiet("Cleaned NPM Modules")
+    }
+}
+
+/**
+ * Call-Through for "bower install"
+ */
+task bowerLoad(type: Exec, dependsOn: 'bowerClean') {
+    description 'Call-Through for "bower install"'
+    workingDir project.projectDir
+    commandLine 'bower', 'install'
+    doLast {
+        logger.quiet("Downloaded Bower Components")
+    }
+}
+
+/**
+ * Clean "bower_components" directory
+ */
+task bowerClean(type: Delete) {
+    description 'Clean "bower_components" directory'
+    delete 'bower_components'
+    doLast {
+        logger.quiet("Cleaned Bower Components")
+    }
+}
+
+/**
+ * Set up the JavaScript dependencies via NPM and Bower.
+ */
+task setup(dependsOn: ['nodeLoad', 'bowerLoad']) {
+    description 'Set up the JavaScript dependencies via NPM and Bower.'
+    doLast {
+        logger.quiet("Setup complete")
+    }
+}
+
+/**
+ * Call-Through for "grunt compileCoffee"
+ */
+task compileCoffee(type: Exec) {
+    workingDir project.projectDir
+    commandLine 'grunt', 'compileCoffee'
+}
+build.dependsOn('compileCoffee')

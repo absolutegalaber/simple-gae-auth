@@ -35,49 +35,27 @@ module.exports = function (grunt) {
             }
         },
         copy: {
-            shopApp: {
+            copyJs: {
                 expand: true,
                 cwd: 'src/generated/',
                 src: ['**'],
-                dest: 'build/shop/js/app',
+                dest: 'build/exploded-app/app',
                 flatten: false,
                 filter: 'isFile'
             },
-            shopLib: {
+            copyLib: {
                 expand: true,
                 src: [
                     'bower_components/angular/angular.js',
                     'bower_components/angular-resource/angular-resource.js',
-                    'bower_components/angular-mocks/angular-mocks.js',
                     'bower_components/angular-ui-router/release/angular-ui-router.js',
-                    'bower_components/angular-translate/angular-translate.js',
                     'bower_components/angular-bindonce/bindonce.js',
                     'bower_components/angular-bootstrap/ui-bootstrap.js',
                     'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
-                    'bower_components/underscore/underscore.js',
-                    'bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
-                    'bower_components/tinymce-release/tinymce.min.js',
-                    'bower_components/ngUpload/ng-upload.js',
-                    'bower_components/hello/dist/hello.all.js'
+                    'bower_components/underscore/underscore.js'
                 ],
                 flatten: true,
-                dest: 'build/shop/js/lib'
-            },
-            shopMarkup: {
-                expand: true,
-                cwd: 'src/main/markup/',
-                src: [
-                    '**'
-                ],
-                flatten: false,
-                dest: 'build/shop/'
-            },
-            copyShopFonts: {
-                expand: true,
-                src: ['bower_components/bootstrap-sass/fonts/*'],
-                dest: 'build/shop/fonts',
-                flatten: true,
-                filter: 'isFile'
+                dest: 'build/exploded-app/lib'
             }
         },
         compass: {
@@ -90,13 +68,14 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.registerTask('deployFrontend', [
+        'copy:copyJs', 'copy:copyLib'
+    ])
+
     grunt.registerTask('compileTests', [
         'coffee:compileTests', 'karma:unit'
     ]);
     grunt.registerTask('compileCoffee', [
         'coffee:compile'
-    ]);
-    grunt.registerTask('assemble', [
-        'coffee:compile', 'compass:compileShop', 'copy:shopApp', 'copy:shopLib', 'copy:shopMarkup', 'copy:copyShopFonts'
     ]);
 };

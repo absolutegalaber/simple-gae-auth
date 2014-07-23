@@ -7,7 +7,7 @@
         function makeSecureCall(){
           var token = getParameterByName('access_token');
             $.ajax(
-                    'http://localhost:8080/api/protected',
+                    'http://localhost:8088/api/protected',
                     {
                         type: 'GET',
                         dataType: 'json',
@@ -36,7 +36,7 @@
 Simple Auth Test with bearer token
 <br/>
 <ul>
-    <li><a href="authorize?network=google&redirect_uri=http://localhost:8080/index.html&client_id=local_test">Login with Google</a></li>
+    <li><a href="authorize?network=fake&redirect_uri=http://localhost:8088/index.html&client_id=local_test">Login with Fake Client</a></li>
     <li><a href="index.html">Logout</a></li>
     <li><a href="#" onclick="makeSecureCall()">Make secure call</a></li>
 </ul>

@@ -26,6 +26,35 @@
         <servlet-class>org.example.servlet.ProtectedResourceServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>fakeAuthorizationServlet</servlet-name>
+        <servlet-class>org.simple.auth.fakeoauth.servlet.FakeOauthProviderAuthorizationServlet</servlet-class>
+        <init-param>
+            <param-name>clientId</param-name>
+            <param-value>fake_client_id</param-value>
+        </init-param>
+        <init-param>
+            <param-name>clientSecret</param-name>
+            <param-value>fake_client_secret</param-value>
+        </init-param>
+        <init-param>
+            <param-name>redirectUri</param-name>
+            <param-value>http://localhost:8088/oauth2Callback</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+
+    </servlet>
+
+    <servlet>
+        <servlet-name>fakeAccessTokenServlet</servlet-name>
+        <servlet-class>org.simple.auth.fakeoauth.servlet.FakeOAuthProviderAccessTokenServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>fakeProfileServlet</servlet-name>
+        <servlet-class>org.simple.auth.fakeoauth.servlet.FakeOAuthProviderProfileServlet</servlet-class>
+    </servlet>
+
     <filter>
         <filter-name>shadowTokenFilter</filter-name>
         <filter-class>org.simple.auth.shadow.filter.ShadowTokenFilter</filter-class>
@@ -49,6 +78,20 @@
     <servlet-mapping>
         <servlet-name>protectedResourceServlet</servlet-name>
         <url-pattern>/api/protected</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>fakeAuthorizationServlet</servlet-name>
+        <url-pattern>/fake_auth</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>fakeAccessTokenServlet</servlet-name>
+        <url-pattern>/fake_access_token</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>fakeProfileServlet</servlet-name>
+        <url-pattern>/fake_provider/profile</url-pattern>
     </servlet-mapping>
 
 

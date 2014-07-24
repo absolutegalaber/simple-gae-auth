@@ -1,8 +1,6 @@
 package org.simple.auth.model.networks
 
 import com.google.api.client.auth.oauth2.BearerToken
-import com.google.api.client.auth.oauth2.ClientParametersAuthentication
-import com.google.api.client.auth.oauth2.TokenRequest
 import com.google.api.client.http.LowLevelHttpRequest
 import com.google.api.client.http.LowLevelHttpResponse
 import com.google.api.client.json.Json

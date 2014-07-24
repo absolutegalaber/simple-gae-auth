@@ -11,6 +11,7 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
+            'src/main/app/**/*.js'
 //            'bower_components/underscore/underscore.js',
 //            'bower_components/angular/angular.js',
 //            'bower_components/angular-resource/angular-resource.js',

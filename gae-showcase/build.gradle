@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.6'
+        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.7'
     }
 
 }
@@ -29,13 +29,13 @@ appengineFunctionalTest.finalizedBy(appengineStop)
 
 
 dependencies {
-    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.6'
+    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.7'
     compile(
             [
                     project(':auth-core'),
                     'org.slf4j:slf4j-jdk14:1.7.7',
-                    'com.google.appengine:appengine-api-1.0-sdk:1.9.6',
-                    'com.google.appengine:appengine-endpoints:1.9.6',
+                    'com.google.appengine:appengine-api-1.0-sdk:1.9.7',
+                    'com.google.appengine:appengine-endpoints:1.9.7',
                     'com.googlecode.objectify:objectify:5.0.3',
                     'jstl:jstl:1.2'
             ]
@@ -108,9 +108,16 @@ task compileCoffee(type: Exec) {
 }
 compileJava.dependsOn('compileCoffee')
 
-task deployFrontend(type: Exec) {
-    workingDir project.projectDir
-    commandLine 'grunt', 'deployFrontend'
+task hotDeploy(type: Copy, dependsOn: 'compileCoffee') {
+    from('src/main/webapp/app/') {
+        into('app')
+    }
+    from('src/main/webapp/lib/') {
+        into('lib')
+    }
+    from('src/main/webapp/templates/') {
+        into('templates')
+    }
+    from 'src/main/webapp/index.html'
+    into 'build/exploded-app'
 }
-
-appengineRun.dependsOn('deployFrontend')

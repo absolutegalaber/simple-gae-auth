@@ -11,7 +11,7 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: 'src/main/coffee/',
                         src: '**/*.coffee',
-                        dest: 'src/generated/',
+                        dest: 'src/main/webapp/app',
                         ext: '.js'
                     }
                 ]
@@ -35,14 +35,6 @@ module.exports = function (grunt) {
             }
         },
         copy: {
-            copyJs: {
-                expand: true,
-                cwd: 'src/generated/',
-                src: ['**'],
-                dest: 'build/exploded-app/app',
-                flatten: false,
-                filter: 'isFile'
-            },
             copyLib: {
                 expand: true,
                 src: [
@@ -55,15 +47,7 @@ module.exports = function (grunt) {
                     'bower_components/underscore/underscore.js'
                 ],
                 flatten: true,
-                dest: 'build/exploded-app/lib'
-            }
-        },
-        compass: {
-            compileShop: {
-                options: {
-                    sassDir: 'src/main/sass',
-                    cssDir: 'build/shop/styles'
-                }
+                dest: 'src/main/webapp/lib'
             }
         }
     });
@@ -76,6 +60,6 @@ module.exports = function (grunt) {
         'coffee:compileTests', 'karma:unit'
     ]);
     grunt.registerTask('compileCoffee', [
-        'coffee:compile'
+        'coffee:compile', 'copy:copyLib'
     ]);
 };

@@ -1,10 +1,7 @@
 package org.simple.auth.model.networks;
 
 import com.google.api.client.auth.oauth2.*;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +24,13 @@ public class OAuth2Network extends Network {
     protected final Map<String, String> defaultQueryParams = new HashMap<>();
     protected final Map<String, String> defaultHeaders = new HashMap<>();
     protected Boolean isAccessTokenResponseJson = true;
+    protected HttpTransport httpTransport;
 
     public OAuth2Network(String name, IClient config, String authUrl, String accessTokenUrl) {
         super(name, config);
         this.authUrl = authUrl;
         this.accessTokenUrl = accessTokenUrl;
+        this.httpTransport = new NetHttpTransport();
 
     }
 
@@ -49,7 +48,7 @@ public class OAuth2Network extends Network {
     public INetworkToken accessToken(HttpServletRequest callbackRequest) throws OAuthException {
         try {
             String authCode = extractAuthCode(callbackRequest);
-            AuthorizationCodeTokenRequest tokenRequest = new AuthorizationCodeTokenRequest(new NetHttpTransport(), jacksonFactory, new GenericUrl(accessTokenUrl), authCode)
+            AuthorizationCodeTokenRequest tokenRequest = new AuthorizationCodeTokenRequest(httpTransport, jacksonFactory, new GenericUrl(accessTokenUrl), authCode)
                     .setGrantType("authorization_code")
                     .setRedirectUri(clientConfig.callbackUrl());
             addTokenRequestAuthorization(tokenRequest);
@@ -66,7 +65,7 @@ public class OAuth2Network extends Network {
     @Override
     public INetworkToken refreshToken(INetworkToken token) throws OAuthException {
         try {
-            RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(new NetHttpTransport(), jacksonFactory, new GenericUrl(accessTokenUrl), token.getRefreshToken())
+            RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(httpTransport, jacksonFactory, new GenericUrl(accessTokenUrl), token.getRefreshToken())
                     .setGrantType("refresh_token");
             addTokenRequestAuthorization(refreshTokenRequest);
             return executeTokenRequest(refreshTokenRequest);
@@ -80,7 +79,7 @@ public class OAuth2Network extends Network {
     protected HttpResponse executeGet(String url, INetworkToken token, boolean withJsonParser) throws OAuthException {
         try {
             Credential credential = new Credential(myAccessMethod()).setAccessToken(token.getAccessToken());
-            HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory(credential);
+            HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
             HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(url));
             if (withJsonParser) {
                 request.setParser(jsonObjectParser);

@@ -48,7 +48,7 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public IShadowToken loadOrCreateShadowToken(IAccount account, IClient client) {
+    public IShadowToken loadOrCreateShadowToken(IAccount account, IClient client) throws OAuthException {
         if (log.isDebugEnabled()) {
             log.debug("Loading or creating shadow token account {} and client {}", account, client);
         }
@@ -59,11 +59,17 @@ public class AuthService implements IAuthService {
         return createShadowToken(account, client);
     }
 
-    private IShadowToken createShadowToken(IAccount account, IClient client) {
+    private IShadowToken createShadowToken(IAccount account, IClient client) throws OAuthException {
         if (log.isDebugEnabled()) {
             log.debug("Creating shadow token account {} and client {}", account, client);
         }
-        return repositoryService.getShadowTokenRepository().createShadowToken(account, client);
+        IShadowToken token =  repositoryService.getShadowTokenRepository().createShadowToken(account, client);
+        if(!isShadowTokenValid(token)){
+            throw new OAuthException("Invalid shadow token created by shadow token repository!");
+        }
+        else {
+            return token;
+        }
     }
 
 
@@ -83,7 +89,25 @@ public class AuthService implements IAuthService {
                 log.debug("ShadowToken is invalid, because no shadow token presented");
             }
             return false;
-        } else if (iShadowToken.getExpiresAt().before(new Date())) {
+        }
+        else if (iShadowToken.getExpiresAt() == null) {
+            if(log.isDebugEnabled()) {
+                log.debug("ShadowToken is invalid, because no expiry date presented");
+            }
+            return false;
+        } else if (iShadowToken.getAccountId() == null) {
+            if(log.isDebugEnabled()) {
+                log.debug("ShadowToken is invalid, because no account id presented");
+            }
+            return false;
+        }
+        else if (iShadowToken.getClientId() == null) {
+            if(log.isDebugEnabled()) {
+                log.debug("ShadowToken is invalid, because no client id presented");
+            }
+            return false;
+        }
+        else if (iShadowToken.getExpiresAt().before(new Date())) {
             if(log.isDebugEnabled()) {
                 log.debug("ShadowToken is invalid, because it is outdated (expiry {})", iShadowToken.getExpiresAt());
             }

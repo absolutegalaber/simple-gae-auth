@@ -26,6 +26,7 @@ class AuthServiceTest extends Specification {
     IAccountRepository accountRepositoryMock
 
     def setup() {
+        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
         underTest = new AuthService()
         repositoryServiceMock = Mock(IRepositoryService)
         persistenNetworkTokenRepositoryMock = Mock(IPersistenNetworkTokenRepository)
@@ -40,7 +41,7 @@ class AuthServiceTest extends Specification {
         String existingShadowToken = "testtoken"
         when:
         repositoryServiceMock.shadowTokenRepository >> shadowTokenRepositoryMock
-        IShadowToken shadowToken = new DummyShadowToken()
+        IShadowToken shadowToken = createValidShadowToken("dummy_account_id","dummy_client_id")
         shadowTokenRepositoryMock.loadByAccessToken(existingShadowToken) >> shadowToken
         IShadowToken token = underTest.getShadowToken(existingShadowToken)
         then:
@@ -73,9 +74,7 @@ class AuthServiceTest extends Specification {
         INetworkToken dummyNetworkToken = dummyPersistentNetworkToken
         IAccount dummyAccount = new DummyAccount()
         dummyAccount.id = accountId
-        IShadowToken dummyShadowToken = new DummyShadowToken()
-        dummyShadowToken.accountId = accountId
-        dummyShadowToken.clientId = clientId
+        IShadowToken dummyShadowToken = createValidShadowToken(accountId,clientId)
         dummyShadowToken.accessToken = "TestAccessToken"
 
         when:
@@ -106,7 +105,7 @@ class AuthServiceTest extends Specification {
         INetworkToken dummyNetworkToken = dummyPersistentNetworkToken
         IAccount dummyAccount = new DummyAccount()
         dummyAccount.id = accountId
-        IShadowToken dummyShadowToken = new DummyShadowToken()
+        IShadowToken dummyShadowToken = createValidShadowToken(accountId, clientId)
         dummyShadowToken.accountId = accountId
         dummyShadowToken.clientId = clientId
         dummyShadowToken.accessToken = "TestAccessToken"
@@ -140,9 +139,7 @@ class AuthServiceTest extends Specification {
         INetworkToken dummyNetworkToken = dummyPersistentNetworkToken
         IAccount dummyAccount = new DummyAccount()
         dummyAccount.id = accountId
-        IShadowToken dummyShadowToken = new DummyShadowToken()
-        dummyShadowToken.accountId = accountId
-        dummyShadowToken.clientId = clientId
+        IShadowToken dummyShadowToken = createValidShadowToken(accountId,clientId)
         dummyShadowToken.accessToken = "TestAccessToken"
 
         when:
@@ -164,15 +161,64 @@ class AuthServiceTest extends Specification {
         shadowToken == dummyShadowToken
     }
 
-    def "LoadOrCreateShadowToken"() {
 
+    def "IsShadowTokenValidForActiveToken"() {
+        when:
+        def token = new DummyShadowToken()
+        token.expiresAt = new Date()+1
+        token.accountId = "123"
+        token.clientId = "dummyClient"
+
+        then:
+        underTest.isShadowTokenValid(token)
     }
 
-    def "CreatePersistentNetworkToken"() {
+    def "IsShadowTokenValidForExpiredToken"() {
+        when:
+        def token = new DummyShadowToken()
+        token.expiresAt = new Date()-1
+        token.accountId = "123"
+        token.clientId = "dummyClient"
 
+        then:
+        !underTest.isShadowTokenValid(token)
     }
 
-    def "IsShadowTokenValid"() {
+    def "IsShadowTokenValidForEmptyExpiry"() {
+        when:
+        def token = new DummyShadowToken()
+        token.accountId = "123"
+        token.clientId = "dummyClient"
 
+        then:
+        !underTest.isShadowTokenValid(token)
+    }
+
+    def "IsShadowTokenValidForMissingAccountId"() {
+        when:
+        def token = new DummyShadowToken()
+        token.expiresAt = new Date()+1
+        token.clientId = "dummyClient"
+
+        then:
+        !underTest.isShadowTokenValid(token)
+    }
+
+    def "IsShadowTokenValidForMissingClientId"() {
+        when:
+        def token = new DummyShadowToken()
+        token.expiresAt = new Date()+1
+        token.accountId = "123"
+
+        then:
+        !underTest.isShadowTokenValid(token)
+    }
+
+    private DummyShadowToken createValidShadowToken(String accountId, String clientId){
+        DummyShadowToken dummyShadowToken = new DummyShadowToken();
+        dummyShadowToken.accountId = accountId
+        dummyShadowToken.clientId = clientId
+        dummyShadowToken.expiresAt = new Date()+1
+        return dummyShadowToken;
     }
 }

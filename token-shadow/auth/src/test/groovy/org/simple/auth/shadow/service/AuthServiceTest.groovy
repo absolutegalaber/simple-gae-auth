@@ -2,6 +2,7 @@ package org.simple.auth.shadow.service
 
 import org.simple.auth.model.IClient
 import org.simple.auth.model.INetworkToken
+import org.simple.auth.model.OAuthException
 import org.simple.auth.shadow.DummyAccount
 import org.simple.auth.shadow.DummyClient
 import org.simple.auth.shadow.DummyPersistentNetworkToken
@@ -159,6 +160,28 @@ class AuthServiceTest extends Specification {
 
         then:
         shadowToken == dummyShadowToken
+    }
+
+    def "ExceptionIfInvalidShadowTokenIsCreated"() {
+
+        when:
+        def invalidShadowToken = new DummyShadowToken()
+        def dummyAccount = new DummyAccount()
+        def dummyClient = new DummyClient()
+        dummyAccount.id = "dummy_account_id"
+        dummyClient.clientId = "dummy_client_id"
+        repositoryServiceMock.shadowTokenRepository >> shadowTokenRepositoryMock
+        shadowTokenRepositoryMock.createShadowToken(dummyAccount,dummyClient) >> invalidShadowToken
+        underTest.createShadowToken(dummyAccount,dummyClient)
+
+        then:
+        OAuthException ex = thrown()
+    }
+
+    def "IsShadowTokenValidForEmpty"() {
+
+        expect:
+        !underTest.isShadowTokenValid(null)
     }
 
 

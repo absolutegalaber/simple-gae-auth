@@ -59,7 +59,7 @@ public class AuthService implements IAuthService {
         return createShadowToken(account, client);
     }
 
-    private IShadowToken createShadowToken(IAccount account, IClient client) throws OAuthException {
+    protected IShadowToken createShadowToken(IAccount account, IClient client) throws OAuthException {
         if (log.isDebugEnabled()) {
             log.debug("Creating shadow token account {} and client {}", account, client);
         }

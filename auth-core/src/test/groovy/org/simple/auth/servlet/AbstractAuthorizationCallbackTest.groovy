@@ -1,0 +1,70 @@
+package org.simple.auth.servlet
+
+import com.google.api.client.http.HttpResponse
+import org.simple.auth.model.INetworkToken
+import org.simple.auth.model.Network
+import org.simple.auth.model.OAuthException
+import org.simple.auth.service.NetworkService
+import spock.lang.Specification
+
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+
+/**
+ * @author Peter Schneider-Manzell
+ */
+class AbstractAuthorizationCallbackTest extends Specification {
+
+    AbstractAuthorizationCallback underTest
+    Map<String, Object> onErrorParameters = [:]
+    Map<String, Object> onAuthorizationSuccessParameters = [:]
+    NetworkService networkServiceMock
+
+    def setup() {
+        networkServiceMock = Mock(NetworkService)
+        underTest = new AbstractAuthorizationCallback(networkServiceMock) {
+            @Override
+            void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
+                onErrorParameters = ['authException': authException, 'req': req, 'resp': resp]
+            }
+
+            @Override
+            void onAuthorizationSuccess(INetworkToken accessToken, HttpServletRequest req, HttpServletResponse resp) {
+                onAuthorizationSuccessParameters = ['accessToken': accessToken, 'req': req, 'resp': resp]
+            }
+        }
+    }
+
+    def "DoGet"() {
+        given:
+        HttpServletRequest reqMock = Mock(HttpServletRequest)
+        HttpServletResponse respMock = Mock(HttpServletResponse)
+        Network network = Mock(Network,constructorArgs: ["dummynetwork",null])
+        INetworkToken accessToken = Mock(INetworkToken)
+
+        when:
+        underTest.doGet(reqMock, respMock)
+
+        then:
+        1 * networkServiceMock.fromSession(reqMock) >> network
+        1* network.accessToken(reqMock) >> accessToken
+        onAuthorizationSuccessParameters.accessToken == accessToken
+        onAuthorizationSuccessParameters.req == reqMock
+        onAuthorizationSuccessParameters.resp == respMock
+        onErrorParameters.isEmpty()
+    }
+
+    def "DoGetWithException"() {
+        given:
+        HttpServletRequest reqMock = Mock(HttpServletRequest)
+        HttpServletResponse respMock = Mock(HttpServletResponse)
+
+        when:
+        underTest.doGet(reqMock, respMock)
+
+        then:
+        networkServiceMock.fromSession(reqMock) >> {throw new OAuthException("Dummy exception")}
+        onAuthorizationSuccessParameters.isEmpty()
+        !onErrorParameters.isEmpty()
+    }
+}

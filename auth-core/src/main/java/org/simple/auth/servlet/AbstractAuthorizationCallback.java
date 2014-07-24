@@ -18,7 +18,15 @@ import java.io.IOException;
  */
 @Slf4j
 public abstract class AbstractAuthorizationCallback extends HttpServlet {
-    protected final NetworkService networkService = new NetworkService();
+    protected final NetworkService networkService;
+
+    public AbstractAuthorizationCallback() {
+        networkService = new NetworkService();
+    }
+
+    protected AbstractAuthorizationCallback(NetworkService networkService) {
+        this.networkService = networkService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

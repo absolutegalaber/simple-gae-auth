@@ -9,6 +9,8 @@ import org.simple.auth.servlet.AbstractProfileLoadingAuthorizationCallback;
 import org.simple.auth.shadow.model.IShadowToken;
 import org.simple.auth.shadow.service.AuthService;
 import org.simple.auth.shadow.service.ClientService;
+import org.simple.auth.shadow.service.IAuthService;
+import org.simple.auth.shadow.service.IClientService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,8 +25,8 @@ import java.util.Map;
 @Slf4j
 public class ShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCallback {
 
-    ClientService clientService = new ClientService();
-    AuthService authService = new AuthService();
+    IClientService clientService = new ClientService();
+    IAuthService authService = new AuthService();
 
 
     @Override

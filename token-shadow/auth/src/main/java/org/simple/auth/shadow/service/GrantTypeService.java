@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Peter Schneider-Manzell
  */
-public class GrantTypeService {
+public class GrantTypeService implements IGrantTypeService{
 
 
     public GrantType fromRequest(HttpServletRequest request) throws OAuthException {

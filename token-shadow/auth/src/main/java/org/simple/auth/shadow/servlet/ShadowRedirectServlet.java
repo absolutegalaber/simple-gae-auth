@@ -11,10 +11,13 @@ import org.simple.auth.shadow.GrantType;
 import org.simple.auth.shadow.OAuthRequestParameter;
 import org.simple.auth.shadow.service.ClientService;
 import org.simple.auth.shadow.service.GrantTypeService;
+import org.simple.auth.shadow.service.IClientService;
+import org.simple.auth.shadow.service.IGrantTypeService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author Peter Schneider-Manzell
@@ -23,8 +26,8 @@ import java.io.IOException;
 public class ShadowRedirectServlet extends AbstractAuthorizationRedirect {
 
 
-    ClientService clientService = new ClientService();
-    GrantTypeService grantTypeService = new GrantTypeService();
+    IClientService clientService = new ClientService();
+    IGrantTypeService grantTypeService = new GrantTypeService();
 
     @Override
     public void beforeRedirect(HttpServletRequest req, HttpServletResponse resp, Network network) throws OAuthException {
@@ -36,8 +39,14 @@ public class ShadowRedirectServlet extends AbstractAuthorizationRedirect {
         checkAndStoreClientInformation(req);
     }
 
-    private void checkRequiredParameters(HttpServletRequest req) throws OAuthException {
+    protected void checkRequiredParameters(HttpServletRequest req) throws OAuthException {
+        if(log.isDebugEnabled()){
+            log.debug("Checking  required oauth parameters...");
+        }
         GrantType grantType = grantTypeService.fromRequest(req);
+        if(log.isDebugEnabled()){
+            log.debug("Detected grantType {}",grantType);
+        }
         for (OAuthRequestParameter oAuthRequestParameter : grantType.getRequiredParameters()) {
             Optional<String> paramValue = oAuthRequestParameter.getValue(req);
             if (!paramValue.isPresent()) {
@@ -50,9 +59,10 @@ public class ShadowRedirectServlet extends AbstractAuthorizationRedirect {
     public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
         try {
             resp.setStatus(HttpStatus.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\":\"invalid_request\",\"error_description\":\"" + authException.getMessage() + "\"}");
-            resp.getWriter().flush();
-            resp.getWriter().close();
+            PrintWriter writer = resp.getWriter();
+            writer.write("{\"error\":\"invalid_request\",\"error_description\":\"" + authException.getMessage() + "\"}");
+            writer.flush();
+            writer.close();
 
         } catch (IOException e) {
             log.error("Could not write error message to stream!", e);

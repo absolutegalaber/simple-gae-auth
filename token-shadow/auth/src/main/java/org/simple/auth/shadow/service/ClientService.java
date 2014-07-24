@@ -14,12 +14,13 @@ import javax.servlet.http.HttpServletRequest;
  * @author Peter Schneider-Manzell
  */
 @Slf4j
-public class ClientService {
+public class ClientService implements IClientService {
     private static final String CLIENT_ID_KEY = "client_id";
     private static final String REDIRECT_URI_KEY = "redirect_uri";
     private static IClientRepository clientRepository;
 
 
+    @Override
     public IClient fromRequest(HttpServletRequest req) throws OAuthException {
         log.info("Trying to detect client_id from request parameter {}", OAuthRequestParameter.CLIENT_ID.getParamName());
         Optional<String> clientId = OAuthRequestParameter.CLIENT_ID.getValue(req);

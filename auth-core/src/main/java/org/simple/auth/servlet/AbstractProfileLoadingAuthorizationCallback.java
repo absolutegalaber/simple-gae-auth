@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 @Slf4j
 public abstract class AbstractProfileLoadingAuthorizationCallback extends AbstractAuthorizationCallback {
-    private final UserProfileService userProfileService = new UserProfileService();
+    protected UserProfileService userProfileService = new UserProfileService();
 
     @Override
     public final void onAuthorizationSuccess(INetworkToken accessToken, HttpServletRequest req, HttpServletResponse resp) {

@@ -1,6 +1,7 @@
 package org.simple.auth.shadow.filter
 
 import com.google.common.base.Optional
+import org.simple.auth.shadow.DummyShadowToken
 import org.simple.auth.shadow.filter.ShadowTokenFilter
 import org.simple.auth.shadow.model.IShadowToken
 import org.simple.auth.shadow.service.IAuthService
@@ -148,15 +149,5 @@ class ShadowTokenFilterTest extends Specification {
         accountId == "test_account_id"
     }
 
-    private class DummyShadowToken implements IShadowToken {
-        Serializable accountId;
-        String clientId
-        String accessToken
-        String refreshToken
-        String tokenSecret
-        String network
-        Date expiresAt
 
-
-    }
 }

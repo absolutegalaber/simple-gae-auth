@@ -14,16 +14,20 @@ import javax.servlet.http.HttpServletRequest;
  * @author Peter Schneider-Manzell
  */
 @Slf4j
-public class ClientService {
+public class ClientService implements IClientService {
     private static final String CLIENT_ID_KEY = "client_id";
     private static final String REDIRECT_URI_KEY = "redirect_uri";
     private static IClientRepository clientRepository;
 
 
+    @Override
     public IClient fromRequest(HttpServletRequest req) throws OAuthException {
         log.info("Trying to detect client_id from request parameter {}", OAuthRequestParameter.CLIENT_ID.getParamName());
         Optional<String> clientId = OAuthRequestParameter.CLIENT_ID.getValue(req);
-        Preconditions.checkNotNull(clientId, OAuthRequestParameter.CLIENT_ID.getParamName() + " is required!");
+        log.info("Got clientId {}",clientId);
+        if(!clientId.isPresent()){
+          throw new OAuthException(OAuthRequestParameter.CLIENT_ID.getParamName() + " is required!");
+        }
         String redirectUri = redirectUriFromRequest(req);
         IClient client = fromClientId(clientId.get());
         checkRedirectURI(client, redirectUri);
@@ -36,10 +40,12 @@ public class ClientService {
         }
     }
 
-    public String redirectUriFromRequest(HttpServletRequest req) {
+    public String redirectUriFromRequest(HttpServletRequest req) throws OAuthException {
         log.info("Trying to detect redirectUri from request parameter {}", OAuthRequestParameter.REDIRECT_URI.getParamName());
         Optional<String> redirectUri = OAuthRequestParameter.REDIRECT_URI.getValue(req);
-        Preconditions.checkNotNull(redirectUri, REDIRECT_URI_KEY + " is required!");
+        if(!redirectUri.isPresent()){
+            throw new OAuthException(OAuthRequestParameter.REDIRECT_URI.getParamName() + " is required!");
+        }
         log.info("Detected redirectUri {} from request parameter {}", redirectUri.get(), OAuthRequestParameter.REDIRECT_URI.getParamName());
         return redirectUri.get();
     }

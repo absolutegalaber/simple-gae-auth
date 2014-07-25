@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -38,15 +39,20 @@ public class FakeOauthProviderAuthorizationServlet extends HttpServlet {
         }
     }
 
-    private void addClient(String clientId, String clientSecret, String clientRedirectURI) {
+    public static void addClient(String clientId, String clientSecret, String clientRedirectURI) {
         log.info("Adding client with id {}",clientId);
         clientSecrets.put(clientId, clientSecret);
         clientRedirectURIs.put(clientId, clientRedirectURI);
     }
 
+    public static void removeClient(String clientId) {
+        log.info("Removing client with id {}",clientId);
+        clientSecrets.remove(clientId);
+        clientRedirectURIs.remove(clientId);
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String responseType = req.getParameter("code");
         String clientId = req.getParameter("client_id");
         String redirectURI = req.getParameter("redirect_uri");
         String state = req.getParameter("state");
@@ -80,6 +86,10 @@ public class FakeOauthProviderAuthorizationServlet extends HttpServlet {
         return validCodes.contains(code);
     }
 
+    public static void addValidCode(String code){
+        validCodes.add(code);
+    }
+
     private String createRedirectURI(String redirectURI, String state) {
         String code = UUID.randomUUID().toString().replaceAll("-", "");
         StringBuilder sb = new StringBuilder(redirectURI);
@@ -90,16 +100,17 @@ public class FakeOauthProviderAuthorizationServlet extends HttpServlet {
             sb.append("&state=");
             sb.append(state);
         }
-        validCodes.add(code);
+        addValidCode(code);
         return sb.toString();
     }
 
     private void sendError(String errorMessage, HttpServletResponse resp) {
         try {
             resp.setStatus(HttpStatus.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\":\"invalid_request\",\"error_description\":\"" + errorMessage + "\"}");
-            resp.getWriter().flush();
-            resp.getWriter().close();
+            PrintWriter pw = resp.getWriter();
+            pw.write("{\"error\":\"invalid_request\",\"error_description\":\"" + errorMessage + "\"}");
+            pw.flush();
+            pw.close();
 
         } catch (IOException e) {
         }

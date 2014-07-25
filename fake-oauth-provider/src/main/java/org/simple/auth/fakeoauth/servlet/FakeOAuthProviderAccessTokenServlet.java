@@ -84,9 +84,10 @@ public class FakeOAuthProviderAccessTokenServlet extends HttpServlet {
     private void sendError(String errorMessage, HttpServletResponse resp) {
         try {
             resp.setStatus(HttpStatus.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\":\"invalid_request\",\"error_description\":\"" + errorMessage + "\"}");
-            resp.getWriter().flush();
-            resp.getWriter().close();
+            PrintWriter pw = resp.getWriter();
+            pw.write("{\"error\":\"invalid_request\",\"error_description\":\"" + errorMessage + "\"}");
+            pw.flush();
+            pw.close();
 
         } catch (IOException e) {
         }

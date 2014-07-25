@@ -1,10 +1,7 @@
 package org.simple.auth.model.networks;
 
 import com.google.api.client.auth.oauth.*;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.*;
@@ -25,6 +22,7 @@ public class OAuth1Network extends Network {
 
     protected final Map<String, String> defaultQueryParams = new HashMap<>();
     protected final Map<String, String> defaultHeaders = new HashMap<>();
+    protected HttpTransport httpTransport;
 
 
     public OAuth1Network(String name, IClient clientConfig, String requestTokenUrl, String authUrl, String accessTokenUrl) {
@@ -32,6 +30,7 @@ public class OAuth1Network extends Network {
         this.requestTokenUrl = requestTokenUrl;
         this.authUrl = authUrl;
         this.accessTokenUrl = accessTokenUrl;
+        httpTransport = new NetHttpTransport();
 
     }
 
@@ -46,7 +45,7 @@ public class OAuth1Network extends Network {
             OAuthGetTemporaryToken temporaryToken = new OAuthGetTemporaryToken(requestTokenUrl);
             temporaryToken.signer = signer;
             temporaryToken.callback = clientConfig.callbackUrl();
-            temporaryToken.transport = new NetHttpTransport();
+            temporaryToken.transport =httpTransport;
             temporaryToken.consumerKey = clientConfig.clientId();
             OAuthCredentialsResponse temporaryTokenResponse = temporaryToken.execute();
             OAuthAuthorizeTemporaryTokenUrl accessTempToken = new OAuthAuthorizeTemporaryTokenUrl(authUrl);
@@ -74,7 +73,7 @@ public class OAuth1Network extends Network {
             OAuthGetAccessToken getAccessToken = new OAuthGetAccessToken(accessTokenUrl);
             getAccessToken.signer = signer;
             getAccessToken.temporaryToken = requestToken;
-            getAccessToken.transport = new NetHttpTransport();
+            getAccessToken.transport = httpTransport;
             getAccessToken.verifier = oauthVerifier;
             getAccessToken.consumerKey = clientConfig.clientId();
             OAuthCredentialsResponse accessTokenResponse = getAccessToken.execute();
@@ -101,7 +100,7 @@ public class OAuth1Network extends Network {
             parameters.token = token.getAccessToken();
             parameters.signer = signer;
 
-            HttpRequestFactory factory = new NetHttpTransport().createRequestFactory(parameters);
+            HttpRequestFactory factory = httpTransport.createRequestFactory(parameters);
             HttpRequest req = factory.buildGetRequest(new GenericUrl(url));
             addDefaultParamsAndHeaders(req);
             if (withJsonParser) {

@@ -28,8 +28,8 @@ import java.util.Map;
 @Slf4j
 public abstract class AbstractShadowCallbackServlet extends AbstractProfileLoadingAuthorizationCallback {
 
-    IClientService clientService = new ClientService();
-    IAuthService authService = new AuthService();
+    protected IClientService clientService = new ClientService();
+    protected IAuthService authService = new AuthService();
 
 
     @Override
@@ -39,8 +39,8 @@ public abstract class AbstractShadowCallbackServlet extends AbstractProfileLoadi
         log.info("Found client, creating shadow token");
         Serializable accountId = connectWithAccount(accessToken, userProfile, req);
         Preconditions.checkNotNull(accountId, "An account Id must be provided!");
-        IPersistentNetworkToken persistentNetworkToken = authService.persist(accessToken, connectWithAccount(accessToken, userProfile, req));
-        IShadowToken token = authService.getShadowToken(client, persistentNetworkToken);
+        IPersistentNetworkToken persistentNetworkToken = authService.persist(accessToken, userProfile.getNetworkId(), connectWithAccount(accessToken, userProfile, req));
+        IShadowToken token = authService.getShadowToken(client, persistentNetworkToken, userProfile.getNetworkId());
         redirect(client, token, req, resp);
     }
 

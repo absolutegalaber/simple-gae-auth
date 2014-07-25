@@ -28,6 +28,10 @@ public class OfyPersistentNetworkToken extends BaseOfyEntity implements IPersist
 
     @Getter
     @Setter
+    String networkUserId;
+
+    @Getter
+    @Setter
     String accountId;
 
     @Getter

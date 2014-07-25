@@ -8,13 +8,11 @@ import org.simple.auth.shadow.model.IShadowToken
  */
 @ToString
 class DummyShadowToken implements IShadowToken {
-    Serializable accountId;
+    Serializable accountId
     String clientId
     String accessToken
     String refreshToken
     String tokenSecret
     String network
     Date expiresAt
-
-
 }

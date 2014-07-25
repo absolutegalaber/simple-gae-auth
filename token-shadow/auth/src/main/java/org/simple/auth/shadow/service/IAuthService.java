@@ -13,13 +13,15 @@ import java.io.Serializable;
  */
 public interface IAuthService {
 
-    IShadowToken getShadowToken(IClient client, INetworkToken networkToken, String networkUserId) throws OAuthException;
+    IShadowToken getShadowToken(IClient client, IPersistentNetworkToken networkToken, String networkUserId) throws OAuthException;
 
     IShadowToken getShadowToken(String shadowAccessToken);
 
     IShadowToken loadOrCreateShadowToken(Serializable account, IClient client) throws OAuthException;
 
     IPersistentNetworkToken createPersistentNetworkToken(Serializable account, INetworkToken networkToken, String networkUserId) throws OAuthException;
+
+    public IPersistentNetworkToken persist(INetworkToken networkToken, String networkUserId, Serializable accountId);
 
     boolean isShadowTokenValid(IShadowToken iShadowToken);
 }

@@ -27,7 +27,7 @@ public class OfyPersistentNetworkTokenRepository extends BaseOfyRepository imple
     }
 
     @Override
-    public IPersistentNetworkToken create(Serializable accountId, INetworkToken networkToken) {
+    public IPersistentNetworkToken create(Serializable accountId, Serializable networkUserid, INetworkToken networkToken) {
         OfyPersistentNetworkToken token = new OfyPersistentNetworkToken();
         token.setAccessToken(networkToken.getAccessToken());
         token.setAccountId((String) accountId);
@@ -35,6 +35,7 @@ public class OfyPersistentNetworkTokenRepository extends BaseOfyRepository imple
         token.setNetwork(networkToken.getNetwork());
         token.setRefreshToken(networkToken.getRefreshToken());
         token.setTokenSecret(networkToken.getTokenSecret());
+        token.setNetworkUserId((String) networkUserid);
         Key<OfyPersistentNetworkToken> saved = ofy().save().entity(token).now();
         return ofy().load().key(saved).now();
     }

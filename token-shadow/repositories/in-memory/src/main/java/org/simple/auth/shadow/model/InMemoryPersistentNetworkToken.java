@@ -10,6 +10,9 @@ import java.util.Date;
  * @author Peter Schneider-Manzell
  */
 public class InMemoryPersistentNetworkToken implements IPersistentNetworkToken {
+
+    @Getter
+    Serializable networkUserId;
     @Getter
     Serializable accountId;
     @Getter
@@ -27,7 +30,8 @@ public class InMemoryPersistentNetworkToken implements IPersistentNetworkToken {
     @Getter
     String network;
 
-    public InMemoryPersistentNetworkToken(Serializable accountId, String accessToken, String tokenSecret, String refreshToken, Date expiresAt, String network) {
+    public InMemoryPersistentNetworkToken(Serializable networkUserId, Serializable accountId, String accessToken, String tokenSecret, String refreshToken, Date expiresAt, String network) {
+        this.networkUserId = networkUserId;
         this.accountId = accountId;
         this.accessToken = accessToken;
         this.tokenSecret = tokenSecret;

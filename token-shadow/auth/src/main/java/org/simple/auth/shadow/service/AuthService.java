@@ -1,10 +1,10 @@
 package org.simple.auth.shadow.service;
 
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.IClient;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.OAuthException;
-import org.simple.auth.shadow.model.IAccount;
 import org.simple.auth.shadow.model.IPersistentNetworkToken;
 import org.simple.auth.shadow.model.IShadowToken;
 
@@ -22,22 +22,11 @@ public class AuthService implements IAuthService {
 
 
     @Override
-    public IShadowToken getShadowToken(IClient client, INetworkToken networkToken, String networkUserId) throws OAuthException {
+    public IShadowToken getShadowToken(IClient client, IPersistentNetworkToken networkToken, String networkUserId) throws OAuthException {
         if (log.isDebugEnabled()) {
             log.debug("Loading shadow token for client {}, network token {} and networkUserId {}", client, networkToken, networkUserId);
         }
-
-        IPersistentNetworkToken persistentNetworkToken = repositoryService.getPersistenNetworkTokenRepository().load(networkToken.getNetwork(), networkUserId);
-        IAccount account;
-        if (persistentNetworkToken == null) {
-            account = repositoryService.getAccountRepository().createTransient();
-            repositoryService.getAccountRepository().save(account);
-            createPersistentNetworkToken(account, networkToken, networkUserId);
-        } else {
-            account = repositoryService.getAccountRepository().load(persistentNetworkToken.getAccountId());
-        }
-
-        return loadOrCreateShadowToken(account, client);
+        return loadOrCreateShadowToken(networkToken.getAccountId(), client);
     }
 
     @Override
@@ -49,15 +38,15 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public IShadowToken loadOrCreateShadowToken(IAccount account, IClient client) throws OAuthException {
+    public IShadowToken loadOrCreateShadowToken(Serializable accountId, IClient client) throws OAuthException {
         if (log.isDebugEnabled()) {
-            log.debug("Loading or creating shadow token account {} and client {}", account, client);
+            log.debug("Loading or creating shadow token account {} and client {}", accountId, client);
         }
-        IShadowToken token = repositoryService.getShadowTokenRepository().loadByAccountAndClient(account.getId(), client.clientId());
+        IShadowToken token = repositoryService.getShadowTokenRepository().loadByAccountAndClient(accountId, client.clientId());
         if (token != null) {
             return token;
         }
-        return createShadowToken(account, client);
+        return createShadowToken(accountId, client);
     }
 
     protected IShadowToken createShadowToken(Serializable accountId, IClient client) throws OAuthException {
@@ -113,8 +102,17 @@ public class AuthService implements IAuthService {
         return true;
     }
 
+    public IPersistentNetworkToken persist(INetworkToken networkToken, String networkUserId, Serializable accountId) {
+        Preconditions.checkNotNull(accountId, "An account id must be provided");
+        return repositoryService.getPersistenNetworkTokenRepository().create(accountId, networkUserId, networkToken);
+    }
+
 
     public static void setRepositoryService(IRepositoryService repositoryService) {
         AuthService.repositoryService = repositoryService;
+    }
+
+    public static IRepositoryService getRepositoryService() {
+        return repositoryService;
     }
 }

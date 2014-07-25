@@ -3,6 +3,9 @@ package org.simple.auth.service
 import org.simple.auth.model.ClientConfig
 import org.simple.auth.model.networks.OAuth1Network
 import org.simple.auth.model.networks.OAuth2Network
+import org.simple.auth.model.networks.ProfileAwareOAuth1Network
+import org.simple.auth.model.networks.ProfileAwareOAuth2Network
+import org.simple.auth.model.networks.v2.FacebookProfile
 import org.simple.auth.service.builder.NetworkBuilder
 import spock.lang.Shared
 import spock.lang.Specification
@@ -42,6 +45,22 @@ class NetworkBuilderTest extends Specification {
         network.clientConfig == clientConfig
     }
 
+    def "manual creation of profile aware oauth2 network with all data"() {
+        when:
+        ProfileAwareOAuth2Network network = builder.name("myNewNetwork")
+                .authorizeUrl("authorizeUrl")
+                .accessTokenUrl("accessTokenUrl")
+                .profileUrl("profileUrl")
+                .addDefaultHeader("some", "header")
+                .addDefaultQueryParam("some", "param")
+                .isAccessTokenResponseJson(false)
+                .profileClass(FacebookProfile)
+                .buildProfileAwareOauth2Network(clientConfig)
+        then:
+        network.name == 'myNewNetwork'
+        network.clientConfig == clientConfig
+    }
+
     def "manual creation of oauth2 network with missing data"() {
         when:
         builder.name(name)
@@ -73,6 +92,23 @@ class NetworkBuilderTest extends Specification {
                 .addDefaultQueryParam("some", "param")
                 .isAccessTokenResponseJson(true)
                 .buildOauth1Network(clientConfig)
+        then:
+        network.name == 'myNewNetwork'
+        network.clientConfig == clientConfig
+    }
+
+    def "manual creation of profile aware oauth1 network with all data"() {
+        when:
+        ProfileAwareOAuth1Network network = builder.name("myNewNetwork")
+                .requestTokenUrl("requestTokenUrl")
+                .authorizeUrl("authorizeUrl")
+                .accessTokenUrl("accessTokenUrl")
+                .profileUrl("profileUrl")
+                .addDefaultHeader("some", "header")
+                .addDefaultQueryParam("some", "param")
+                .isAccessTokenResponseJson(true)
+                .profileClass(FacebookProfile)
+                .buildProfileAwareOauth1Network(clientConfig)
         then:
         network.name == 'myNewNetwork'
         network.clientConfig == clientConfig

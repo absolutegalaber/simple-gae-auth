@@ -7,6 +7,8 @@ import com.google.api.client.testing.http.MockLowLevelHttpRequest
 import com.google.api.client.testing.http.MockLowLevelHttpResponse
 import org.simple.auth.model.ClientConfig
 import org.simple.auth.model.IClient
+import org.simple.auth.model.INetworkToken
+import org.simple.auth.model.OAuthException
 import spock.lang.Specification
 
 import javax.servlet.http.HttpServletRequest
@@ -41,16 +43,15 @@ class OAuth1NetworkTest extends Specification {
         String oauthTokenSecret = "dummy_oauth_token_secret"
         HttpServletRequest req = Mock(HttpServletRequest)
         HttpSession mockSession = Mock(HttpSession)
-        underTest.httpTransport = new MockHttpTransport(){
+        underTest.httpTransport = new MockHttpTransport() {
             @Override
             public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
                 return new MockLowLevelHttpRequest() {
                     @Override
                     public LowLevelHttpResponse execute() throws IOException {
-                        println("Executing" +url)
                         MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
                         response.setStatusCode(200);
-                        response.setContent("oauth_token="+oauthToken+"&oauth_token_secret="+oauthTokenSecret+"&oauth");
+                        response.setContent("oauth_token=" + oauthToken + "&oauth_token_secret=" + oauthTokenSecret + "&oauth");
                         return response;
                     }
                 };
@@ -62,17 +63,54 @@ class OAuth1NetworkTest extends Specification {
 
         then:
         req.getSession() >> mockSession
-        1*mockSession.setAttribute(networkName+"_req_token",oauthToken)
-        1*mockSession.setAttribute(networkName+"_req_token_secret",oauthTokenSecret)
-        result == "http://localhost/oauth1/auth?oauth_token="+oauthToken
+        1 * mockSession.setAttribute(networkName + "_req_token", oauthToken)
+        1 * mockSession.setAttribute(networkName + "_req_token_secret", oauthTokenSecret)
+        result == "http://localhost/oauth1/auth?oauth_token=" + oauthToken
     }
 
     def "AccessToken"() {
+        given:
+        HttpServletRequest mockReq = Mock(HttpServletRequest)
+        HttpSession mockSession = Mock(HttpSession)
+        String requestToken = "1234_token"
+        String requestTokenSecret = "1234_token_secret"
+        String oauthVerifier = "verifyer"
+        String oauthToken = "6253282-eWudHldSbIaelX7swmsiHImEL4KinwaGloHANdrY"
+        String oauthTokenSecret = "2EEfA6BG3ly3sR3RjE0IBSnlQu4ZrUzPiYKmrkVU"
+        underTest.httpTransport = new MockHttpTransport() {
+            @Override
+            public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
+                return new MockLowLevelHttpRequest() {
+                    @Override
+                    public LowLevelHttpResponse execute() throws IOException {
+                        MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                        response.setStatusCode(200);
+                        response.setContent("oauth_token=" + oauthToken + "&oauth_token_secret=" + oauthTokenSecret + "&user_id=6253282&scr");
+                        return response;
+                    }
+                };
+            }
+        }
 
+        when:
+        INetworkToken result = underTest.accessToken(mockReq)
+
+        then:
+        1 * mockReq.getSession() >> mockSession
+        1 * mockSession.getAttribute(networkName + "_req_token") >> requestToken
+        1 * mockSession.getAttribute(networkName + "_req_token_secret") >> requestTokenSecret
+        1 * mockReq.getParameter("oauth_verifier") >> oauthVerifier
+        result != null
+        result.network == networkName
+        result.accessToken == oauthToken
+        result.tokenSecret == oauthTokenSecret
     }
 
     def "RefreshToken"() {
-
+        when:
+        underTest.refreshToken(null)
+        then:
+        OAuthException ex = thrown()
     }
 
     def "ExecuteGet"() {

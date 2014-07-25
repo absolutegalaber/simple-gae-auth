@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class OAuth1Network extends Network {
             OAuthGetTemporaryToken temporaryToken = new OAuthGetTemporaryToken(requestTokenUrl);
             temporaryToken.signer = signer;
             temporaryToken.callback = clientConfig.callbackUrl();
-            temporaryToken.transport =httpTransport;
+            temporaryToken.transport = httpTransport;
             temporaryToken.consumerKey = clientConfig.clientId();
             OAuthCredentialsResponse temporaryTokenResponse = temporaryToken.execute();
             OAuthAuthorizeTemporaryTokenUrl accessTempToken = new OAuthAuthorizeTemporaryTokenUrl(authUrl);
@@ -54,16 +55,17 @@ public class OAuth1Network extends Network {
             request.getSession().setAttribute(name + "_req_token_secret", temporaryTokenResponse.tokenSecret);
             return accessTempToken.build();
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new OAuthException(e.getMessage());
+            log.error("Could not generate authorizationRedirect!", e);
+            throw new OAuthException("Could not generate authorizationRedirect!", e);
         }
     }
 
     @Override
     public INetworkToken accessToken(HttpServletRequest callbackRequest) throws OAuthException {
         try {
-            String requestToken = (String) callbackRequest.getSession().getAttribute(name + "_req_token");
-            String requestTokenSecret = (String) callbackRequest.getSession().getAttribute(name + "_req_token_secret");
+            HttpSession session = callbackRequest.getSession();
+            String requestToken = (String) session.getAttribute(name + "_req_token");
+            String requestTokenSecret = (String) session.getAttribute(name + "_req_token_secret");
             String oauthVerifier = callbackRequest.getParameter("oauth_verifier");
 
             OAuthHmacSigner signer = new OAuthHmacSigner();
@@ -79,7 +81,8 @@ public class OAuth1Network extends Network {
             OAuthCredentialsResponse accessTokenResponse = getAccessToken.execute();
             return AccessToken.oAuth1Token(name, accessTokenResponse.token, accessTokenResponse.tokenSecret);
         } catch (IOException e) {
-            throw new OAuthException(e.getMessage());
+            log.error("Could not load accessToken!", e);
+            throw new OAuthException("Could not load accessToken!", e);
         }
     }
 
@@ -108,7 +111,8 @@ public class OAuth1Network extends Network {
             }
             return req.execute();
         } catch (IOException e) {
-            throw new OAuthException(e.getMessage());
+            log.error("Could not execute GET request!", e);
+            throw new OAuthException("Could not execute GET request!", e);
         }
     }
 

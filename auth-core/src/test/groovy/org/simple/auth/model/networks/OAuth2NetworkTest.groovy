@@ -1,6 +1,7 @@
 package org.simple.auth.model.networks
 
 import com.google.api.client.auth.oauth2.BearerToken
+import com.google.api.client.http.HttpResponse
 import com.google.api.client.http.LowLevelHttpRequest
 import com.google.api.client.http.LowLevelHttpResponse
 import com.google.api.client.json.Json
@@ -28,7 +29,6 @@ class OAuth2NetworkTest extends Specification {
     String state = "dummyState"
     def scope = ['email']
     String networkName = "dummy"
-    MockHttpTransport httpTransportMock
 
     def setup() {
         System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
@@ -37,7 +37,6 @@ class OAuth2NetworkTest extends Specification {
         clientConfig.scope = Optional.of(scope)
         clientConfig.state = Optional.of(state)
         underTest = new OAuth2Network(networkName, clientConfig, authUrl, accessTokenUrl)
-        underTest.httpTransport = httpTransportMock
     }
 
     def "AuthorizationRedirect"() {
@@ -88,7 +87,31 @@ class OAuth2NetworkTest extends Specification {
     }
 
     def "ExecuteGet"() {
+        given:
+        String remoteURL = "http://localhost/api/profile"
+        INetworkToken networkToken = Mock(INetworkToken)
+        boolean withJSONParser = true
+        underTest.httpTransport = new MockHttpTransport() {
+            @Override
+            public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
+                return new MockLowLevelHttpRequest() {
+                    @Override
+                    public LowLevelHttpResponse execute() throws IOException {
+                        MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                        response.setStatusCode(200);
+                        response.setContentType(Json.MEDIA_TYPE);
+                        response.setContent("{}");
+                        return response;
+                    }
+                };
+            }
+        }
 
+        when:
+        HttpResponse result = underTest.executeGet(remoteURL,networkToken,withJSONParser)
+
+        then:
+        result != null
     }
 
     def "Post"() {
@@ -104,17 +127,15 @@ class OAuth2NetworkTest extends Specification {
         String result = underTest.extractAuthCode(mockReq)
 
         then:
-        1 * mockReq.getRequestURL() >> new StringBuffer("http://localhost/callback?code="+code)
+        1 * mockReq.getRequestURL() >> new StringBuffer("http://localhost/callback?code=" + code)
         result == code
 
     }
 
 
-
-
     def "MyAccessMethod"() {
-      expect:
-      underTest.myAccessMethod().getClass() == BearerToken.authorizationHeaderAccessMethod().getClass()
+        expect:
+        underTest.myAccessMethod().getClass() == BearerToken.authorizationHeaderAccessMethod().getClass()
     }
 
     def "HeaderDefaults"() {

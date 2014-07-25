@@ -45,9 +45,14 @@ public class FakeOauthProviderAuthorizationServlet extends HttpServlet {
         clientRedirectURIs.put(clientId, clientRedirectURI);
     }
 
+    public static void removeClient(String clientId) {
+        log.info("Removing client with id {}",clientId);
+        clientSecrets.remove(clientId);
+        clientRedirectURIs.remove(clientId);
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String responseType = req.getParameter("code");
         String clientId = req.getParameter("client_id");
         String redirectURI = req.getParameter("redirect_uri");
         String state = req.getParameter("state");

@@ -8,6 +8,7 @@ import org.simple.auth.shadow.model.IAccount;
 import org.simple.auth.shadow.model.IPersistentNetworkToken;
 import org.simple.auth.shadow.model.IShadowToken;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -59,56 +60,52 @@ public class AuthService implements IAuthService {
         return createShadowToken(account, client);
     }
 
-    protected IShadowToken createShadowToken(IAccount account, IClient client) throws OAuthException {
+    protected IShadowToken createShadowToken(Serializable accountId, IClient client) throws OAuthException {
         if (log.isDebugEnabled()) {
-            log.debug("Creating shadow token account {} and client {}", account, client);
+            log.debug("Creating shadow token account {} and client {}", accountId, client);
         }
-        IShadowToken token =  repositoryService.getShadowTokenRepository().createShadowToken(account, client);
-        if(!isShadowTokenValid(token)){
+        IShadowToken token = repositoryService.getShadowTokenRepository().createShadowToken(accountId, client);
+        if (!isShadowTokenValid(token)) {
             throw new OAuthException("Invalid shadow token created by shadow token repository!");
-        }
-        else {
+        } else {
             return token;
         }
     }
 
 
     @Override
-    public IPersistentNetworkToken createPersistentNetworkToken(IAccount account, INetworkToken networkToken, String networkUserId) throws OAuthException {
+    public IPersistentNetworkToken createPersistentNetworkToken(Serializable accountId, INetworkToken networkToken, String networkUserId) throws OAuthException {
         if (log.isDebugEnabled()) {
-            log.debug("Creating persistent network token with account{}, networkToken {}, networkUserId {}", account, networkToken, networkUserId);
+            log.debug("Creating persistent network token with account{}, networkToken {}, networkUserId {}", accountId, networkToken, networkUserId);
         }
-        return repositoryService.getPersistenNetworkTokenRepository().create(account.getId(), networkUserId, networkToken);
+        return repositoryService.getPersistenNetworkTokenRepository().create(accountId, networkUserId, networkToken);
     }
 
 
     @Override
     public boolean isShadowTokenValid(IShadowToken iShadowToken) {
         if (iShadowToken == null) {
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug("ShadowToken is invalid, because no shadow token presented");
             }
             return false;
-        }
-        else if (iShadowToken.getExpiresAt() == null) {
-            if(log.isDebugEnabled()) {
+        } else if (iShadowToken.getExpiresAt() == null) {
+            if (log.isDebugEnabled()) {
                 log.debug("ShadowToken is invalid, because no expiry date presented");
             }
             return false;
         } else if (iShadowToken.getAccountId() == null) {
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug("ShadowToken is invalid, because no account id presented");
             }
             return false;
-        }
-        else if (iShadowToken.getClientId() == null) {
-            if(log.isDebugEnabled()) {
+        } else if (iShadowToken.getClientId() == null) {
+            if (log.isDebugEnabled()) {
                 log.debug("ShadowToken is invalid, because no client id presented");
             }
             return false;
-        }
-        else if (iShadowToken.getExpiresAt().before(new Date())) {
-            if(log.isDebugEnabled()) {
+        } else if (iShadowToken.getExpiresAt().before(new Date())) {
+            if (log.isDebugEnabled()) {
                 log.debug("ShadowToken is invalid, because it is outdated (expiry {})", iShadowToken.getExpiresAt());
             }
             return false;

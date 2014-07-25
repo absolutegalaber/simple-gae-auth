@@ -1,5 +1,6 @@
 package org.simple.auth.model.networks
 
+import com.google.api.client.http.HttpResponse
 import com.google.api.client.http.LowLevelHttpRequest
 import com.google.api.client.http.LowLevelHttpResponse
 import com.google.api.client.testing.http.MockHttpTransport
@@ -114,6 +115,32 @@ class OAuth1NetworkTest extends Specification {
     }
 
     def "ExecuteGet"() {
+        given:
+        INetworkToken networkToken = Mock(INetworkToken)
+        boolean withJSONParser = true
+        String requestedUrl = "http://api.twitter.com/statuses/user_timeline?screen_name=absolut1978"
+        underTest.httpTransport = new MockHttpTransport() {
+            @Override
+            public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
+                return new MockLowLevelHttpRequest() {
+                    @Override
+                    public LowLevelHttpResponse execute() throws IOException {
 
+                        MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                        response.setStatusCode(200);
+                        response.setContent("[]");
+                        return response;
+                    }
+
+
+                };
+            }
+        }
+
+        when:
+        HttpResponse result = underTest.executeGet(requestedUrl, networkToken, withJSONParser)
+
+        then:
+        result != null
     }
 }

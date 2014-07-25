@@ -3,8 +3,10 @@ language: node_js
 node_js:
   - "0.10"
 
-before_install: npm install -g grunt-cli
-before_install: npm install -g bower
+before_install:
+- npm install -g grunt-cli
+- npm install -g bower
+- npm uninstall grunt
 
 script: ./gradlew setup check --stacktrace
 

@@ -33,6 +33,8 @@ dependencies {
     compile(
             [
                     project(':auth-core'),
+                    project(':token-shadow:auth'),
+                    project(':token-shadow:repositories:objectify'),
                     'org.slf4j:slf4j-jdk14:1.7.7',
                     'com.google.appengine:appengine-api-1.0-sdk:1.9.7',
                     'com.google.appengine:appengine-endpoints:1.9.7',

@@ -1,10 +1,7 @@
 package org.simple.auth.showcase.servlet;
 
 import lombok.extern.slf4j.Slf4j;
-import org.simple.auth.model.OAuthException;
-import org.simple.auth.service.NetworkService;
 import org.simple.auth.servlet.AbstractAuthorizationRedirect;
-import org.simple.auth.showcase.service.factory.SocialNetworkFactory;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;

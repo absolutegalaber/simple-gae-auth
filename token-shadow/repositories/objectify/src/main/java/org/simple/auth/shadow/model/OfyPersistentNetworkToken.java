@@ -13,8 +13,8 @@ import java.util.Date;
 @Entity
 @Cache
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id", "network", "networkUserId", "accessToken"}, callSuper = false)
-@ToString(of = {"id", "network", "networkUserId"}, callSuper = false)
+@EqualsAndHashCode(of = {"id", "network", "accessToken", "accountId"}, callSuper = false)
+@ToString(of = {"id", "network", "accountId"}, callSuper = false)
 public class OfyPersistentNetworkToken extends BaseOfyEntity implements IPersistentNetworkToken {
 
     @Id

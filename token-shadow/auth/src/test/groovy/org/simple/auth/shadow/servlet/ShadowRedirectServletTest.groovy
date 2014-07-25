@@ -4,11 +4,7 @@ import org.apache.http.HttpStatus
 import org.simple.auth.model.IClient
 import org.simple.auth.model.Network
 import org.simple.auth.model.OAuthException
-import org.simple.auth.shadow.DummyClient
-import org.simple.auth.shadow.DummyNetwork
-import org.simple.auth.shadow.DummyProfileAwareNetwork
-import org.simple.auth.shadow.GrantType
-import org.simple.auth.shadow.OAuthRequestParameter
+import org.simple.auth.shadow.*
 import org.simple.auth.shadow.service.IClientService
 import org.simple.auth.shadow.service.IGrantTypeService
 import spock.lang.Specification
@@ -25,29 +21,15 @@ class ShadowRedirectServletTest extends Specification {
     IClientService clientServiceMock
     IGrantTypeService grantTypeServiceMock
 
-    def setup(){
-        clientServiceMock =  Mock(IClientService)
+    def setup() {
+        clientServiceMock = Mock(IClientService)
         grantTypeServiceMock = Mock(IGrantTypeService)
         underTest = new ShadowRedirectServlet();
-        underTest.clientService  =clientServiceMock
+        underTest.clientService = clientServiceMock
         underTest.grantTypeService = grantTypeServiceMock
     }
 
-    def "checkRequiredParametersWithNoParameters"(){
-       given:
-       HttpServletRequest reqMock = Mock(HttpServletRequest)
-
-       when:
-
-       underTest.checkRequiredParameters(reqMock)
-
-       then:
-       1*grantTypeServiceMock.fromRequest(reqMock) >> GrantType.IMPLICIT
-       OAuthException ex = thrown()
-
-    }
-
-    def "checkRequiredParametersWithAllParameters"(){
+    def "checkRequiredParametersWithNoParameters"() {
         given:
         HttpServletRequest reqMock = Mock(HttpServletRequest)
 
@@ -56,16 +38,30 @@ class ShadowRedirectServletTest extends Specification {
         underTest.checkRequiredParameters(reqMock)
 
         then:
-        1*grantTypeServiceMock.fromRequest(reqMock) >> GrantType.IMPLICIT
+        1 * grantTypeServiceMock.fromRequest(reqMock) >> GrantType.IMPLICIT
+        OAuthException ex = thrown()
+
+    }
+
+    def "checkRequiredParametersWithAllParameters"() {
+        given:
+        HttpServletRequest reqMock = Mock(HttpServletRequest)
+
+        when:
+
+        underTest.checkRequiredParameters(reqMock)
+
+        then:
+        1 * grantTypeServiceMock.fromRequest(reqMock) >> GrantType.IMPLICIT
         for (OAuthRequestParameter oAuthRequestParameter : GrantType.IMPLICIT.requiredParameters) {
-            1*reqMock.getParameter(oAuthRequestParameter.paramName)  >> "dummyparamvalue"
+            1 * reqMock.getParameter(oAuthRequestParameter.paramName) >> "dummyparamvalue"
         }
 
         then:
         noExceptionThrown()
     }
 
-    def "OnError"(){
+    def "OnError"() {
         given:
         HttpServletRequest reqMock = Mock(HttpServletRequest)
         HttpServletResponse respMock = Mock(HttpServletResponse)
@@ -76,30 +72,30 @@ class ShadowRedirectServletTest extends Specification {
 
 
         when:
-        underTest.onError(e,reqMock,respMock)
+        underTest.onError(e, reqMock, respMock)
 
         then:
-        1*respMock.getWriter() >> pw
-        1* respMock.setStatus(HttpStatus.SC_BAD_REQUEST)
-        sw.toString() == "{\"error\":\"invalid_request\",\"error_description\":\""+message+"\"}"
+        1 * respMock.getWriter() >> pw
+        1 * respMock.setStatus(HttpStatus.SC_BAD_REQUEST)
+        sw.toString() == "{\"error\":\"invalid_request\",\"error_description\":\"" + message + "\"}"
 
     }
 
-    def "beforeRedirectNotProfileAwareNetwork"(){
+    def "beforeRedirectNotProfileAwareNetwork"() {
         given:
         HttpServletRequest reqMock = Mock(HttpServletRequest)
         HttpServletResponse respMock = Mock(HttpServletResponse)
         Network networkMock = new DummyNetwork()
 
         when:
-        underTest.beforeRedirect(reqMock,respMock,networkMock)
+        underTest.beforeRedirect(reqMock, respMock, networkMock)
 
         then:
         OAuthException ex = thrown()
 
     }
 
-    def "beforeRedirect"(){
+    def "beforeRedirect"() {
         given:
         HttpServletRequest reqMock = Mock(HttpServletRequest)
         HttpServletResponse respMock = Mock(HttpServletResponse)
@@ -109,17 +105,17 @@ class ShadowRedirectServletTest extends Specification {
 
 
         when:
-        underTest.beforeRedirect(reqMock,respMock,dummyNetwork)
+        underTest.beforeRedirect(reqMock, respMock, dummyNetwork)
 
         then:
-        1*grantTypeServiceMock.fromRequest(reqMock) >> GrantType.IMPLICIT
-        for (OAuthRequestParameter oAuthRequestParameter  : GrantType.IMPLICIT.requiredParameters) {
-           1*reqMock.getParameter(oAuthRequestParameter.paramName)>> "param_value_for_"+oAuthRequestParameter.getParamName()
+        1 * grantTypeServiceMock.fromRequest(reqMock) >> GrantType.IMPLICIT
+        for (OAuthRequestParameter oAuthRequestParameter : GrantType.IMPLICIT.requiredParameters) {
+            1 * reqMock.getParameter(oAuthRequestParameter.paramName) >> "param_value_for_" + oAuthRequestParameter.getParamName()
         }
-        1*clientServiceMock.fromRequest(reqMock) >> dummyClient
-        1*clientServiceMock.toSession(reqMock,dummyClient)
-        1*clientServiceMock.redirectUriFromRequest(reqMock)>> requestedRedirectURI
-        1*clientServiceMock.redirectUriToSession(reqMock,dummyClient,requestedRedirectURI)
+        1 * clientServiceMock.fromRequest(reqMock) >> dummyClient
+        1 * clientServiceMock.toSession(reqMock, dummyClient)
+        1 * clientServiceMock.redirectUriFromRequest(reqMock) >> requestedRedirectURI
+        1 * clientServiceMock.redirectUriToSession(reqMock, dummyClient, requestedRedirectURI)
 
     }
 }

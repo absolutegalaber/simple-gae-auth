@@ -3,14 +3,11 @@ package org.simple.auth.shadow.service
 import org.simple.auth.model.IClient
 import org.simple.auth.model.INetworkToken
 import org.simple.auth.model.OAuthException
-import org.simple.auth.shadow.DummyAccount
 import org.simple.auth.shadow.DummyClient
 import org.simple.auth.shadow.DummyPersistentNetworkToken
 import org.simple.auth.shadow.DummyShadowToken
-import org.simple.auth.shadow.model.IAccount
 import org.simple.auth.shadow.model.IPersistentNetworkToken
 import org.simple.auth.shadow.model.IShadowToken
-import org.simple.auth.shadow.repository.IAccountRepository
 import org.simple.auth.shadow.repository.IPersistenNetworkTokenRepository
 import org.simple.auth.shadow.repository.IShadowTokenRepository
 import spock.lang.Specification
@@ -24,7 +21,6 @@ class AuthServiceTest extends Specification {
     IRepositoryService repositoryServiceMock
     IPersistenNetworkTokenRepository persistenNetworkTokenRepositoryMock
     IShadowTokenRepository shadowTokenRepositoryMock
-    IAccountRepository accountRepositoryMock
 
     def setup() {
         System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
@@ -32,7 +28,6 @@ class AuthServiceTest extends Specification {
         repositoryServiceMock = Mock(IRepositoryService)
         persistenNetworkTokenRepositoryMock = Mock(IPersistenNetworkTokenRepository)
         shadowTokenRepositoryMock = Mock(IShadowTokenRepository)
-        accountRepositoryMock = Mock(IAccountRepository)
         underTest.setRepositoryService(repositoryServiceMock)
 
     }
@@ -42,7 +37,7 @@ class AuthServiceTest extends Specification {
         String existingShadowToken = "testtoken"
         when:
         repositoryServiceMock.shadowTokenRepository >> shadowTokenRepositoryMock
-        IShadowToken shadowToken = createValidShadowToken("dummy_account_id","dummy_client_id")
+        IShadowToken shadowToken = createValidShadowToken("dummy_account_id", "dummy_client_id")
         shadowTokenRepositoryMock.loadByAccessToken(existingShadowToken) >> shadowToken
         IShadowToken token = underTest.getShadowToken(existingShadowToken)
         then:
@@ -73,19 +68,15 @@ class AuthServiceTest extends Specification {
         dummyPersistentNetworkToken.network = network
         dummyPersistentNetworkToken.networkUserId = networkUserId
         INetworkToken dummyNetworkToken = dummyPersistentNetworkToken
-        IAccount dummyAccount = new DummyAccount()
-        dummyAccount.id = accountId
-        IShadowToken dummyShadowToken = createValidShadowToken(accountId,clientId)
+        IShadowToken dummyShadowToken = createValidShadowToken(accountId, clientId)
         dummyShadowToken.accessToken = "TestAccessToken"
 
         when:
         repositoryServiceMock.persistenNetworkTokenRepository >> persistenNetworkTokenRepositoryMock
-        repositoryServiceMock.accountRepository >> accountRepositoryMock
         repositoryServiceMock.shadowTokenRepository >> shadowTokenRepositoryMock
         persistenNetworkTokenRepositoryMock.load(network, networkUserId) >> dummyPersistentNetworkToken
-        accountRepositoryMock.load(accountId) >> dummyAccount
-        shadowTokenRepositoryMock.loadByAccountAndClient(accountId,clientId) >> dummyShadowToken
-        IShadowToken shadowToken = underTest.getShadowToken(client,dummyNetworkToken,networkUserId)
+        shadowTokenRepositoryMock.loadByAccountAndClient(accountId, clientId) >> dummyShadowToken
+        IShadowToken shadowToken = underTest.getShadowToken(client, dummyNetworkToken, networkUserId)
 
         then:
         shadowToken != null
@@ -104,8 +95,6 @@ class AuthServiceTest extends Specification {
         dummyPersistentNetworkToken.network = network
         dummyPersistentNetworkToken.networkUserId = networkUserId
         INetworkToken dummyNetworkToken = dummyPersistentNetworkToken
-        IAccount dummyAccount = new DummyAccount()
-        dummyAccount.id = accountId
         IShadowToken dummyShadowToken = createValidShadowToken(accountId, clientId)
         dummyShadowToken.accountId = accountId
         dummyShadowToken.clientId = clientId
@@ -113,13 +102,11 @@ class AuthServiceTest extends Specification {
 
         when:
         repositoryServiceMock.persistenNetworkTokenRepository >> persistenNetworkTokenRepositoryMock
-        repositoryServiceMock.accountRepository >> accountRepositoryMock
         repositoryServiceMock.shadowTokenRepository >> shadowTokenRepositoryMock
         persistenNetworkTokenRepositoryMock.load(network, networkUserId) >> dummyPersistentNetworkToken
-        accountRepositoryMock.load(accountId) >> dummyAccount
-        shadowTokenRepositoryMock.loadByAccountAndClient(accountId,clientId) >> null
-        shadowTokenRepositoryMock.createShadowToken(dummyAccount,dummyClient) >> dummyShadowToken
-        IShadowToken shadowToken = underTest.getShadowToken(dummyClient,dummyNetworkToken,networkUserId)
+        shadowTokenRepositoryMock.loadByAccountAndClient(accountId, clientId) >> null
+        shadowTokenRepositoryMock.createShadowToken(accountId, dummyClient) >> dummyShadowToken
+        IShadowToken shadowToken = underTest.getShadowToken(dummyClient, dummyNetworkToken, networkUserId)
 
         then:
         shadowToken == dummyShadowToken
@@ -138,25 +125,17 @@ class AuthServiceTest extends Specification {
         dummyPersistentNetworkToken.network = network
         dummyPersistentNetworkToken.networkUserId = networkUserId
         INetworkToken dummyNetworkToken = dummyPersistentNetworkToken
-        IAccount dummyAccount = new DummyAccount()
-        dummyAccount.id = accountId
-        IShadowToken dummyShadowToken = createValidShadowToken(accountId,clientId)
+        IShadowToken dummyShadowToken = createValidShadowToken(accountId, clientId)
         dummyShadowToken.accessToken = "TestAccessToken"
 
         when:
         repositoryServiceMock.persistenNetworkTokenRepository >> persistenNetworkTokenRepositoryMock
-        repositoryServiceMock.accountRepository >> accountRepositoryMock
         repositoryServiceMock.shadowTokenRepository >> shadowTokenRepositoryMock
         persistenNetworkTokenRepositoryMock.load(network, networkUserId) >> null
-        IAccount transientAccount = new DummyAccount()
-        accountRepositoryMock.createTransient() >> transientAccount
-        transientAccount.id = accountId
-        accountRepositoryMock.save(transientAccount)
-        persistenNetworkTokenRepositoryMock.create(accountId,networkUserId,dummyNetworkToken)
-        accountRepositoryMock.load(accountId) >> dummyAccount
-        shadowTokenRepositoryMock.loadByAccountAndClient(accountId,clientId) >> null
-        shadowTokenRepositoryMock.createShadowToken(transientAccount,dummyClient) >> dummyShadowToken
-        IShadowToken shadowToken = underTest.getShadowToken(dummyClient,dummyNetworkToken,networkUserId)
+        persistenNetworkTokenRepositoryMock.create(accountId, networkUserId, dummyNetworkToken)
+        shadowTokenRepositoryMock.loadByAccountAndClient(accountId, clientId) >> null
+        shadowTokenRepositoryMock.createShadowToken(accountId, dummyClient) >> dummyShadowToken
+        IShadowToken shadowToken = underTest.getShadowToken(dummyClient, dummyNetworkToken, networkUserId)
 
         then:
         shadowToken == dummyShadowToken
@@ -166,13 +145,11 @@ class AuthServiceTest extends Specification {
 
         when:
         def invalidShadowToken = new DummyShadowToken()
-        def dummyAccount = new DummyAccount()
         def dummyClient = new DummyClient()
-        dummyAccount.id = "dummy_account_id"
         dummyClient.clientId = "dummy_client_id"
         repositoryServiceMock.shadowTokenRepository >> shadowTokenRepositoryMock
-        shadowTokenRepositoryMock.createShadowToken(dummyAccount,dummyClient) >> invalidShadowToken
-        underTest.createShadowToken(dummyAccount,dummyClient)
+        shadowTokenRepositoryMock.createShadowToken("dummy_account_id", dummyClient) >> invalidShadowToken
+        underTest.createShadowToken("dummy_account_id", dummyClient)
 
         then:
         OAuthException ex = thrown()
@@ -188,7 +165,7 @@ class AuthServiceTest extends Specification {
     def "IsShadowTokenValidForActiveToken"() {
         when:
         def token = new DummyShadowToken()
-        token.expiresAt = new Date()+1
+        token.expiresAt = new Date() + 1
         token.accountId = "123"
         token.clientId = "dummyClient"
 
@@ -199,7 +176,7 @@ class AuthServiceTest extends Specification {
     def "IsShadowTokenValidForExpiredToken"() {
         when:
         def token = new DummyShadowToken()
-        token.expiresAt = new Date()-1
+        token.expiresAt = new Date() - 1
         token.accountId = "123"
         token.clientId = "dummyClient"
 
@@ -220,7 +197,7 @@ class AuthServiceTest extends Specification {
     def "IsShadowTokenValidForMissingAccountId"() {
         when:
         def token = new DummyShadowToken()
-        token.expiresAt = new Date()+1
+        token.expiresAt = new Date() + 1
         token.clientId = "dummyClient"
 
         then:
@@ -230,18 +207,18 @@ class AuthServiceTest extends Specification {
     def "IsShadowTokenValidForMissingClientId"() {
         when:
         def token = new DummyShadowToken()
-        token.expiresAt = new Date()+1
+        token.expiresAt = new Date() + 1
         token.accountId = "123"
 
         then:
         !underTest.isShadowTokenValid(token)
     }
 
-    private DummyShadowToken createValidShadowToken(String accountId, String clientId){
+    private DummyShadowToken createValidShadowToken(String accountId, String clientId) {
         DummyShadowToken dummyShadowToken = new DummyShadowToken();
         dummyShadowToken.accountId = accountId
         dummyShadowToken.clientId = clientId
-        dummyShadowToken.expiresAt = new Date()+1
+        dummyShadowToken.expiresAt = new Date() + 1
         return dummyShadowToken;
     }
 }

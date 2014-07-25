@@ -4,8 +4,10 @@ import org.simple.auth.model.BasicUserProfile
 import org.simple.auth.model.IClient
 import org.simple.auth.model.INetworkToken
 import org.simple.auth.shadow.DummyClient
+import org.simple.auth.shadow.DummyPersistentNetworkToken
 import org.simple.auth.shadow.DummyShadowToken
 import org.simple.auth.shadow.DummyUserProfile
+import org.simple.auth.shadow.model.IPersistentNetworkToken
 import org.simple.auth.shadow.model.IShadowToken
 import org.simple.auth.shadow.service.IAuthService
 import org.simple.auth.shadow.service.IClientService
@@ -19,12 +21,17 @@ import javax.servlet.http.HttpServletResponse
  */
 class ShadowCallbackServletTest extends Specification {
 
-    ShadowCallbackServlet underTest
+    AbstractShadowCallbackServlet underTest
     IAuthService authServiceMock
     IClientService clientServiceMock
 
     def setup() {
-        underTest = new ShadowCallbackServlet()
+        underTest = new AbstractShadowCallbackServlet() {
+            @Override
+            protected Serializable connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest request) {
+                return "accountId"
+            }
+        }
         authServiceMock = Mock(IAuthService)
         clientServiceMock = Mock(IClientService)
         underTest.authService = authServiceMock
@@ -38,21 +45,23 @@ class ShadowCallbackServletTest extends Specification {
         HttpServletResponse mockResp = Mock(HttpServletResponse)
         INetworkToken accessToken = new DummyShadowToken()
         BasicUserProfile userProfile = new DummyUserProfile()
-        userProfile.networkId ="testuser@network.de"
+        IPersistentNetworkToken persistentToken = new DummyPersistentNetworkToken()
+        userProfile.networkId = "testuser@network.de"
         IClient client = new DummyClient()
         IShadowToken shadowToken = new DummyShadowToken()
         shadowToken.accessToken = "1234567"
-        shadowToken.expiresAt = new Date()+1
+        shadowToken.expiresAt = new Date() + 1
 
         when:
         underTest.onProfileLoaded(accessToken, userProfile, mockReq, mockResp)
 
 
         then:
-        1*clientServiceMock.fromSession(mockReq) >> client
-        1*authServiceMock.getShadowToken(client,accessToken,userProfile.getNetworkId())>> shadowToken
-        1* clientServiceMock.redirectUriFromSession(client, mockReq) >> "http://localhost:8080"
-        1*mockResp.sendRedirect(_)
+        1 * clientServiceMock.fromSession(mockReq) >> client
+        1 * authServiceMock.persist(accessToken, userProfile.getNetworkId(), "accountId") >> persistentToken
+        1 * authServiceMock.getShadowToken(client, persistentToken, userProfile.getNetworkId()) >> shadowToken
+        1 * clientServiceMock.redirectUriFromSession(client, mockReq) >> "http://localhost:8080"
+        1 * mockResp.sendRedirect(_)
 
     }
 

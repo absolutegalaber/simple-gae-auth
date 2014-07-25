@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.6'
+        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.7'
     }
 
 }
@@ -25,20 +25,101 @@ appengine {
     }
 }
 
-
+appengineFunctionalTest.finalizedBy(appengineStop)
 
 
 dependencies {
-    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.6'
+    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.7'
     compile(
             [
                     project(':auth-core'),
+                    project(':token-shadow:auth'),
+                    project(':token-shadow:repositories:objectify'),
                     'org.slf4j:slf4j-jdk14:1.7.7',
-                    'com.google.appengine:appengine-api-1.0-sdk:1.9.6',
-                    'com.google.appengine:appengine-endpoints:1.9.6',
+                    'com.google.appengine:appengine-api-1.0-sdk:1.9.7',
+                    'com.google.appengine:appengine-endpoints:1.9.7',
                     'com.googlecode.objectify:objectify:5.0.3',
                     'jstl:jstl:1.2'
             ]
     )
     providedCompile 'javax.servlet:servlet-api:2.5'
+}
+
+/**
+ * Call-Through for "npm install"
+ */
+task nodeLoad(type: Exec, dependsOn: 'nodeClean') {
+    description 'Call-Through for "npm install"'
+    workingDir project.projectDir
+    commandLine 'npm', 'install'
+    doLast {
+        logger.quiet("Downloaded NPM Modules")
+    }
+}
+
+/**
+ * Clean "node_modules" directory
+ */
+task nodeClean(type: Delete) {
+    description 'Clean "node_modules" directory'
+    delete 'node_modules'
+    doLast {
+        logger.quiet("Cleaned NPM Modules")
+    }
+}
+
+/**
+ * Call-Through for "bower install"
+ */
+task bowerLoad(type: Exec, dependsOn: 'bowerClean') {
+    description 'Call-Through for "bower install"'
+    workingDir project.projectDir
+    commandLine 'bower', 'install'
+    doLast {
+        logger.quiet("Downloaded Bower Components")
+    }
+}
+
+/**
+ * Clean "bower_components" directory
+ */
+task bowerClean(type: Delete) {
+    description 'Clean "bower_components" directory'
+    delete 'bower_components'
+    doLast {
+        logger.quiet("Cleaned Bower Components")
+    }
+}
+
+/**
+ * Set up the JavaScript dependencies via NPM and Bower.
+ */
+task setup(dependsOn: ['nodeLoad', 'bowerLoad']) {
+    description 'Set up the JavaScript dependencies via NPM and Bower.'
+    doLast {
+        logger.quiet("Setup complete")
+    }
+}
+
+/**
+ * Call-Through for "grunt compileCoffee"
+ */
+task compileCoffee(type: Exec) {
+    workingDir project.projectDir
+    commandLine 'grunt', 'compileCoffee'
+}
+compileJava.dependsOn('compileCoffee')
+
+task hotDeploy(type: Copy, dependsOn: 'compileCoffee') {
+    from('src/main/webapp/app/') {
+        into('app')
+    }
+    from('src/main/webapp/lib/') {
+        into('lib')
+    }
+    from('src/main/webapp/templates/') {
+        into('templates')
+    }
+    from 'src/main/webapp/index.html'
+    into 'build/exploded-app'
 }

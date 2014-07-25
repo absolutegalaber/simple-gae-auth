@@ -1,7 +1,6 @@
 package org.simple.auth.servlet;
 
 import lombok.extern.slf4j.Slf4j;
-import org.simple.auth.model.AccessToken;
 import org.simple.auth.model.BasicUserProfile;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.OAuthException;
@@ -26,7 +25,7 @@ public abstract class AbstractProfileLoadingAuthorizationCallback extends Abstra
             log.info("Finished loading user profile....");
             onProfileLoaded(accessToken, userProfile, req, resp);
         } catch (Exception e) {
-             onError(e,  req,  resp);
+            onError(e, req, resp);
         }
     }
 

@@ -3,7 +3,6 @@ package org.simple.auth.shadow.repository;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyFactory;
 import org.simple.auth.model.IClient;
-import org.simple.auth.shadow.model.IAccount;
 import org.simple.auth.shadow.model.IShadowToken;
 import org.simple.auth.shadow.model.OfyShadowToken;
 
@@ -40,10 +39,10 @@ public class OfyShadowTokenRepository extends BaseOfyRepository implements IShad
     }
 
     @Override
-    public IShadowToken createShadowToken(IAccount account, IClient client) {
+    public IShadowToken createShadowToken(Serializable accountId, IClient client) {
         OfyShadowToken token = new OfyShadowToken();
         token.setAccessToken(UUID.randomUUID().toString().replace("-", ""));
-        token.setAccountId(account.getId());
+        token.setAccountId(accountId);
         token.setClientId(client.clientId());
         token.setExpiresAt(newExpiry());
         Key<OfyShadowToken> inserted = ofy().save().entity(token).now();

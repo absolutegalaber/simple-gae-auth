@@ -1,7 +1,6 @@
 package org.simple.auth.shadow.repository;
 
 import org.simple.auth.model.IClient;
-import org.simple.auth.shadow.model.IAccount;
 import org.simple.auth.shadow.model.InMemoryShadowToken;
 
 import java.io.Serializable;
@@ -38,7 +37,7 @@ public class InMemoryShadowTokenRepository implements IShadowTokenRepository<InM
 
 
     @Override
-    public InMemoryShadowToken createShadowToken(IAccount account, IClient client) {
+    public InMemoryShadowToken createShadowToken(Serializable accountId, IClient client) {
         InMemoryShadowToken shadowToken = new InMemoryShadowToken();
         String accessToken = generateToken();
         String refreshToken = generateToken();
@@ -49,11 +48,11 @@ public class InMemoryShadowTokenRepository implements IShadowTokenRepository<InM
         shadowToken.setAccessToken(accessToken);
         shadowToken.setRefreshToken(refreshToken);
         shadowToken.setClientId(client.clientId());
-        shadowToken.setAccountId(account.getId());
+        shadowToken.setAccountId(accountId);
         shadowToken.setExpiresAt(calculateNextExpirationDate());
         tokensByAccessToken.put(accessToken, shadowToken);
         tokensByRefreshToken.put(refreshToken, shadowToken);
-        tokensByClientAndAccount.put(generateAccountClientIdentifier(account.getId(), client.clientId()), shadowToken);
+        tokensByClientAndAccount.put(generateAccountClientIdentifier(accountId, client.clientId()), shadowToken);
         return shadowToken;
     }
 

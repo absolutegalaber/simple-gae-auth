@@ -1,5 +1,6 @@
 package org.simple.auth.model;
 
+import com.google.api.client.auth.openidconnect.IdToken;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -21,6 +22,7 @@ public class AccessToken implements INetworkToken {
     protected Optional<String> tokenSecret = Optional.absent();
     protected Optional<String> refreshToken = Optional.absent();
     protected Optional<Date> expiresAt = Optional.absent();
+    protected Optional<IdToken> idToken = Optional.absent();
 
     private AccessToken(String network, String accessToken, String tokenSecret) {
         Preconditions.checkNotNull(network);
@@ -45,6 +47,20 @@ public class AccessToken implements INetworkToken {
         }
         this.version = AccessTokenVersion.OAUTH_2;
     }
+    private AccessToken(String network, String accessToken, String refreshToken, Long expiresInSeconds, IdToken token) {
+        Preconditions.checkNotNull(network);
+        Preconditions.checkNotNull(accessToken);
+        this.network = network;
+        this.accessToken = accessToken;
+        this.refreshToken = Optional.fromNullable(refreshToken);
+        if (expiresInSeconds != null) {
+            Calendar expiryTime = Calendar.getInstance();
+            expiryTime.add(Calendar.SECOND, expiresInSeconds.intValue());
+            this.expiresAt = Optional.of(expiryTime.getTime());
+        }
+        this.version = AccessTokenVersion.OAUTH_2;
+        this.idToken = Optional.fromNullable(token);
+    }
 
     public static AccessToken oAuth1Token(String network, String accessToken, String tokenSecret) {
         return new AccessToken(network, accessToken, tokenSecret);
@@ -54,6 +70,10 @@ public class AccessToken implements INetworkToken {
         Preconditions.checkNotNull(network);
         Preconditions.checkNotNull(accessToken);
         return new AccessToken(network, accessToken, refreshToken, expiresInSeconds);
+    }
+
+    public static AccessToken openIdconnectToken(String network, String accessToken, String refreshToken, Long expiresInSeconds, IdToken token){
+        return new AccessToken(network, accessToken, refreshToken, expiresInSeconds, token);
     }
 
 

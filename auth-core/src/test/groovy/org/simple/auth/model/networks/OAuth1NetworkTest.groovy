@@ -60,7 +60,7 @@ class OAuth1NetworkTest extends Specification {
         }
 
         when:
-        String result = underTest.authorizationRedirect(req)
+        String result = underTest.authorizationRedirect(req, 'csrfToken')
 
         then:
         req.getSession() >> mockSession

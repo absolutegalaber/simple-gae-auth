@@ -37,7 +37,7 @@ public class OAuth1Network extends Network {
 
 
     @Override
-    public String authorizationRedirect(HttpServletRequest request) throws OAuthException {
+    public String authorizationRedirect(HttpServletRequest request, String csrfToken) throws OAuthException {
         try {
             //signer
             OAuthHmacSigner signer = new OAuthHmacSigner();

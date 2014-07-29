@@ -17,7 +17,7 @@ class DummyNetwork extends Network{
     }
 
     @Override
-    String authorizationRedirect(HttpServletRequest request) throws OAuthException {
+    String authorizationRedirect(HttpServletRequest request, String csrfToken) throws OAuthException {
         throw new IllegalStateException("Not implemented")
     }
 

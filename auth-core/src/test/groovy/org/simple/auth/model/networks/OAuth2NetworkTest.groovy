@@ -43,10 +43,10 @@ class OAuth2NetworkTest extends Specification {
         given:
         HttpServletRequest mockReq = Mock(HttpServletRequest)
         when:
-        def result = underTest.authorizationRedirect(mockReq)
+        def result = underTest.authorizationRedirect(mockReq, 'csrfToken')
 
         then:
-        result == "http://localhost/auth?client_id=dummy_client_id&response_type=code&scope=email&state=dummyState"
+        result == "http://localhost/auth?client_id=dummy_client_id&response_type=code&scope=email&state=csrfToken"
     }
 
     def "AccessToken"() {

@@ -16,7 +16,6 @@ import org.simple.auth.model.networks.OpenIdConnectNetwork;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.UUID;
 
 /**
  * Created by Josip.Mihelko @ Gmail
@@ -34,11 +33,11 @@ public class GoogleOIC extends OpenIdConnectNetwork {
     }
 
     @Override
-    public String authorizationRedirect(HttpServletRequest request) throws OAuthException {
+    public String authorizationRedirect(HttpServletRequest request, String csrfToken) throws OAuthException {
         String redirectUri = new AuthorizationCodeRequestUrl(authUrl, clientConfig.clientId())
                 .setRedirectUri(clientConfig.callbackUrl())
                 .setScopes(Arrays.asList("openid", "profile", "email"))
-                .setState(UUID.randomUUID().toString())
+                .setState(csrfToken)
                 .setResponseTypes(Arrays.asList("code"))
                 .build();
         log.info("Redirecting to: {}", redirectUri);
@@ -61,14 +60,14 @@ public class GoogleOIC extends OpenIdConnectNetwork {
             request.set("redirect_uri", clientConfig.callbackUrl());
             request.set("code", code);
 
-//            IdTokenResponse response = IdTokenResponse.execute(request);
-            IdToken idToken = IdTokenResponse.execute(request).parseIdToken();
+            IdTokenResponse idTokenResponse = IdTokenResponse.execute(request);
+            IdToken idToken = idTokenResponse.parseIdToken();
             log.info("idToken: {}", idToken);
             IdTokenVerifier idTokenVerifier = new IdTokenVerifier.Builder()
                     .setIssuer("accounts.google.com").setAudience(Arrays.asList(clientConfig.clientId())).build();
             boolean verify = idTokenVerifier.verify(idToken);
             log.info("Verified: {}", verify);
-            return null;
+            return AccessToken.openIdconnectToken(name, idTokenResponse.getAccessToken(), idTokenResponse.getRefreshToken(), idTokenResponse.getExpiresInSeconds(), idToken);
         } catch (IOException e) {
             throw new OAuthException(e.getMessage());
         }

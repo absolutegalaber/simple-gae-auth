@@ -26,7 +26,7 @@ public abstract class Network {
         this.clientConfig = clientConfig;
     }
 
-    public abstract String authorizationRedirect(HttpServletRequest request) throws OAuthException;
+    public abstract String authorizationRedirect(HttpServletRequest request, String csrfToken) throws OAuthException;
 
     public abstract INetworkToken accessToken(HttpServletRequest callbackRequest) throws OAuthException;
 

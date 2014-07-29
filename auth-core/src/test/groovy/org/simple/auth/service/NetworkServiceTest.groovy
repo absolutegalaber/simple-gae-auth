@@ -19,13 +19,14 @@ class NetworkServiceTest extends Specification {
     String networkName = "testnetwork"
     Network dummyNetwork
     final String SESSION_KEY = "com.simple.oauth.model.Network"
+    final String CSRF_KEY = "com.simple.oauth.model.CSRF"
     final String REQUEST_KEY = "network"
 
     void setup() {
         underTest = new NetworkService()
-        dummyNetwork = new Network(networkName,null){
+        dummyNetwork = new Network(networkName, null) {
             @Override
-            String authorizationRedirect(HttpServletRequest request) throws OAuthException {
+            String authorizationRedirect(HttpServletRequest request, String csrfToken) throws OAuthException {
                 return null
             }
 
@@ -58,18 +59,18 @@ class NetworkServiceTest extends Specification {
     }
 
     def "Add network and get from name"() {
-       expect:
-       underTest.fromName(networkName) != null
+        expect:
+        underTest.fromName(networkName) != null
     }
 
 
     def "Add network and FromRequestParam"() {
-      setup:
-      HttpServletRequest mockRequest = Mock(HttpServletRequest)
-      mockRequest.getParameter(REQUEST_KEY) >> networkName
+        setup:
+        HttpServletRequest mockRequest = Mock(HttpServletRequest)
+        mockRequest.getParameter(REQUEST_KEY) >> networkName
 
-      expect:
-      underTest.fromRequestParam(mockRequest) != null
+        expect:
+        underTest.fromRequestParam(mockRequest) != null
     }
 
     def "FromRequestParam with NULL param"() {
@@ -86,16 +87,18 @@ class NetworkServiceTest extends Specification {
     }
 
     def "ToSession"() {
-       setup:
-       HttpServletRequest mockRequest = Mock(HttpServletRequest)
-       HttpSession mockSession = Mock(HttpSession)
-       mockRequest.getSession() >> mockSession
+        setup:
+        String csrfToken = 'csrfToken'
+        HttpServletRequest mockRequest = Mock(HttpServletRequest)
+        HttpSession mockSession = Mock(HttpSession)
+        mockRequest.getSession() >> mockSession
 
-       when:
-       underTest.toSession(mockRequest,dummyNetwork)
+        when:
+        underTest.toSession(mockRequest, dummyNetwork, csrfToken)
 
-       then:
-       1* mockSession.setAttribute(SESSION_KEY,networkName)
+        then:
+        1 * mockSession.setAttribute(SESSION_KEY, networkName)
+        1 * mockSession.setAttribute(CSRF_KEY, csrfToken)
     }
 
     def "Add network and FromSession"() {
@@ -111,6 +114,7 @@ class NetworkServiceTest extends Specification {
         then:
         network != null
     }
+
     def "FromSession with NULL attribute"() {
         setup:
         HttpServletRequest mockRequest = Mock(HttpServletRequest)

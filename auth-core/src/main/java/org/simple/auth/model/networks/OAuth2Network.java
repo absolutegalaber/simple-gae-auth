@@ -36,12 +36,16 @@ public class OAuth2Network extends Network {
 
 
     @Override
-    public String authorizationRedirect(HttpServletRequest request, String csrfToken) throws OAuthException {
-        return new AuthorizationCodeRequestUrl(authUrl, clientConfig.clientId())
+    public String authorizationRedirect(HttpServletRequest request) throws OAuthException {
+        AuthorizationCodeRequestUrl authorizationCodeRequestUrl = new AuthorizationCodeRequestUrl(authUrl, clientConfig.clientId())
                 .setRedirectUri(clientConfig.callbackUrl())
                 .setScopes(clientConfig.scope())
-                .setState(csrfToken)
-                .build();
+                .setState(clientConfig.state());
+        addNetworkSpecificAuthorizationRedirectParams(authorizationCodeRequestUrl);
+        return authorizationCodeRequestUrl.build();
+    }
+
+    protected void addNetworkSpecificAuthorizationRedirectParams(AuthorizationCodeRequestUrl authorizationCodeRequestUrl) {
     }
 
     @Override
@@ -51,6 +55,7 @@ public class OAuth2Network extends Network {
             AuthorizationCodeTokenRequest tokenRequest = new AuthorizationCodeTokenRequest(httpTransport, jacksonFactory, new GenericUrl(accessTokenUrl), authCode)
                     .setGrantType("authorization_code")
                     .setRedirectUri(clientConfig.callbackUrl());
+            addNetworkSpecificAccessTokenRequestParams(tokenRequest);
             addTokenRequestAuthorization(tokenRequest);
             return executeTokenRequest(tokenRequest);
         } catch (IOException e) {
@@ -58,8 +63,7 @@ public class OAuth2Network extends Network {
         }
     }
 
-
-    protected void networkSpecific(AuthorizationCodeTokenRequest authorizationCodeTokenRequest) {
+    protected void addNetworkSpecificAccessTokenRequestParams(AuthorizationCodeTokenRequest authorizationCodeTokenRequest) {
     }
 
     @Override

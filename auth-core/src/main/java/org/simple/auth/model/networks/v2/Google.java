@@ -1,6 +1,6 @@
 package org.simple.auth.model.networks.v2;
 
-import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
+import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import org.simple.auth.model.IClient;
 import org.simple.auth.model.networks.ProfileAwareOAuth2Network;
 
@@ -26,7 +26,7 @@ public class Google extends ProfileAwareOAuth2Network<GoogleProfile> {
     }
 
     @Override
-    protected void networkSpecific(AuthorizationCodeTokenRequest authorizationCodeTokenRequest) {
-        authorizationCodeTokenRequest.set("access_type", "offline");
+    protected void addNetworkSpecificAuthorizationRedirectParams(AuthorizationCodeRequestUrl authorizationCodeRequestUrl) {
+        authorizationCodeRequestUrl.set("access_type", "offline");
     }
 }

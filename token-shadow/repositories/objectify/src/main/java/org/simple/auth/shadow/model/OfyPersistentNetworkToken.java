@@ -1,5 +1,6 @@
 package org.simple.auth.shadow.model;
 
+import com.google.api.client.auth.openidconnect.IdToken;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -49,4 +50,9 @@ public class OfyPersistentNetworkToken extends BaseOfyEntity implements IPersist
     @Getter
     @Setter
     Date expiresAt;
+
+    @Override
+    public IdToken getIdToken() {
+        return null;
+    }
 }

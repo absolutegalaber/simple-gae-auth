@@ -1,5 +1,6 @@
 package org.simple.auth.shadow
 
+import com.google.api.client.auth.openidconnect.IdToken
 import groovy.transform.ToString
 import org.simple.auth.shadow.model.IShadowToken
 
@@ -15,4 +16,5 @@ class DummyShadowToken implements IShadowToken {
     String tokenSecret
     String network
     Date expiresAt
+    IdToken idToken
 }

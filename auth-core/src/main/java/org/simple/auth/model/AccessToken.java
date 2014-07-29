@@ -47,6 +47,7 @@ public class AccessToken implements INetworkToken {
         }
         this.version = AccessTokenVersion.OAUTH_2;
     }
+
     private AccessToken(String network, String accessToken, String refreshToken, Long expiresInSeconds, IdToken token) {
         Preconditions.checkNotNull(network);
         Preconditions.checkNotNull(accessToken);
@@ -72,7 +73,7 @@ public class AccessToken implements INetworkToken {
         return new AccessToken(network, accessToken, refreshToken, expiresInSeconds);
     }
 
-    public static AccessToken openIdconnectToken(String network, String accessToken, String refreshToken, Long expiresInSeconds, IdToken token){
+    public static AccessToken openIdconnectToken(String network, String accessToken, String refreshToken, Long expiresInSeconds, IdToken token) {
         return new AccessToken(network, accessToken, refreshToken, expiresInSeconds, token);
     }
 
@@ -92,6 +93,10 @@ public class AccessToken implements INetworkToken {
         return expiresAt.orNull();
     }
 
+    @Override
+    public IdToken getIdToken() {
+        return idToken.orNull();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -117,6 +122,9 @@ public class AccessToken implements INetworkToken {
                 .add("network", network)
                 .add("version", version)
                 .add("accessToken", accessToken)
+                .add("refreshToken", refreshToken.orNull())
+                .add("expiresAt", expiresAt.orNull())
+                .add("idTok", idToken.orNull())
                 .toString();
     }
 }

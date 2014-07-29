@@ -1,5 +1,6 @@
 package org.simple.auth.shadow
 
+import com.google.api.client.auth.openidconnect.IdToken
 import groovy.transform.ToString
 import org.simple.auth.shadow.model.IPersistentNetworkToken
 
@@ -15,5 +16,5 @@ class DummyPersistentNetworkToken implements  IPersistentNetworkToken{
     String tokenSecret
     String refreshToken
     Date expiresAt
-
+    IdToken idToken
 }

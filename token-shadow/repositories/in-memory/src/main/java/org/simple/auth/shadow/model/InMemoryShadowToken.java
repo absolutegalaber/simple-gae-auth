@@ -1,5 +1,6 @@
 package org.simple.auth.shadow.model;
 
+import com.google.api.client.auth.openidconnect.IdToken;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,5 +39,6 @@ public class InMemoryShadowToken implements IShadowToken {
     @Getter
     String network;
 
-
+    @Getter
+    IdToken idToken;
 }

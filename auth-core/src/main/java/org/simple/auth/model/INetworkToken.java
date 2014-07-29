@@ -1,5 +1,7 @@
 package org.simple.auth.model;
 
+import com.google.api.client.auth.openidconnect.IdToken;
+
 import java.util.Date;
 
 /**
@@ -15,4 +17,6 @@ public interface INetworkToken {
     String getRefreshToken();
 
     Date getExpiresAt();
+
+    IdToken getIdToken();
 }

@@ -6,15 +6,17 @@ import org.simple.auth.model.IClient;
 import org.simple.auth.shadow.model.IShadowToken;
 import org.simple.auth.shadow.model.OfyShadowToken;
 
-import java.io.Serializable;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by Josip.Mihelko @ Gmail
  */
 public class OfyShadowTokenRepository extends BaseOfyRepository implements IShadowTokenRepository {
+    private SecureRandom random = new SecureRandom();
+
     public OfyShadowTokenRepository(ObjectifyFactory factory) {
         super(factory);
     }
@@ -41,12 +43,16 @@ public class OfyShadowTokenRepository extends BaseOfyRepository implements IShad
     @Override
     public IShadowToken createShadowToken(String accountId, IClient client) {
         OfyShadowToken token = new OfyShadowToken();
-        token.setAccessToken(UUID.randomUUID().toString().replace("-", ""));
+        token.setAccessToken(generateToken());
         token.setAccountId(accountId);
         token.setClientId(client.clientId());
         token.setExpiresAt(newExpiry());
         Key<OfyShadowToken> inserted = ofy().save().entity(token).now();
         return ofy().load().key(inserted).now();
+    }
+
+    private String generateToken() {
+        return new BigInteger(130, random).toString(32);
     }
 
     private Date newExpiry() {

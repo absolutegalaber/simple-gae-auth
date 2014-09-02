@@ -30,7 +30,7 @@ public class OfyShadowTokenRepository extends BaseOfyRepository implements IShad
     }
 
     @Override
-    public IShadowToken loadByAccountAndClient(Serializable accountId, String clientId) {
+    public IShadowToken loadByAccountAndClient(String accountId, String clientId) {
         return ofy().load().type(OfyShadowToken.class)
                 .filter("accountId", accountId)
                 .filter("clientId", clientId)
@@ -39,7 +39,7 @@ public class OfyShadowTokenRepository extends BaseOfyRepository implements IShad
     }
 
     @Override
-    public IShadowToken createShadowToken(Serializable accountId, IClient client) {
+    public IShadowToken createShadowToken(String accountId, IClient client) {
         OfyShadowToken token = new OfyShadowToken();
         token.setAccessToken(UUID.randomUUID().toString().replace("-", ""));
         token.setAccountId(accountId);

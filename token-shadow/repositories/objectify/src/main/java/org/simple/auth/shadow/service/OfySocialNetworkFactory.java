@@ -1,14 +1,15 @@
 package org.simple.auth.shadow.service;
 
-import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.ObjectifyFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.Network;
 import org.simple.auth.model.networks.NetworkIdentifier;
 import org.simple.auth.service.builder.NetworkConfigurationService;
 import org.simple.auth.shadow.model.OfyNetworkClientConfig;
+import org.simple.auth.shadow.repository.OfyNetworkClientConfigRepository;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Peter Schneider-Manzell
@@ -17,31 +18,40 @@ import java.util.Map;
 public class OfySocialNetworkFactory implements NetworkConfigurationService {
 
 
-    private static final Map<NetworkIdentifier, Network> networks = new HashMap<>();
     private final NetworkIdentifier[] supportedNetworks;
+    private OfyNetworkClientConfigRepository networkClientConfigRepository;
 
-    public OfySocialNetworkFactory(NetworkIdentifier[] supportedNetworks) {
+    public OfySocialNetworkFactory(ObjectifyFactory factory, NetworkIdentifier[] supportedNetworks) {
         this.supportedNetworks = supportedNetworks;
+        networkClientConfigRepository = new OfyNetworkClientConfigRepository(factory);
+        loadNetworks();
     }
 
     @Override
-    public Iterable<Network> configureNetworks() {
-        if (networks.isEmpty()) {
-            configure();
-        }
-        return networks.values();
-    }
-
-    private void configure() {
+    public Iterable<Network> loadNetworks() {
+        log.info("Loading networks...");
+        List<Network> result = new ArrayList<>();
         for (NetworkIdentifier supportedNetwork : supportedNetworks) {
-            OfyNetworkClientConfig networkClientConfig = ObjectifyService.ofy().load().type(OfyNetworkClientConfig.class).id(supportedNetwork.getKey()).now();
-            if (networkClientConfig != null) {
-                networks.put(supportedNetwork, supportedNetwork.createNetwork(networkClientConfig.getClientConfig()));
-            } else {
-                log.warn("Skipping network {} because no persistent config was found", supportedNetwork);
+            Network network = getNetwork(supportedNetwork);
+            if (network != null) {
+                result.add(network);
             }
-
         }
+        log.info("Loaded networks {}", result);
+        return result;
     }
+
+
+    @Override
+    public Network getNetwork(NetworkIdentifier networkIdentifier) {
+        log.info("Searching for network {}", networkIdentifier);
+        OfyNetworkClientConfig networkClientConfig = networkClientConfigRepository.load(networkIdentifier);
+        if (networkClientConfig != null) {
+            return networkIdentifier.createNetwork(networkClientConfig.getClientConfig());
+        }
+        log.warn("No persistent network config {}  was found", networkIdentifier);
+        return null;
+    }
+
 
 }

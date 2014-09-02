@@ -17,7 +17,7 @@ public interface IAuthService {
 
     IShadowToken getShadowToken(String shadowAccessToken);
 
-    IShadowToken loadOrCreateShadowToken(Serializable account, IClient client) throws OAuthException;
+    IShadowToken loadOrCreateShadowToken(String account, IClient client) throws OAuthException;
 
     IPersistentNetworkToken createPersistentNetworkToken(Serializable account, INetworkToken networkToken, String networkUserId) throws OAuthException;
 

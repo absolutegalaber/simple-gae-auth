@@ -11,6 +11,6 @@ public class NetworkServiceInitializer extends AbstractNetworkServiceInitializer
 
     @Override
     public void configureNetworks(NetworkService networkService) {
-        networkService.configureNetworks(new SocialNetworkFactory().configureNetworks());
+        networkService.configureUnmutableNetworks(new SocialNetworkFactory().loadNetworks());
     }
 }

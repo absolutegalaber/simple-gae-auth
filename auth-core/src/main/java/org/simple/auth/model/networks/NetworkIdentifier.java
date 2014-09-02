@@ -2,6 +2,7 @@ package org.simple.auth.model.networks;
 
 import org.simple.auth.model.ClientConfig;
 import org.simple.auth.model.Network;
+import org.simple.auth.model.networks.openid.GoogleOIC;
 import org.simple.auth.model.networks.v1.Twitter;
 import org.simple.auth.model.networks.v2.*;
 
@@ -13,6 +14,11 @@ public enum NetworkIdentifier {
         @Override
         public Network createNetwork(ClientConfig clientConfig) {
             return new Google(clientConfig);
+        }
+    },GOOGLE_OIC("google_oic") {
+        @Override
+        public Network createNetwork(ClientConfig clientConfig) {
+            return new GoogleOIC(clientConfig);
         }
     }, FACEBOOK("facebook") {
         @Override
@@ -52,4 +58,13 @@ public enum NetworkIdentifier {
     }
 
     public abstract Network createNetwork(ClientConfig clientConfig);
+
+    public static NetworkIdentifier byKey(String key) {
+        for (NetworkIdentifier networkIdentifier : values()) {
+            if(networkIdentifier.getKey().equals(key)){
+                return networkIdentifier;
+            }
+        }
+        return null;
+    }
 }

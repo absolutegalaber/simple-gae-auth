@@ -1,11 +1,10 @@
 package org.simple.auth.service;
 
-import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
-import org.simple.auth.model.AccessToken;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.Network;
 import org.simple.auth.model.OAuthException;
+import org.simple.auth.model.networks.NetworkIdentifier;
 import org.simple.auth.service.builder.NetworkConfigurationService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,11 +18,23 @@ import java.util.Map;
 public class NetworkService {
     protected static final Map<String, Network> networks = new HashMap<>();
 
-    public boolean hasNetworksConfigured() {
-        return !networks.isEmpty();
+    protected NetworkConfigurationService configurationService;
+
+    private static NetworkService networkService;
+
+    private NetworkService() {
     }
 
-    public static void configureNetworks(Iterable<Network> configuredNetworks) {
+    public static NetworkService getNetworkSerice() {
+        if(networkService == null){
+            networkService = new NetworkService();
+        }
+        return networkService;
+    }
+
+
+    public static void configureUnmutableNetworks(Iterable<Network> configuredNetworks) {
+        log.info("Configuring unmutable networks");
         for (Network configuredNetwork : configuredNetworks) {
             if (!networks.containsKey(configuredNetwork.getName())) {
                 networks.put(configuredNetwork.getName(), configuredNetwork);
@@ -32,19 +43,32 @@ public class NetworkService {
         log.info("Configured Networks: {}", networks);
     }
 
-    public void configureNetworks(NetworkConfigurationService configurationService) {
-        configureNetworks(configurationService.configureNetworks());
+
+    public void configureDynamicNetworks(NetworkConfigurationService configurationService) {
+        log.info("Setting configurationService to " + configurationService.getClass());
+        this.configurationService = configurationService;
     }
 
     public Network fromName(String name) throws OAuthException {
-        if(name == null){
-           throw new OAuthException("Cannot load network for name NULL!");
+        if (name == null) {
+            throw new OAuthException("Cannot load network for name NULL!");
         }
 
         Network network = networks.get(name);
+
+        if (network == null && configurationService != null) {
+            NetworkIdentifier identifier = NetworkIdentifier.byKey(name);
+            if (identifier != null) {
+                network = configurationService.getNetwork(identifier);
+            }
+        } else if (configurationService == null) {
+            log.info("No configuration service defined!");
+        }
         if (network == null) {
+            log.warn("No network for name {} found", name);
             throw new OAuthException(name + " is not configured");
         }
+        log.info("Found network {} for name {}", network, name);
         return network;
     }
 

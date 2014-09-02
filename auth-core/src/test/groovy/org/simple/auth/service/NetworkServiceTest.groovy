@@ -54,7 +54,7 @@ class NetworkServiceTest extends Specification {
                 return null
             }
         }
-        underTest.configureNetworks([dummyNetwork]);
+        underTest.configureUnmutableNetworks([dummyNetwork]);
     }
 
     def "Add network and get from name"() {

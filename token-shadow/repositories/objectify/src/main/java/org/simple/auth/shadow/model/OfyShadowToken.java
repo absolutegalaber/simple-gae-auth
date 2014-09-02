@@ -27,11 +27,11 @@ public class OfyShadowToken extends BaseOfyEntity implements IShadowToken {
     @Getter
     @Setter
     @Index
-    Serializable accountId;
+    String accountId;
 
     @Getter
     @Setter
-    @Id
+    @Index
     String accessToken;
 
     @Getter

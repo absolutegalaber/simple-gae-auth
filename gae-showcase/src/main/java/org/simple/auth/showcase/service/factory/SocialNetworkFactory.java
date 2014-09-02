@@ -4,10 +4,7 @@ import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.ClientConfig;
 import org.simple.auth.model.Network;
-import org.simple.auth.model.networks.openid.GoogleOIC;
-import org.simple.auth.model.networks.v1.Twitter;
-import org.simple.auth.model.networks.v2.Facebook;
-import org.simple.auth.model.networks.v2.Google;
+import org.simple.auth.model.networks.NetworkIdentifier;
 import org.simple.auth.service.builder.NetworkConfigurationService;
 import org.simple.auth.showcase.model.SocialNetwork;
 import org.simple.auth.showcase.service.OfyService;
@@ -24,24 +21,36 @@ public class SocialNetworkFactory implements NetworkConfigurationService {
     private static final List<Network> networks = new ArrayList<>();
 
     @Override
-    public Iterable<Network> configureNetworks() {
+    public Iterable<Network> loadNetworks() {
         if (networks.isEmpty()) {
             configure();
         }
         return networks;
     }
 
+    @Override
+    public Network getNetwork(NetworkIdentifier networkIdentifier) {
+        for (Network network : networks) {
+            if (network.getName().equals(networkIdentifier.getKey())) {
+                return network;
+            }
+        }
+        log.warn("No network {} configured!", networkIdentifier.getKey());
+        return null;
+    }
+
+
     private static void configure() {
-        SocialNetwork google = OfyService.ofy().load().type(SocialNetwork.class).id("google").now();
-        SocialNetwork facebook = OfyService.ofy().load().type(SocialNetwork.class).id("facebook").now();
-        SocialNetwork twitter = OfyService.ofy().load().type(SocialNetwork.class).id("twitter").now();
+        SocialNetwork google = OfyService.ofy().load().type(SocialNetwork.class).id(NetworkIdentifier.GOOGLE.getKey()).now();
+        SocialNetwork facebook = OfyService.ofy().load().type(SocialNetwork.class).id(NetworkIdentifier.FACEBOOK.getKey()).now();
+        SocialNetwork twitter = OfyService.ofy().load().type(SocialNetwork.class).id(NetworkIdentifier.TWITTER.getKey()).now();
 //        SocialNetwork foursquare = OfyService.ofy().load().type(SocialNetwork.class).id("foursquare").now();
 //        SocialNetwork github = OfyService.ofy().load().type(SocialNetwork.class).id("github").now();
 //        List<Network> networks = new ArrayList<>();
-        networks.add(new Google(new MyClientConfig(google)));
-        networks.add(new Facebook(new MyClientConfig(facebook)));
-        networks.add(new Twitter(new MyClientConfig(twitter)));
-        networks.add(new GoogleOIC(new MyClientConfig(google)));
+        networks.add(NetworkIdentifier.GOOGLE.createNetwork(new MyClientConfig(google)));
+        networks.add(NetworkIdentifier.FACEBOOK.createNetwork(new MyClientConfig(facebook)));
+        networks.add(NetworkIdentifier.TWITTER.createNetwork(new MyClientConfig(twitter)));
+        networks.add(NetworkIdentifier.GOOGLE_OIC.createNetwork(new MyClientConfig(twitter)));
 //        networks.add(new FourSquare(new MyClientConfig(foursquare)));
 //        networks.add(new Twitter(new MyClientConfig(twitter)));
 //        networks.add(new Github(new MyClientConfig(github)));

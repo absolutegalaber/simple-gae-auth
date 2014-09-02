@@ -9,7 +9,7 @@ import org.simple.auth.shadow.model.IPersistentNetworkToken
 @ToString
 class DummyPersistentNetworkToken implements  IPersistentNetworkToken{
     String network;
-    Serializable accountId
+    String accountId
     Serializable networkUserId
     String accessToken
     String tokenSecret

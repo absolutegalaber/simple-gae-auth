@@ -16,7 +16,7 @@ public interface IShadowTokenRepository<T extends IShadowToken> {
 
     T loadByRefreshToken(String refreshToken);
 
-    T loadByAccountAndClient(Serializable accountId, String clientId);
+    T loadByAccountAndClient(String accountId, String clientId);
 
-    T createShadowToken(Serializable accountId, IClient client);
+    T createShadowToken(String accountId, IClient client);
 }

@@ -8,7 +8,7 @@ import org.simple.auth.model.*;
  */
 @Slf4j
 public class UserProfileService {
-    private NetworkService networkService = new NetworkService();
+    private NetworkService networkService = NetworkService.getNetworkSerice();
 
     public BasicUserProfile userProfile(INetworkToken accessToken) throws OAuthException {
         Network network = networkService.fromAccessToken(accessToken);

@@ -14,7 +14,7 @@ import java.io.IOException;
  * Created by Josip.Mihelko @ Gmail
  */
 public abstract class AbstractAuthorizationRedirect extends HttpServlet {
-    private NetworkService networkService = new NetworkService();
+    private NetworkService networkService = NetworkService.getNetworkSerice();
 
 
 

@@ -1,7 +1,6 @@
 package org.simple.auth.servlet;
 
 import lombok.extern.slf4j.Slf4j;
-import org.simple.auth.model.AccessToken;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.Network;
 import org.simple.auth.model.OAuthException;
@@ -18,15 +17,9 @@ import java.io.IOException;
  */
 @Slf4j
 public abstract class AbstractAuthorizationCallback extends HttpServlet {
-    protected final NetworkService networkService;
+    protected final NetworkService networkService = NetworkService.getNetworkSerice();
 
-    public AbstractAuthorizationCallback() {
-        networkService = new NetworkService();
-    }
 
-    protected AbstractAuthorizationCallback(NetworkService networkService) {
-        this.networkService = networkService;
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

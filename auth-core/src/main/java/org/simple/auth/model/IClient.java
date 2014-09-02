@@ -1,11 +1,12 @@
 package org.simple.auth.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
  * @author Peter Schneider-Manzell
  */
-public interface IClient {
+public interface IClient extends Serializable{
 
     String clientId();
 

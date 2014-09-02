@@ -14,7 +14,7 @@ public class InMemoryPersistentNetworkToken implements IPersistentNetworkToken {
     @Getter
     Serializable networkUserId;
     @Getter
-    Serializable accountId;
+    String accountId;
     @Getter
     @Setter
     String accessToken;
@@ -30,7 +30,7 @@ public class InMemoryPersistentNetworkToken implements IPersistentNetworkToken {
     @Getter
     String network;
 
-    public InMemoryPersistentNetworkToken(Serializable networkUserId, Serializable accountId, String accessToken, String tokenSecret, String refreshToken, Date expiresAt, String network) {
+    public InMemoryPersistentNetworkToken(Serializable networkUserId, String accountId, String accessToken, String tokenSecret, String refreshToken, Date expiresAt, String network) {
         this.networkUserId = networkUserId;
         this.accountId = accountId;
         this.accessToken = accessToken;

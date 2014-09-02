@@ -38,7 +38,7 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public IShadowToken loadOrCreateShadowToken(Serializable accountId, IClient client) throws OAuthException {
+    public IShadowToken loadOrCreateShadowToken(String accountId, IClient client) throws OAuthException {
         if (log.isDebugEnabled()) {
             log.debug("Loading or creating shadow token account {} and client {}", accountId, client);
         }
@@ -49,7 +49,7 @@ public class AuthService implements IAuthService {
         return createShadowToken(accountId, client);
     }
 
-    protected IShadowToken createShadowToken(Serializable accountId, IClient client) throws OAuthException {
+    protected IShadowToken createShadowToken(String accountId, IClient client) throws OAuthException {
         if (log.isDebugEnabled()) {
             log.debug("Creating shadow token account {} and client {}", accountId, client);
         }

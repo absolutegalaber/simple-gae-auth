@@ -11,7 +11,7 @@ import javax.servlet.ServletContextListener;
 public abstract class AbstractNetworkServiceInitializer implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        NetworkService networkService = new NetworkService();
+        NetworkService networkService = NetworkService.getNetworkSerice();
         configureNetworks(networkService);
     }
 

@@ -10,11 +10,11 @@ import java.util.Date;
  */
 public interface IShadowToken extends INetworkToken {
 
-    Serializable getAccountId();
+    String getAccountId();
 
     String getClientId();
 
-    void setAccountId(Serializable id);
+    void setAccountId(String id);
 
     void setAccessToken(String accessToken);
 

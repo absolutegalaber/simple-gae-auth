@@ -58,6 +58,7 @@ public class ShadowRedirectServlet extends AbstractAuthorizationRedirect {
     @Override
     public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
         try {
+            log.warn("Exception in redirect servlet",authException);
             resp.setStatus(HttpStatus.SC_BAD_REQUEST);
             PrintWriter writer = resp.getWriter();
             writer.write("{\"error\":\"invalid_request\",\"error_description\":\"" + authException.getMessage() + "\"}");

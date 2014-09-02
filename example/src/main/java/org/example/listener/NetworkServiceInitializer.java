@@ -10,6 +10,6 @@ import org.simple.auth.service.NetworkService;
 public class NetworkServiceInitializer extends AbstractNetworkServiceInitializer {
     @Override
     public void configureNetworks(NetworkService networkService) {
-        networkService.configureNetworks(ExampleConfigurationService.getInstance());
+        networkService.configureDynamicNetworks(ExampleConfigurationService.getInstance());
     }
 }

@@ -15,7 +15,7 @@ import java.util.Map;
  * Created by Josip.Mihelko @ Gmail
  */
 @Slf4j
-public class NetworkService {
+public class NetworkService implements INetworkService {
     protected static final Map<String, Network> networks = new HashMap<>();
 
     protected NetworkConfigurationService configurationService;

@@ -28,7 +28,7 @@ class ShadowCallbackServletTest extends Specification {
     def setup() {
         underTest = new AbstractShadowCallbackServlet() {
             @Override
-            protected Serializable connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest request) {
+            protected String connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest request) {
                 return "accountId"
             }
         }

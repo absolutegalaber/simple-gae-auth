@@ -63,7 +63,7 @@ public class AuthService implements IAuthService {
 
 
     @Override
-    public IPersistentNetworkToken createPersistentNetworkToken(Serializable accountId, INetworkToken networkToken, String networkUserId) throws OAuthException {
+    public IPersistentNetworkToken createPersistentNetworkToken(String accountId, INetworkToken networkToken, String networkUserId) throws OAuthException {
         if (log.isDebugEnabled()) {
             log.debug("Creating persistent network token with account{}, networkToken {}, networkUserId {}", accountId, networkToken, networkUserId);
         }
@@ -102,7 +102,7 @@ public class AuthService implements IAuthService {
         return true;
     }
 
-    public IPersistentNetworkToken persist(INetworkToken networkToken, String networkUserId, Serializable accountId) {
+    public IPersistentNetworkToken persist(INetworkToken networkToken, String networkUserId, String accountId) {
         Preconditions.checkNotNull(accountId, "An account id must be provided");
         return repositoryService.getPersistenNetworkTokenRepository().create(accountId, networkUserId, networkToken);
     }

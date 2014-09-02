@@ -20,7 +20,7 @@ public class ShadowCallbackServlet extends AbstractShadowCallbackServlet {
      * Might (for example) also do a  lookup into your User repository based ont the network email or look for data within the request or session...
      */
     @Override
-    protected Serializable connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest request) {
+    protected String connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest request) {
         IPersistentNetworkToken existingToken = AuthService.getRepositoryService().getPersistenNetworkTokenRepository().load(accessToken.getNetwork(), userProfile.getNetworkId());
         if (existingToken != null) {
             return existingToken.getAccountId();

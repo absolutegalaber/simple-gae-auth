@@ -3,7 +3,6 @@ package org.simple.auth.shadow.repository;
 import org.simple.auth.model.IClient;
 import org.simple.auth.shadow.model.InMemoryShadowToken;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -31,13 +30,13 @@ public class InMemoryShadowTokenRepository implements IShadowTokenRepository<InM
     }
 
     @Override
-    public InMemoryShadowToken loadByAccountAndClient(Serializable accountId, String clientId) {
+    public InMemoryShadowToken loadByAccountAndClient(String accountId, String clientId) {
         return tokensByClientAndAccount.get(generateAccountClientIdentifier(accountId, clientId));
     }
 
 
     @Override
-    public InMemoryShadowToken createShadowToken(Serializable accountId, IClient client) {
+    public InMemoryShadowToken createShadowToken(String accountId, IClient client) {
         InMemoryShadowToken shadowToken = new InMemoryShadowToken();
         String accessToken = generateToken();
         String refreshToken = generateToken();
@@ -66,7 +65,7 @@ public class InMemoryShadowTokenRepository implements IShadowTokenRepository<InM
         return cal.getTime();
     }
 
-    private String generateAccountClientIdentifier(Serializable accountId, String clientId) {
+    private String generateAccountClientIdentifier(String accountId, String clientId) {
         StringBuilder sb = new StringBuilder("{");
         sb.append(accountId);
         sb.append("}-{");

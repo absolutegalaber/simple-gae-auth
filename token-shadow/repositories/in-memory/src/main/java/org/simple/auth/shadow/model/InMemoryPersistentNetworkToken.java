@@ -3,7 +3,6 @@ package org.simple.auth.shadow.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Date;
 public class InMemoryPersistentNetworkToken implements IPersistentNetworkToken {
 
     @Getter
-    Serializable networkUserId;
+    String networkUserId;
     @Getter
     String accountId;
     @Getter
@@ -30,7 +29,7 @@ public class InMemoryPersistentNetworkToken implements IPersistentNetworkToken {
     @Getter
     String network;
 
-    public InMemoryPersistentNetworkToken(Serializable networkUserId, String accountId, String accessToken, String tokenSecret, String refreshToken, Date expiresAt, String network) {
+    public InMemoryPersistentNetworkToken(String networkUserId, String accountId, String accessToken, String tokenSecret, String refreshToken, Date expiresAt, String network) {
         this.networkUserId = networkUserId;
         this.accountId = accountId;
         this.accessToken = accessToken;

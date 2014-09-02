@@ -8,7 +8,7 @@ import org.simple.auth.shadow.model.IShadowToken
  */
 @ToString
 class DummyShadowToken implements IShadowToken {
-    Serializable accountId
+    String accountId
     String clientId
     String accessToken
     String refreshToken

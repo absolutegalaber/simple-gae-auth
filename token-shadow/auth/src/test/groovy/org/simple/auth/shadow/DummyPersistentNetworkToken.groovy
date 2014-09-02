@@ -10,7 +10,7 @@ import org.simple.auth.shadow.model.IPersistentNetworkToken
 class DummyPersistentNetworkToken implements  IPersistentNetworkToken{
     String network;
     String accountId
-    Serializable networkUserId
+    String networkUserId
     String accessToken
     String tokenSecret
     String refreshToken

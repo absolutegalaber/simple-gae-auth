@@ -13,7 +13,7 @@ public class InMemoryShadowToken implements IShadowToken {
 
     @Getter
     @Setter
-    Serializable accountId;
+    String accountId;
 
     @Getter
     @Setter

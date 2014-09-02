@@ -16,19 +16,19 @@ public class InMemoryPersistentNetworkTokenRepository implements IPersistenNetwo
     Map<String, IPersistentNetworkToken> tokens = new ConcurrentHashMap<>();
 
     @Override
-    public IPersistentNetworkToken load(String network, Serializable networkUserId) {
+    public IPersistentNetworkToken load(String network, String networkUserId) {
         return tokens.get(generateKey(network, networkUserId));
     }
 
     @Override
-    public IPersistentNetworkToken create(Serializable accountId, Serializable networkUserid, INetworkToken networkToken) {
+    public IPersistentNetworkToken create(String accountId, String networkUserid, INetworkToken networkToken) {
         IPersistentNetworkToken persistentToken = new InMemoryPersistentNetworkToken(networkUserid, accountId, networkToken.getAccessToken(), networkToken.getNetwork(), networkToken.getRefreshToken(), networkToken.getExpiresAt(), networkToken.getNetwork());
         tokens.put(generateKey(persistentToken.getNetwork(), persistentToken.getNetworkUserId()), persistentToken);
         return persistentToken;
     }
 
 
-    private String generateKey(String network, Serializable networkUserId) {
+    private String generateKey(String network, String networkUserId) {
         StringBuilder sb = new StringBuilder("{");
         sb.append(network);
         sb.append("}-{");

@@ -1,9 +1,9 @@
 package org.simple.auth.servlet
 
-import com.google.api.client.http.HttpResponse
 import org.simple.auth.model.INetworkToken
 import org.simple.auth.model.Network
 import org.simple.auth.model.OAuthException
+import org.simple.auth.service.INetworkService
 import org.simple.auth.service.NetworkService
 import spock.lang.Specification
 
@@ -18,10 +18,10 @@ class AbstractAuthorizationCallbackTest extends Specification {
     AbstractAuthorizationCallback underTest
     Map<String, Object> onErrorParameters = [:]
     Map<String, Object> onAuthorizationSuccessParameters = [:]
-    NetworkService networkServiceMock
+    INetworkService networkServiceMock
 
     def setup() {
-        networkServiceMock = Mock(NetworkService)
+        networkServiceMock = Mock(INetworkService)
         underTest = new AbstractAuthorizationCallback(networkServiceMock) {
             @Override
             void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {

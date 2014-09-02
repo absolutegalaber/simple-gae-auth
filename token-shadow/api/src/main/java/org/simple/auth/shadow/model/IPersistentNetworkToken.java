@@ -9,6 +9,6 @@ import java.io.Serializable;
  */
 public interface IPersistentNetworkToken extends INetworkToken {
 
-    Serializable getNetworkUserId();
+    String getNetworkUserId();
     String getAccountId();
 }

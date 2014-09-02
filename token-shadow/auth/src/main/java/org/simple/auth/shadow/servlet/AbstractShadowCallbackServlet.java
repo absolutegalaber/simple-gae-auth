@@ -52,7 +52,7 @@ public abstract class AbstractShadowCallbackServlet extends AbstractProfileLoadi
      * @param request     The oroginal HttpServlet Callback Request.
      * @return A Account Id to be stored with the token and shadow token, if account semantics are required / desired.
      */
-    protected abstract Serializable connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest request);
+    protected abstract String connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest request);
 
     protected void redirect(IClient client, IShadowToken token, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("Generating redirect URI...");

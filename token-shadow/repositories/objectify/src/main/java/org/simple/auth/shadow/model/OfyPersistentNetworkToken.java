@@ -3,6 +3,7 @@ package org.simple.auth.shadow.model;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import lombok.*;
 
 import java.util.Date;
@@ -20,10 +21,11 @@ public class OfyPersistentNetworkToken extends BaseOfyEntity implements IPersist
     @Id
     @Getter
     @Setter
-    String id;
+    Long id;
 
     @Getter
     @Setter
+    @Index
     String network;
 
     @Getter
@@ -32,6 +34,7 @@ public class OfyPersistentNetworkToken extends BaseOfyEntity implements IPersist
 
     @Getter
     @Setter
+    @Index
     String accountId;
 
     @Getter

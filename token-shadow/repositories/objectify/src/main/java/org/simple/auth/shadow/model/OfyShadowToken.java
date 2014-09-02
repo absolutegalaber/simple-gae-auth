@@ -22,7 +22,7 @@ public class OfyShadowToken extends BaseOfyEntity implements IShadowToken {
     @Id
     @Getter
     @Setter
-    String id;
+    Long id;
 
     @Getter
     @Setter

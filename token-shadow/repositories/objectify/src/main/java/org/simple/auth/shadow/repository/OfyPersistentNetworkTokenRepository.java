@@ -30,12 +30,12 @@ public class OfyPersistentNetworkTokenRepository extends BaseOfyRepository imple
     public IPersistentNetworkToken create(String accountId, String networkUserid, INetworkToken networkToken) {
         OfyPersistentNetworkToken token = new OfyPersistentNetworkToken();
         token.setAccessToken(networkToken.getAccessToken());
-        token.setAccountId((String) accountId);
+        token.setAccountId(accountId);
         token.setExpiresAt(networkToken.getExpiresAt());
         token.setNetwork(networkToken.getNetwork());
         token.setRefreshToken(networkToken.getRefreshToken());
         token.setTokenSecret(networkToken.getTokenSecret());
-        token.setNetworkUserId((String) networkUserid);
+        token.setNetworkUserId(networkUserid);
         Key<OfyPersistentNetworkToken> saved = ofy().save().entity(token).now();
         return ofy().load().key(saved).now();
     }

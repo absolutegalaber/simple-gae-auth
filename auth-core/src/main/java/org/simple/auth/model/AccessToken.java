@@ -59,7 +59,7 @@ public class AccessToken implements INetworkToken {
 
     @Override
     public String getTokenSecret() {
-        return tokenSecret.get();
+        return tokenSecret.orNull();
     }
 
     @Override

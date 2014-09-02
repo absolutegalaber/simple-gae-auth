@@ -3,6 +3,7 @@ package org.simple.auth.shadow.repository;
 import org.simple.auth.service.builder.ClientBuilder;
 import org.simple.auth.shadow.model.InMemoryClient;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,6 +22,11 @@ public class InMemoryClientRepository implements IClientRepository<InMemoryClien
     @Override
     public void save(InMemoryClient client) {
         clients.put(client.clientId(), client);
+    }
+
+    @Override
+    public Collection<InMemoryClient> all() {
+        return clients.values();
     }
 
     public void registerClients() {

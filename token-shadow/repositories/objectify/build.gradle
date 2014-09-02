@@ -12,7 +12,7 @@ sourceSets.test.runtimeClasspath += configurations.providedCompile
 dependencies {
     compile(
             [
-                    project(':token-shadow:api'),
+                    project(':token-shadow:auth'),
                     'com.googlecode.objectify:objectify:5.0.2',
                     'com.google.appengine:appengine-api-1.0-sdk:1.9.6'
             ]

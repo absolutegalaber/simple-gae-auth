@@ -17,5 +17,7 @@ dependencies {
                     'com.google.appengine:appengine-api-1.0-sdk:1.9.6'
             ]
     )
+    testCompile(['com.google.appengine:appengine-testing:1.9.6',
+                 'com.google.appengine:appengine-api-stubs:1.9.6'])
     providedCompile 'javax.servlet:servlet-api:2.5'
 }

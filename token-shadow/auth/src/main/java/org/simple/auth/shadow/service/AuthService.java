@@ -8,7 +8,6 @@ import org.simple.auth.model.OAuthException;
 import org.simple.auth.shadow.model.IPersistentNetworkToken;
 import org.simple.auth.shadow.model.IShadowToken;
 
-import java.io.Serializable;
 import java.util.Date;
 
 

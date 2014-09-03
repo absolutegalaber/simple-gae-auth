@@ -19,10 +19,6 @@ import java.util.Date;
 @ToString(of = {"id", "accountId", "network"}, callSuper = false)
 public class OfyShadowToken extends BaseOfyEntity implements IShadowToken {
 
-    @Id
-    @Getter
-    @Setter
-    Long id;
 
     @Getter
     @Setter
@@ -31,7 +27,7 @@ public class OfyShadowToken extends BaseOfyEntity implements IShadowToken {
 
     @Getter
     @Setter
-    @Index
+    @Id
     String accessToken;
 
     @Getter

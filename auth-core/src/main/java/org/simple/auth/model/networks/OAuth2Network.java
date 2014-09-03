@@ -36,11 +36,11 @@ public class OAuth2Network extends Network {
 
 
     @Override
-    public String authorizationRedirect(HttpServletRequest request) throws OAuthException {
+    public String authorizationRedirect(HttpServletRequest request, String csrfToken) throws OAuthException {
         AuthorizationCodeRequestUrl authorizationCodeRequestUrl = new AuthorizationCodeRequestUrl(authUrl, clientConfig.clientId())
                 .setRedirectUri(clientConfig.callbackUrl())
                 .setScopes(clientConfig.scope())
-                .setState(clientConfig.state());
+                .setState(csrfToken);
         addNetworkSpecificAuthorizationRedirectParams(authorizationCodeRequestUrl);
         return authorizationCodeRequestUrl.build();
     }

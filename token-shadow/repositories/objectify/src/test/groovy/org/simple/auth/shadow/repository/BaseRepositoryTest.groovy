@@ -12,7 +12,7 @@ class BaseRepositoryTest extends Specification {
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(
                     new LocalDatastoreServiceTestConfig()
-                            .setNoStorage(true)
+                            .setNoStorage(true).setApplyAllHighRepJobPolicy()
             )
 
     def setup() {

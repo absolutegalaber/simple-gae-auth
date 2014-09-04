@@ -17,8 +17,8 @@ import java.util.Set;
 @Entity
 @Cache
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id", "accountId", "network"}, callSuper = false)
-@ToString(of = {"id", "accountId", "network"}, callSuper = false)
+@EqualsAndHashCode(of = {"accessToken", "accountId","clientId", "network"}, callSuper = false)
+@ToString(of = {"accountId","clientId", "network","scopes","expiresAt"}, callSuper = false)
 public class OfyShadowToken extends BaseOfyEntity implements IShadowToken {
 
 

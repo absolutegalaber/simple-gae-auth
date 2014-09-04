@@ -11,13 +11,14 @@ import org.simple.auth.shadow.model.OfyShadowToken;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 
 /**
  * Created by Josip.Mihelko @ Gmail
  */
 @Slf4j
-public class OfyShadowTokenRepository extends BaseOfyRepository implements IShadowTokenRepository {
+public class OfyShadowTokenRepository extends BaseOfyRepository implements IShadowTokenRepository<OfyShadowToken> {
     private SecureRandom random = new SecureRandom();
 
     public OfyShadowTokenRepository(ObjectifyFactory factory) {
@@ -25,17 +26,17 @@ public class OfyShadowTokenRepository extends BaseOfyRepository implements IShad
     }
 
     @Override
-    public IShadowToken loadByAccessToken(String accessToken) {
+    public OfyShadowToken loadByAccessToken(String accessToken) {
         return ofy().load().type(OfyShadowToken.class).id(accessToken).now();
     }
 
     @Override
-    public IShadowToken loadByRefreshToken(String refreshToken) {
+    public OfyShadowToken loadByRefreshToken(String refreshToken) {
         return ofy().load().type(OfyShadowToken.class).filter("refreshToken", refreshToken).first().now();
     }
 
     @Override
-    public IShadowToken loadByAccountAndClient(String accountId, String clientId) {
+    public OfyShadowToken loadByAccountAndClient(String accountId, String clientId) {
         return ofy().load().type(OfyShadowToken.class)
                 .filter("accountId", accountId)
                 .filter("clientId", clientId)
@@ -44,13 +45,14 @@ public class OfyShadowTokenRepository extends BaseOfyRepository implements IShad
     }
 
     @Override
-    public IShadowToken createShadowToken(String accountId, IClient client) {
+    public OfyShadowToken createShadowToken(String accountId, IClient client, Collection<String> scopes) {
         OfyShadowToken token = new OfyShadowToken();
         token.setAccessToken(createToken(accountId, client, "access"));
         token.setRefreshToken(createToken(accountId, client, "refresh"));
         token.setAccountId(accountId);
         token.setClientId(client.clientId());
         token.setExpiresAt(newExpiry());
+        token.getScopes().addAll(scopes);
         Key<OfyShadowToken> inserted = ofy().save().entity(token).now();
         return ofy().load().key(inserted).now();
     }

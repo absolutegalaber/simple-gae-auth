@@ -1,5 +1,6 @@
 package org.example.servlet;
 
+import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.BasicUserProfile;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.shadow.model.IPersistentNetworkToken;
@@ -13,6 +14,7 @@ import java.util.UUID;
 /**
  * Created by Josip.Mihelko @ Gmail
  */
+@Slf4j
 public class ShadowCallbackServlet extends AbstractShadowCallbackServlet {
 
     /**
@@ -21,6 +23,7 @@ public class ShadowCallbackServlet extends AbstractShadowCallbackServlet {
      */
     @Override
     protected String connectWithAccount(INetworkToken accessToken, BasicUserProfile userProfile, HttpServletRequest request) {
+        log.info("Entering connectWithAccount");
         IPersistentNetworkToken existingToken = AuthService.getRepositoryService().getPersistenNetworkTokenRepository().load(accessToken.getNetwork(), userProfile.getNetworkId());
         if (existingToken != null) {
             return existingToken.getAccountId();

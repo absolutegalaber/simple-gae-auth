@@ -3,8 +3,10 @@ package org.simple.auth.shadow.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Peter Schneider-Manzell
@@ -37,6 +39,10 @@ public class InMemoryShadowToken implements IShadowToken {
 
     @Getter
     String network;
+
+    @Getter
+    @Setter
+    Set<String> scopes = new HashSet<>();
 
 
 }

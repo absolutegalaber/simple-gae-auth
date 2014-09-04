@@ -1,12 +1,14 @@
 package org.simple.auth.shadow.servlet;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.BasicUserProfile;
 import org.simple.auth.model.IClient;
 import org.simple.auth.model.INetworkToken;
 import org.simple.auth.model.OAuthException;
 import org.simple.auth.servlet.AbstractProfileLoadingAuthorizationCallback;
+import org.simple.auth.shadow.OAuthRequestParameter;
 import org.simple.auth.shadow.model.IPersistentNetworkToken;
 import org.simple.auth.shadow.model.IShadowToken;
 import org.simple.auth.shadow.service.AuthService;
@@ -17,10 +19,7 @@ import org.simple.auth.shadow.service.IClientService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Peter Schneider-Manzell
@@ -37,10 +36,17 @@ public abstract class AbstractShadowCallbackServlet extends AbstractProfileLoadi
         log.info("Trying to detect client...");
         IClient client = clientService.fromSession(req);
         log.info("Found client, creating shadow token");
-        Serializable accountId = connectWithAccount(accessToken, userProfile, req);
+        String accountId = connectWithAccount(accessToken, userProfile, req);
         Preconditions.checkNotNull(accountId, "An account Id must be provided!");
-        IPersistentNetworkToken persistentNetworkToken = authService.persist(accessToken, userProfile.getNetworkId(), connectWithAccount(accessToken, userProfile, req));
-        IShadowToken token = authService.getShadowToken(client, persistentNetworkToken, userProfile.getNetworkId());
+        IPersistentNetworkToken persistentNetworkToken = authService.persist(accessToken, userProfile.getNetworkId(), accountId);
+        String scopesRaw = clientService.fromSession(client, OAuthRequestParameter.SCOPE, req);
+        Set<String> scopes = new HashSet<>();
+        if (scopesRaw != null) {
+            for (String scope : Splitter.on(" ").split(scopesRaw)) {
+                scopes.add(scope);
+            }
+        }
+        IShadowToken token = authService.getShadowToken(client, persistentNetworkToken, userProfile.getNetworkId(), scopes);
         redirect(client, token, req, resp);
     }
 
@@ -62,7 +68,7 @@ public abstract class AbstractShadowCallbackServlet extends AbstractProfileLoadi
     }
 
     private String generateRedirectURI(IClient client, IShadowToken token, HttpServletRequest req) {
-        String baseURI = clientService.redirectUriFromSession(client, req);
+        String baseURI = clientService.fromSession(client, OAuthRequestParameter.REDIRECT_URI, req);
         Map<String, String> parametersToAppend = generateQueryParams(token);
         StringBuilder finalRedirectURI = new StringBuilder(baseURI);
         String concatChar = "?";

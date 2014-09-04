@@ -35,10 +35,9 @@ class ShadowRedirectServletTest extends Specification {
 
         when:
 
-        underTest.checkRequiredParameters(reqMock)
+        underTest.checkRequiredParameters(GrantType.IMPLICIT,reqMock)
 
         then:
-        1 * grantTypeServiceMock.fromRequest(reqMock) >> GrantType.IMPLICIT
         OAuthException ex = thrown()
 
     }
@@ -49,10 +48,9 @@ class ShadowRedirectServletTest extends Specification {
 
         when:
 
-        underTest.checkRequiredParameters(reqMock)
+        underTest.checkRequiredParameters(GrantType.IMPLICIT,reqMock)
 
         then:
-        1 * grantTypeServiceMock.fromRequest(reqMock) >> GrantType.IMPLICIT
         for (OAuthRequestParameter oAuthRequestParameter : GrantType.IMPLICIT.requiredParameters) {
             1 * reqMock.getParameter(oAuthRequestParameter.paramName) >> "dummyparamvalue"
         }
@@ -101,7 +99,6 @@ class ShadowRedirectServletTest extends Specification {
         HttpServletResponse respMock = Mock(HttpServletResponse)
         Network dummyNetwork = new DummyProfileAwareNetwork()
         IClient dummyClient = new DummyClient()
-        String requestedRedirectURI = "http://localhost/callback"
 
 
         when:
@@ -114,8 +111,12 @@ class ShadowRedirectServletTest extends Specification {
         }
         1 * clientServiceMock.fromRequest(reqMock) >> dummyClient
         1 * clientServiceMock.toSession(reqMock, dummyClient)
-        1 * clientServiceMock.redirectUriFromRequest(reqMock) >> requestedRedirectURI
-        1 * clientServiceMock.redirectUriToSession(reqMock, dummyClient, requestedRedirectURI)
+
+        1 * clientServiceMock.fromRequest(GrantType.IMPLICIT,OAuthRequestParameter.REDIRECT_URI,reqMock) >> "param_value_for_" + OAuthRequestParameter.REDIRECT_URI.getParamName()
+        1 * clientServiceMock.toSession(dummyClient,OAuthRequestParameter.REDIRECT_URI,"param_value_for_" + OAuthRequestParameter.REDIRECT_URI.getParamName(),reqMock)
+
+        1 * clientServiceMock.fromRequest(GrantType.IMPLICIT,OAuthRequestParameter.SCOPE,reqMock) >> "param_value_for_" + OAuthRequestParameter.SCOPE.getParamName()
+        1 * clientServiceMock.toSession(dummyClient,OAuthRequestParameter.SCOPE,"param_value_for_" + OAuthRequestParameter.SCOPE.getParamName(),reqMock)
 
     }
 }

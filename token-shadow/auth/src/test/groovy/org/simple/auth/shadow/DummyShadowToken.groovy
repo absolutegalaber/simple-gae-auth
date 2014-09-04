@@ -15,4 +15,5 @@ class DummyShadowToken implements IShadowToken {
     String tokenSecret
     String network
     Date expiresAt
+    List<String> scopes
 }

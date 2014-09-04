@@ -9,15 +9,22 @@ import javax.servlet.http.HttpServletRequest;
  */
 public enum OAuthRequestParameter {
 
-    GRANT_TYPE("grant_type"), REDIRECT_URI("redirect_uri"), SCOPE("scope"), STATE("state"),CLIENT_ID("client_id"),CLIENT_SECRET("client_secret"),REFRESH_TOKEN("refresh_token");
-    private final String paramName;
+    GRANT_TYPE("grant_type", true), REDIRECT_URI("redirect_uri", true), SCOPE("scope", true), STATE("state", true), CLIENT_ID("client_id", false), CLIENT_SECRET("client_secret", false), REFRESH_TOKEN("refresh_token", true);
 
-    private OAuthRequestParameter(String paramName) {
+    private final String paramName;
+    private final boolean persistPrefixedToSession;
+
+    private OAuthRequestParameter(String paramName, boolean persistPrefixedToSession) {
         this.paramName = paramName;
+        this.persistPrefixedToSession = persistPrefixedToSession;
     }
 
     public String getParamName() {
         return paramName;
+    }
+
+    public boolean isPersistPrefixedToSession() {
+        return persistPrefixedToSession;
     }
 
     public Optional<String> getValue(HttpServletRequest req) {

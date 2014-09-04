@@ -7,6 +7,7 @@ import org.simple.auth.shadow.DummyClient
 import org.simple.auth.shadow.DummyPersistentNetworkToken
 import org.simple.auth.shadow.DummyShadowToken
 import org.simple.auth.shadow.DummyUserProfile
+import org.simple.auth.shadow.OAuthRequestParameter
 import org.simple.auth.shadow.model.IPersistentNetworkToken
 import org.simple.auth.shadow.model.IShadowToken
 import org.simple.auth.shadow.service.IAuthService
@@ -59,8 +60,8 @@ class ShadowCallbackServletTest extends Specification {
         then:
         1 * clientServiceMock.fromSession(mockReq) >> client
         1 * authServiceMock.persist(accessToken, userProfile.getNetworkId(), "accountId") >> persistentToken
-        1 * authServiceMock.getShadowToken(client, persistentToken, userProfile.getNetworkId()) >> shadowToken
-        1 * clientServiceMock.redirectUriFromSession(client, mockReq) >> "http://localhost:8080"
+        1 * authServiceMock.getShadowToken(client, persistentToken, userProfile.getNetworkId(),_) >> shadowToken
+        1 * clientServiceMock.fromSession(client,OAuthRequestParameter.REDIRECT_URI, mockReq) >> "http://localhost:8080"
         1 * mockResp.sendRedirect(_)
 
     }
@@ -81,7 +82,7 @@ class ShadowCallbackServletTest extends Specification {
         underTest.redirect(client, shadowToken, mockReq, mockResp)
 
         then:
-        1 * clientServiceMock.redirectUriFromSession(client, mockReq) >> storedRedirectURI
+        1 * clientServiceMock.fromSession(client,OAuthRequestParameter.REDIRECT_URI, mockReq) >> storedRedirectURI
         1 * mockResp.sendRedirect(expectedRedirectUrl)
     }
 

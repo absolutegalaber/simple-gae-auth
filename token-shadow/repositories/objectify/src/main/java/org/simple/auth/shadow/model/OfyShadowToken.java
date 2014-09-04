@@ -8,6 +8,8 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Josip.Mihelko @ Gmail
@@ -38,6 +40,10 @@ public class OfyShadowToken extends BaseOfyEntity implements IShadowToken {
     @Getter
     @Setter
     String tokenSecret;
+
+    @Getter
+    @Setter
+    Set<String> scopes = new HashSet<>();
 
     @Getter
     @Setter

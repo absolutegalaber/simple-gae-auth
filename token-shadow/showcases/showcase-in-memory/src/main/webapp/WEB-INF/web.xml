@@ -68,7 +68,7 @@
 
     <servlet-mapping>
         <servlet-name>authorizationCallbackServlet</servlet-name>
-        <url-pattern>/callback</url-pattern>
+        <url-pattern>/oauth2Callback</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

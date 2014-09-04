@@ -8,6 +8,7 @@ import org.simple.auth.model.OAuthException;
 import org.simple.auth.shadow.model.IPersistentNetworkToken;
 import org.simple.auth.shadow.model.IShadowToken;
 
+import java.util.Collection;
 import java.util.Date;
 
 
@@ -21,11 +22,11 @@ public class AuthService implements IAuthService {
 
 
     @Override
-    public IShadowToken getShadowToken(IClient client, IPersistentNetworkToken networkToken, String networkUserId) throws OAuthException {
+    public IShadowToken getShadowToken(IClient client, IPersistentNetworkToken networkToken, String networkUserId, Collection<String> scopes) throws OAuthException {
         if (log.isDebugEnabled()) {
             log.debug("Loading shadow token for client {}, network token {} and networkUserId {}", client, networkToken, networkUserId);
         }
-        return loadOrCreateShadowToken(networkToken.getAccountId(), client);
+        return loadOrCreateShadowToken(networkToken.getAccountId(), client,scopes);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public IShadowToken loadOrCreateShadowToken(String accountId, IClient client) throws OAuthException {
+    public IShadowToken loadOrCreateShadowToken(String accountId, IClient client, Collection<String> scopes) throws OAuthException {
         if (log.isDebugEnabled()) {
             log.debug("Loading or creating shadow token account {} and client {}", accountId, client);
         }
@@ -45,14 +46,14 @@ public class AuthService implements IAuthService {
         if (token != null) {
             return token;
         }
-        return createShadowToken(accountId, client);
+        return createShadowToken(accountId, client,scopes);
     }
 
-    protected IShadowToken createShadowToken(String accountId, IClient client) throws OAuthException {
+    protected IShadowToken createShadowToken(String accountId, IClient client, Collection<String> scopes) throws OAuthException {
         if (log.isDebugEnabled()) {
             log.debug("Creating shadow token account {} and client {}", accountId, client);
         }
-        IShadowToken token = repositoryService.getShadowTokenRepository().createShadowToken(accountId, client);
+        IShadowToken token = repositoryService.getShadowTokenRepository().createShadowToken(accountId, client,scopes);
         if (!isShadowTokenValid(token)) {
             throw new OAuthException("Invalid shadow token created by shadow token repository!");
         } else {

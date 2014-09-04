@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 
 /**
  * @author Peter Schneider-Manzell
@@ -21,6 +22,7 @@ public class ShadowTokenFilter implements Filter {
 
     protected static final String REQ_ACCOUNT_ID_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_account_id";
     protected static final String REQ_CLIENT_ID_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_client_id";
+    protected static final String REQ_SCOPES_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_scopes";
     private IAuthService authService = new AuthService();
     private static final String BEARER_PREFIX = "Bearer ";
     private static final int ACCESS_TOKEN_START_INDEX = BEARER_PREFIX.length();
@@ -44,6 +46,7 @@ public class ShadowTokenFilter implements Filter {
         if (authService.isShadowTokenValid(iShadowToken)) {
             setClientId(request, iShadowToken.getClientId());
             setAccountId(request, iShadowToken.getAccountId());
+            setScopes(request, iShadowToken.getScopes());
             chain.doFilter(request, response);
         } else {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
@@ -55,6 +58,7 @@ public class ShadowTokenFilter implements Filter {
             return;
         }
     }
+
 
     protected Optional<String> extractAuthorizationHeader(HttpServletRequest request) {
         return Optional.fromNullable(request.getHeader("Authorization"));
@@ -87,6 +91,14 @@ public class ShadowTokenFilter implements Filter {
 
     protected void setAccountId(ServletRequest req, String accountId) {
         req.setAttribute(REQ_ACCOUNT_ID_KEY, accountId);
+    }
+
+    public static Collection<String> getScopes(HttpServletRequest req) {
+        return (Collection<String>) req.getAttribute(REQ_SCOPES_KEY);
+    }
+
+    private void setScopes(ServletRequest req, Collection<String> scopes) {
+        req.setAttribute(REQ_SCOPES_KEY, scopes);
     }
 
     public void setAuthService(IAuthService authService) {

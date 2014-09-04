@@ -4,6 +4,7 @@ import org.simple.auth.model.IClient;
 import org.simple.auth.shadow.model.IShadowToken;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 
 /**
@@ -18,5 +19,5 @@ public interface IShadowTokenRepository<T extends IShadowToken> {
 
     T loadByAccountAndClient(String accountId, String clientId);
 
-    T createShadowToken(String accountId, IClient client);
+    T createShadowToken(String accountId, IClient client, Collection<String> scopes);
 }

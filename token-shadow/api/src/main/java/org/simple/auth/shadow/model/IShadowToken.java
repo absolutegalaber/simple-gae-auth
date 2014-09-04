@@ -2,7 +2,7 @@ package org.simple.auth.shadow.model;
 
 import org.simple.auth.model.INetworkToken;
 
-import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -13,6 +13,8 @@ public interface IShadowToken extends INetworkToken {
     String getAccountId();
 
     String getClientId();
+
+    Collection<String> getScopes();
 
     void setAccountId(String id);
 

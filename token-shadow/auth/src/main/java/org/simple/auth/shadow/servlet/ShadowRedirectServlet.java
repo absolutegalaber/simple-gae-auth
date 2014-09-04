@@ -35,18 +35,19 @@ public class ShadowRedirectServlet extends AbstractAuthorizationRedirect {
         if (!network.isProfileAware()) {
             throw new OAuthException(network.getName() + " is not configured to load profiles");
         }
-        checkRequiredParameters(req);
-        checkAndStoreClientInformation(req);
+        GrantType grantType = grantTypeService.fromRequest(req);
+        if (log.isDebugEnabled()) {
+            log.debug("Detected grantType {}", grantType);
+        }
+        checkRequiredParameters(grantType, req);
+        checkAndStoreClientInformation(grantType, req);
     }
 
-    protected void checkRequiredParameters(HttpServletRequest req) throws OAuthException {
-        if(log.isDebugEnabled()){
+    protected void checkRequiredParameters(GrantType grantType, HttpServletRequest req) throws OAuthException {
+        if (log.isDebugEnabled()) {
             log.debug("Checking  required oauth parameters...");
         }
-        GrantType grantType = grantTypeService.fromRequest(req);
-        if(log.isDebugEnabled()){
-            log.debug("Detected grantType {}",grantType);
-        }
+
         for (OAuthRequestParameter oAuthRequestParameter : grantType.getRequiredParameters()) {
             Optional<String> paramValue = oAuthRequestParameter.getValue(req);
             if (!paramValue.isPresent()) {
@@ -58,7 +59,7 @@ public class ShadowRedirectServlet extends AbstractAuthorizationRedirect {
     @Override
     public void onError(Exception authException, HttpServletRequest req, HttpServletResponse resp) {
         try {
-            log.warn("Exception in redirect servlet",authException);
+            log.warn("Exception in redirect servlet", authException);
             resp.setStatus(HttpStatus.SC_BAD_REQUEST);
             PrintWriter writer = resp.getWriter();
             writer.write("{\"error\":\"invalid_request\",\"error_description\":\"" + authException.getMessage() + "\"}");
@@ -70,11 +71,15 @@ public class ShadowRedirectServlet extends AbstractAuthorizationRedirect {
         }
     }
 
-    private void checkAndStoreClientInformation(HttpServletRequest req) throws OAuthException {
+    private void checkAndStoreClientInformation(GrantType grantType, HttpServletRequest req) throws OAuthException {
         IClient client = clientService.fromRequest(req);
         clientService.toSession(req, client);
-        String redirectUri = clientService.redirectUriFromRequest(req);
-        clientService.redirectUriToSession(req, client, redirectUri);
+        for (OAuthRequestParameter oAuthRequestParameter : grantType.getRequiredParameters()) {
+            if (oAuthRequestParameter.isPersistPrefixedToSession()) {
+                String value = clientService.fromRequest(grantType, oAuthRequestParameter, req);
+                clientService.toSession(client, oAuthRequestParameter, value, req);
+            }
+        }
     }
 
 

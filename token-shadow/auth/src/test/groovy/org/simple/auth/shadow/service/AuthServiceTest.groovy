@@ -70,13 +70,14 @@ class AuthServiceTest extends Specification {
         INetworkToken dummyNetworkToken = dummyPersistentNetworkToken
         IShadowToken dummyShadowToken = createValidShadowToken(accountId, clientId)
         dummyShadowToken.accessToken = "TestAccessToken"
+        def scopes = []
 
         when:
         repositoryServiceMock.persistenNetworkTokenRepository >> persistenNetworkTokenRepositoryMock
         repositoryServiceMock.shadowTokenRepository >> shadowTokenRepositoryMock
         persistenNetworkTokenRepositoryMock.load(network, networkUserId) >> dummyPersistentNetworkToken
         shadowTokenRepositoryMock.loadByAccountAndClient(accountId, clientId) >> dummyShadowToken
-        IShadowToken shadowToken = underTest.getShadowToken(client, dummyNetworkToken, networkUserId)
+        IShadowToken shadowToken = underTest.getShadowToken(client, dummyNetworkToken, networkUserId,scopes)
 
         then:
         shadowToken != null
@@ -99,14 +100,15 @@ class AuthServiceTest extends Specification {
         dummyShadowToken.accountId = accountId
         dummyShadowToken.clientId = clientId
         dummyShadowToken.accessToken = "TestAccessToken"
+        def scopes = []
 
         when:
         repositoryServiceMock.persistenNetworkTokenRepository >> persistenNetworkTokenRepositoryMock
         repositoryServiceMock.shadowTokenRepository >> shadowTokenRepositoryMock
         persistenNetworkTokenRepositoryMock.load(network, networkUserId) >> dummyPersistentNetworkToken
         shadowTokenRepositoryMock.loadByAccountAndClient(accountId, clientId) >> null
-        shadowTokenRepositoryMock.createShadowToken(accountId, dummyClient) >> dummyShadowToken
-        IShadowToken shadowToken = underTest.getShadowToken(dummyClient, dummyNetworkToken, networkUserId)
+        shadowTokenRepositoryMock.createShadowToken(accountId, dummyClient, scopes) >> dummyShadowToken
+        IShadowToken shadowToken = underTest.getShadowToken(dummyClient, dummyNetworkToken, networkUserId,scopes)
 
         then:
         shadowToken == dummyShadowToken
@@ -127,6 +129,7 @@ class AuthServiceTest extends Specification {
         INetworkToken dummyNetworkToken = dummyPersistentNetworkToken
         IShadowToken dummyShadowToken = createValidShadowToken(accountId, clientId)
         dummyShadowToken.accessToken = "TestAccessToken"
+        def scopes = []
 
         when:
         repositoryServiceMock.persistenNetworkTokenRepository >> persistenNetworkTokenRepositoryMock
@@ -134,8 +137,8 @@ class AuthServiceTest extends Specification {
         persistenNetworkTokenRepositoryMock.load(network, networkUserId) >> null
         persistenNetworkTokenRepositoryMock.create(accountId, networkUserId, dummyNetworkToken)
         shadowTokenRepositoryMock.loadByAccountAndClient(accountId, clientId) >> null
-        shadowTokenRepositoryMock.createShadowToken(accountId, dummyClient) >> dummyShadowToken
-        IShadowToken shadowToken = underTest.getShadowToken(dummyClient, dummyNetworkToken, networkUserId)
+        shadowTokenRepositoryMock.createShadowToken(accountId, dummyClient, scopes) >> dummyShadowToken
+        IShadowToken shadowToken = underTest.getShadowToken(dummyClient, dummyNetworkToken, networkUserId,scopes)
 
         then:
         shadowToken == dummyShadowToken
@@ -146,10 +149,11 @@ class AuthServiceTest extends Specification {
         when:
         def invalidShadowToken = new DummyShadowToken()
         def dummyClient = new DummyClient()
+        def scopes = []
         dummyClient.clientId = "dummy_client_id"
         repositoryServiceMock.shadowTokenRepository >> shadowTokenRepositoryMock
-        shadowTokenRepositoryMock.createShadowToken("dummy_account_id", dummyClient) >> invalidShadowToken
-        underTest.createShadowToken("dummy_account_id", dummyClient)
+        shadowTokenRepositoryMock.createShadowToken("dummy_account_id", dummyClient, scopes) >> invalidShadowToken
+        underTest.createShadowToken("dummy_account_id", dummyClient, scopes)
 
         then:
         OAuthException ex = thrown()

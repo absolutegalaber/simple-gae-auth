@@ -28,7 +28,8 @@ class OfyShadowTokenRepositoryTest extends BaseRepositoryTest {
         String clientId = "test_client"
         IClient client = Mock(IClient)
         client.clientId() >> clientId
-        def token = repository.createShadowToken(accountId, client)
+        def scopes = ["email"]
+        def token = repository.createShadowToken(accountId, client, scopes)
 
         when:
         def loadedToken = repository.loadByAccessToken(token.accessToken)
@@ -44,7 +45,8 @@ class OfyShadowTokenRepositoryTest extends BaseRepositoryTest {
         String clientId = "test_client"
         IClient client = Mock(IClient)
         client.clientId() >> clientId
-        def token = repository.createShadowToken(accountId, client)
+        def scopes = ["email"]
+        def token = repository.createShadowToken(accountId, client, scopes)
 
         when:
         def loadedToken = repository.loadByRefreshToken(token.refreshToken)
@@ -60,7 +62,8 @@ class OfyShadowTokenRepositoryTest extends BaseRepositoryTest {
         String clientId = "test_client"
         IClient client = Mock(IClient)
         client.clientId() >> clientId
-        repository.createShadowToken(accountId, client)
+        def scopes = ["email"]
+        repository.createShadowToken(accountId, client, scopes)
 
         when:
         def token = repository.loadByAccountAndClient(accountId, clientId)
@@ -75,10 +78,11 @@ class OfyShadowTokenRepositoryTest extends BaseRepositoryTest {
         String accountId = "12345"
         String clientId = "test_client"
         IClient client = Mock(IClient)
+        def scopes = ["email"]
 
         when:
         client.clientId() >> clientId
-        def token = repository.createShadowToken(accountId, client)
+        def token = repository.createShadowToken(accountId, client, scopes)
 
         then:
         token != null

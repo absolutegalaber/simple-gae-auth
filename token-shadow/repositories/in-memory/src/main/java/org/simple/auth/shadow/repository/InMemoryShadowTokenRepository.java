@@ -3,10 +3,7 @@ package org.simple.auth.shadow.repository;
 import org.simple.auth.model.IClient;
 import org.simple.auth.shadow.model.InMemoryShadowToken;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -36,7 +33,7 @@ public class InMemoryShadowTokenRepository implements IShadowTokenRepository<InM
 
 
     @Override
-    public InMemoryShadowToken createShadowToken(String accountId, IClient client) {
+    public InMemoryShadowToken createShadowToken(String accountId, IClient client, Collection<String> scopes) {
         InMemoryShadowToken shadowToken = new InMemoryShadowToken();
         String accessToken = generateToken();
         String refreshToken = generateToken();
@@ -49,6 +46,7 @@ public class InMemoryShadowTokenRepository implements IShadowTokenRepository<InM
         shadowToken.setClientId(client.clientId());
         shadowToken.setAccountId(accountId);
         shadowToken.setExpiresAt(calculateNextExpirationDate());
+        shadowToken.getScopes().addAll(scopes);
         tokensByAccessToken.put(accessToken, shadowToken);
         tokensByRefreshToken.put(refreshToken, shadowToken);
         tokensByClientAndAccount.put(generateAccountClientIdentifier(accountId, client.clientId()), shadowToken);

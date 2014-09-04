@@ -5,18 +5,18 @@ import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.simple.auth.model.IClient;
 import org.simple.auth.model.OAuthException;
+import org.simple.auth.shadow.GrantType;
 import org.simple.auth.shadow.OAuthRequestParameter;
 import org.simple.auth.shadow.repository.IClientRepository;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 /**
  * @author Peter Schneider-Manzell
  */
 @Slf4j
 public class ClientService implements IClientService {
-    private static final String CLIENT_ID_KEY = "client_id";
-    private static final String REDIRECT_URI_KEY = "redirect_uri";
     private static IClientRepository clientRepository;
 
 
@@ -24,9 +24,9 @@ public class ClientService implements IClientService {
     public IClient fromRequest(HttpServletRequest req) throws OAuthException {
         log.info("Trying to detect client_id from request parameter {}", OAuthRequestParameter.CLIENT_ID.getParamName());
         Optional<String> clientId = OAuthRequestParameter.CLIENT_ID.getValue(req);
-        log.info("Got clientId {}",clientId);
-        if(!clientId.isPresent()){
-          throw new OAuthException(OAuthRequestParameter.CLIENT_ID.getParamName() + " is required!");
+        log.info("Got clientId {}", clientId);
+        if (!clientId.isPresent()) {
+            throw new OAuthException(OAuthRequestParameter.CLIENT_ID.getParamName() + " is required!");
         }
         String redirectUri = redirectUriFromRequest(req);
         IClient client = fromClientId(clientId.get());
@@ -43,7 +43,7 @@ public class ClientService implements IClientService {
     public String redirectUriFromRequest(HttpServletRequest req) throws OAuthException {
         log.info("Trying to detect redirectUri from request parameter {}", OAuthRequestParameter.REDIRECT_URI.getParamName());
         Optional<String> redirectUri = OAuthRequestParameter.REDIRECT_URI.getValue(req);
-        if(!redirectUri.isPresent()){
+        if (!redirectUri.isPresent()) {
             throw new OAuthException(OAuthRequestParameter.REDIRECT_URI.getParamName() + " is required!");
         }
         log.info("Detected redirectUri {} from request parameter {}", redirectUri.get(), OAuthRequestParameter.REDIRECT_URI.getParamName());
@@ -51,7 +51,7 @@ public class ClientService implements IClientService {
     }
 
     private IClient fromClientId(String clientId) throws OAuthException {
-        Preconditions.checkNotNull(clientId, CLIENT_ID_KEY + " is required!");
+        Preconditions.checkNotNull(clientId, OAuthRequestParameter.CLIENT_ID.getParamName() + " is required!");
         IClient client = clientRepository.load(clientId);
         if (client == null) {
             throw new OAuthException(String.format("No client with ID [%s] found!", clientId));
@@ -60,14 +60,14 @@ public class ClientService implements IClientService {
     }
 
     public void toSession(HttpServletRequest req, IClient client) {
-        log.info("Storing client ID in session under key {}", CLIENT_ID_KEY);
-        req.getSession().setAttribute(CLIENT_ID_KEY, client.clientId());
+        log.info("Storing client ID in session under key {}", OAuthRequestParameter.CLIENT_ID.getParamName());
+        req.getSession().setAttribute(OAuthRequestParameter.CLIENT_ID.getParamName(), client.clientId());
     }
 
     public IClient fromSession(HttpServletRequest req) throws OAuthException {
-        log.info("Trying to load client ID from session under key {}", CLIENT_ID_KEY);
-        String clientId = (String) req.getSession().getAttribute(CLIENT_ID_KEY);
-        log.info("Detected client ID {} from session under key {}", clientId, CLIENT_ID_KEY);
+        log.info("Trying to load client ID from session under key {}", OAuthRequestParameter.CLIENT_ID.getParamName());
+        String clientId = (String) req.getSession().getAttribute(OAuthRequestParameter.CLIENT_ID.getParamName());
+        log.info("Detected client ID {} from session under key {}", clientId, OAuthRequestParameter.CLIENT_ID.getParamName());
         return fromClientId(clientId);
     }
 
@@ -85,9 +85,10 @@ public class ClientService implements IClientService {
         StringBuilder sb = new StringBuilder("client_");
         sb.append(client.clientId());
         sb.append("_");
-        sb.append(REDIRECT_URI_KEY);
+        sb.append(OAuthRequestParameter.REDIRECT_URI.getParamName());
         return sb.toString();
     }
+
 
     public String redirectUriFromSession(IClient client, HttpServletRequest req) {
         String key = getSessionRedirectKey(client);
@@ -96,5 +97,48 @@ public class ClientService implements IClientService {
         Preconditions.checkNotNull(redirectUri, key + " is required but not found in session!");
         log.info("Detected redirectURI {} for key {} in session", redirectUri, key);
         return redirectUri;
+    }
+
+
+    private String getSessionKey(IClient client, OAuthRequestParameter oAuthRequestParameter) {
+        StringBuilder sb = new StringBuilder("client_");
+        sb.append(client.clientId());
+        sb.append("_");
+        sb.append(oAuthRequestParameter.getParamName());
+        return sb.toString();
+    }
+
+    @Override
+    public void toSession(IClient iClient, OAuthRequestParameter oAuthRequestParameter, String value, HttpServletRequest request) {
+        String key = getSessionKey(iClient, oAuthRequestParameter);
+        log.info("Adding value {} to session under key {}", value, key);
+        request.getSession().setAttribute(key, value);
+    }
+
+    @Override
+    public String fromSession(IClient iClient, OAuthRequestParameter oAuthRequestParameter, HttpServletRequest request) {
+        log.info("Trying to load {} from session under key {}", oAuthRequestParameter, oAuthRequestParameter.getParamName());
+        String key = getSessionKey(iClient, oAuthRequestParameter);
+        String value = (String) request.getSession().getAttribute(key);
+        log.info("Detected value {} from session under key {}", value, key);
+        return value;
+    }
+
+    @Override
+    public String fromRequest(GrantType grantType, OAuthRequestParameter oAuthRequestParameter, HttpServletRequest request) throws OAuthException {
+        log.info("Trying to detect {} from request parameter {}", oAuthRequestParameter, oAuthRequestParameter.getParamName());
+        Optional<String> rawValue = oAuthRequestParameter.getValue(request);
+        if (!rawValue.isPresent()) {
+            if (Arrays.asList(grantType.getRequiredParameters()).contains(rawValue)) {
+                throw new OAuthException(oAuthRequestParameter.getParamName() + " is required!");
+            } else {
+                return null;
+            }
+
+        } else {
+            log.info("Detected {} {} from request parameter {}", rawValue.get(), oAuthRequestParameter, oAuthRequestParameter.getParamName());
+        }
+
+        return rawValue.get();
     }
 }

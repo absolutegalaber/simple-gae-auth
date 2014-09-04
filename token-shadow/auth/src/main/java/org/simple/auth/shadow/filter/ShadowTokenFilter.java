@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Serializable;
 
 /**
  * @author Peter Schneider-Manzell
@@ -57,10 +56,9 @@ public class ShadowTokenFilter implements Filter {
         }
     }
 
-    protected Optional<String> extractAuthorizationHeader(HttpServletRequest request){
-       return Optional.fromNullable(request.getHeader("Authorization"));
+    protected Optional<String> extractAuthorizationHeader(HttpServletRequest request) {
+        return Optional.fromNullable(request.getHeader("Authorization"));
     }
-
 
 
     protected Optional<String> extractAccessToken(Optional<String> headerWithBearer) {
@@ -75,19 +73,19 @@ public class ShadowTokenFilter implements Filter {
 
     }
 
-    public static Serializable getAccountId(HttpServletRequest req) {
-        return (Serializable) req.getAttribute(REQ_ACCOUNT_ID_KEY);
+    public static String getAccountId(HttpServletRequest req) {
+        return (String) req.getAttribute(REQ_ACCOUNT_ID_KEY);
     }
 
     public static String getClientId(HttpServletRequest req) {
         return (String) req.getAttribute(REQ_CLIENT_ID_KEY);
     }
 
-    protected void setClientId(ServletRequest req,String clientId){
+    protected void setClientId(ServletRequest req, String clientId) {
         req.setAttribute(REQ_CLIENT_ID_KEY, clientId);
     }
 
-    protected void setAccountId(ServletRequest req,Serializable accountId){
+    protected void setAccountId(ServletRequest req, String accountId) {
         req.setAttribute(REQ_ACCOUNT_ID_KEY, accountId);
     }
 

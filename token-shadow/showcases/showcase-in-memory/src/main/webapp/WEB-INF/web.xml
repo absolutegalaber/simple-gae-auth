@@ -60,8 +60,17 @@
         <filter-class>org.simple.auth.shadow.filter.ShadowTokenFilter</filter-class>
     </filter>
 
+    <filter>
+        <filter-name>protectResourceFilter</filter-name>
+        <filter-class>org.simple.auth.shadow.filter.ProtectResourceFilter</filter-class>
+    </filter>
+
     <filter-mapping>
         <filter-name>shadowTokenFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>protectResourceFilter</filter-name>
         <url-pattern>/api/*</url-pattern>
     </filter-mapping>
 

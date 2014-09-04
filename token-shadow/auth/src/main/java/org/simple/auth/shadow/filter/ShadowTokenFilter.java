@@ -2,16 +2,13 @@ package org.simple.auth.shadow.filter;
 
 import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
 import org.simple.auth.shadow.model.IShadowToken;
 import org.simple.auth.shadow.service.AuthService;
 import org.simple.auth.shadow.service.IAuthService;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collection;
 
 /**
@@ -26,11 +23,15 @@ public class ShadowTokenFilter implements Filter {
     private IAuthService authService = new AuthService();
     private static final String BEARER_PREFIX = "Bearer ";
     private static final int ACCESS_TOKEN_START_INDEX = BEARER_PREFIX.length();
+    private static String headerName = "Authorization";
 
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        String userDefinedHeadername = filterConfig.getInitParameter("header-name");
+        if (userDefinedHeadername != null) {
+            headerName = userDefinedHeadername;
+        }
     }
 
     @Override
@@ -47,21 +48,18 @@ public class ShadowTokenFilter implements Filter {
             setClientId(request, iShadowToken.getClientId());
             setAccountId(request, iShadowToken.getAccountId());
             setScopes(request, iShadowToken.getScopes());
-            chain.doFilter(request, response);
-        } else {
-            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-            httpServletResponse.setStatus(HttpStatus.SC_FORBIDDEN);
-            PrintWriter printWriter = httpServletResponse.getWriter();
-            printWriter.write("{\"error\":\"access_denied\"}");
-            printWriter.flush();
-            printWriter.close();
-            return;
+
         }
+        chain.doFilter(request, response);
+    }
+
+    public static boolean hasAuthorizationHeader(HttpServletRequest request) {
+        return Optional.fromNullable(request.getHeader(headerName)).isPresent();
     }
 
 
     protected Optional<String> extractAuthorizationHeader(HttpServletRequest request) {
-        return Optional.fromNullable(request.getHeader("Authorization"));
+        return Optional.fromNullable(request.getHeader(headerName));
     }
 
 

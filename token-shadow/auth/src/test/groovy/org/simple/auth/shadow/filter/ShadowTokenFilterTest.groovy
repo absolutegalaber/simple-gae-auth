@@ -51,8 +51,6 @@ class ShadowTokenFilterTest extends Specification {
 
     def "DoFilterWithNoAuthorizationHeader"() {
         setup:
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PrintWriter  outputCapture = new PrintWriter(outputStream);
         HttpServletRequest mockReq =  Mock(HttpServletRequest)
         HttpServletResponse mockResp =  Mock(HttpServletResponse)
         FilterChain mockFilterChain = Mock(FilterChain)
@@ -65,10 +63,7 @@ class ShadowTokenFilterTest extends Specification {
 
         then:
         1* mockReq.getHeader("Authorization") >> null
-        1*mockResp.getWriter() >> outputCapture
-        1* mockResp.setStatus(HttpServletResponse.SC_FORBIDDEN)
-        String receivedContent = new String(outputStream.toByteArray())
-        receivedContent == "{\"error\":\"access_denied\"}"
+        1*mockFilterChain.doFilter(*_)
     }
 
     def "ExtractAccessToken"() {

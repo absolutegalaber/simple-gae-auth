@@ -43,13 +43,14 @@ public class ShadowTokenFilter implements Filter {
             log.info("Found access token {}", accessToken.get());
             iShadowToken = authService.getShadowToken(accessToken.get());
             log.info("Found shadow token {}", iShadowToken);
-        }
-        if (authService.isShadowTokenValid(iShadowToken)) {
-            setClientId(request, iShadowToken.getClientId());
-            setAccountId(request, iShadowToken.getAccountId());
-            setScopes(request, iShadowToken.getScopes());
+            if (authService.isShadowTokenValid(iShadowToken)) {
+                setClientId(request, iShadowToken.getClientId());
+                setAccountId(request, iShadowToken.getAccountId());
+                setScopes(request, iShadowToken.getScopes());
 
+            }
         }
+
         chain.doFilter(request, response);
     }
 

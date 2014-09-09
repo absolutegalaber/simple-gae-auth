@@ -17,9 +17,9 @@ import java.util.Collection;
 @Slf4j
 public class ShadowTokenFilter implements Filter {
 
-    protected static final String REQ_ACCOUNT_ID_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_account_id";
-    protected static final String REQ_CLIENT_ID_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_client_id";
-    protected static final String REQ_SCOPES_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_scopes";
+    public static final String REQ_ACCOUNT_ID_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_account_id";
+    public static final String REQ_CLIENT_ID_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_client_id";
+    public static final String REQ_SCOPES_KEY = "org.simple.auth.shadow.filter.ShadowTokenFilter_scopes";
     private IAuthService authService = new AuthService();
     private static final String BEARER_PREFIX = "Bearer ";
     private static final int ACCESS_TOKEN_START_INDEX = BEARER_PREFIX.length();
@@ -84,11 +84,11 @@ public class ShadowTokenFilter implements Filter {
         return (String) req.getAttribute(REQ_CLIENT_ID_KEY);
     }
 
-    protected void setClientId(ServletRequest req, String clientId) {
+    public void setClientId(ServletRequest req, String clientId) {
         req.setAttribute(REQ_CLIENT_ID_KEY, clientId);
     }
 
-    protected void setAccountId(ServletRequest req, String accountId) {
+    public void setAccountId(ServletRequest req, String accountId) {
         req.setAttribute(REQ_ACCOUNT_ID_KEY, accountId);
     }
 
@@ -96,7 +96,7 @@ public class ShadowTokenFilter implements Filter {
         return (Collection<String>) req.getAttribute(REQ_SCOPES_KEY);
     }
 
-    private void setScopes(ServletRequest req, Collection<String> scopes) {
+    public void setScopes(ServletRequest req, Collection<String> scopes) {
         req.setAttribute(REQ_SCOPES_KEY, scopes);
     }
 

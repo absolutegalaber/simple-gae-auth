@@ -1,4 +1,4 @@
-![Build Status](https://travis-ci.org/esistegalaber/simple-gae-auth.svg?branch=master)
+[![Build Status](https://travis-ci.org/absolutegalaber/simple-gae-auth.svg?branch=master)]
 [![Coverage Status](https://img.shields.io/coveralls/esistegalaber/simple-gae-auth.svg)](https://coveralls.io/r/esistegalaber/simple-gae-auth?branch=master)
 
 # Simple GAE Auth
@@ -9,7 +9,7 @@ Event tough it this project targets Google App engine it should actually work ou
 gradle build
 
 ###CI
-[Travis CI](https://travis-ci.org/esistegalaber/simple-gae-auth)
+[Travis CI](https://travis-ci.org/absolutegalaber/simple-gae-auth)
 
 
 

@@ -11,4 +11,4 @@ before_install:
 script: ./gradlew setup check --stacktrace
 
 after_success:
-- gradle jacocoReport coveralls
+- ./gradlew jacocoReport coveralls

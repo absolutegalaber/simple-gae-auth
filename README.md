@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/absolutegalaber/simple-gae-auth.svg?branch=master)]
+![Build Status](https://travis-ci.org/absolutegalaber/simple-gae-auth.svg?branch=master)
 [![Coverage Status](https://img.shields.io/coveralls/esistegalaber/simple-gae-auth.svg)](https://coveralls.io/r/esistegalaber/simple-gae-auth?branch=master)
 
 # Simple GAE Auth

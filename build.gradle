@@ -10,7 +10,7 @@ allprojects {
 }
 
 ext {
-    jacocoVersion = '0.7.1.201405082137'
+    jacocoVersion = '0.7.2.201409121644'
     gaeVersion = '1.9.13'
 }
 

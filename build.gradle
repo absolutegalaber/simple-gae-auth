@@ -11,7 +11,7 @@ allprojects {
 
 ext {
     jacocoVersion = '0.7.1.201405082137'
-    gaeVersion = '1.9.7'
+    gaeVersion = '1.9.13'
 }
 
 apply plugin:'coveralls'

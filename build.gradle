@@ -104,6 +104,10 @@ dependencies {
     jacoco "org.jacoco:org.jacoco.ant:${jacocoVersion}"
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
+
 
 
 def javaBundleModulesSources = javaModules().sourceSets.main

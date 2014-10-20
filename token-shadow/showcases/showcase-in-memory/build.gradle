@@ -47,7 +47,8 @@ task functionalTest(type:Test){
     group = "verification"
     testClassesDir = sourceSets.functionalTest.output.classesDir
     classpath=sourceSets.functionalTest.runtimeClasspath
-    destination=file("${testResultsDir}/functional")
+    reports.html.destination = file('build/reports/tests/functional')
+    reports.junitXml.destination = file('build/results/tests/funtional')
 
     doFirst {
         jettyRun.daemon = true
@@ -57,6 +58,8 @@ task functionalTest(type:Test){
         jettyStop.execute()
     }
 }
+
+check.dependsOn functionalTest
 
 dependencies {
     compile(

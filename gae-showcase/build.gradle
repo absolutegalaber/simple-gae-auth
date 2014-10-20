@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.7'
+        classpath "com.google.appengine:gradle-appengine-plugin:$gaeVersion"
     }
 
 }
@@ -29,16 +29,16 @@ appengineFunctionalTest.finalizedBy(appengineStop)
 
 
 dependencies {
-    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.7'
+    appengineSdk "com.google.appengine:appengine-java-sdk:$gaeVersion"
     compile(
             [
                     project(':auth-core'),
                     project(':token-shadow:auth'),
                     project(':token-shadow:repositories:objectify'),
                     'org.slf4j:slf4j-jdk14:1.7.7',
-                    'com.google.appengine:appengine-api-1.0-sdk:1.9.7',
-                    'com.google.appengine:appengine-endpoints:1.9.7',
-                    'com.googlecode.objectify:objectify:5.0.3',
+                    "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
+                    "com.google.appengine:appengine-endpoints:$gaeVersion",
+                    "com.googlecode.objectify:objectify:5.0.3",
                     'jstl:jstl:1.2'
             ]
     )

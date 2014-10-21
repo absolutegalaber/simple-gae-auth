@@ -1,4 +1,4 @@
-rootProject.name = 'simple-gae-auth'
+rootProject.name = 'simple-oauth'
 
 include 'auth-core',
         'fake-oauth-provider',
